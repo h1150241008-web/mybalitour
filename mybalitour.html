@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>探索神之島：巴里島自由行指南 3.0 終極旗艦版</title>
+    <title>探索神之島：巴里島自由行指南 4.5 達人實戰旗艦版</title>
     <!-- Google Fonts: Plus Jakarta Sans & Noto Sans TC -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -93,7 +93,16 @@
         }
 
         /* Print Media Styles for VIP A4 Magazine Handbook */
+        @page {
+            size: A4 portrait;
+            margin: 6mm;
+        }
         @media print {
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                background: #FFFFFF !important;
+            }
             body * {
                 visibility: hidden;
             }
@@ -107,23 +116,39 @@
                 width: 100%;
                 background: #FFFFFF !important;
                 padding: 0 !important;
+                margin: 0 !important;
                 overflow: visible !important;
+            }
+            #print-pages-container {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #print-pages-container > * + * {
+                margin-top: 0 !important;
             }
             .no-print {
                 display: none !important;
             }
             .a4-page {
-                width: 210mm !important;
-                min-height: 296mm !important;
+                width: 100% !important;
+                max-width: 198mm !important;
+                min-height: 280mm !important;
+                max-height: 283mm !important;
+                height: 281mm !important;
                 margin: 0 auto !important;
                 box-shadow: none !important;
-                border: none !important;
-                page-break-after: always;
-                break-after: page;
+                border: 1px solid #E7E5E4 !important;
+                border-radius: 14px !important;
+                overflow: hidden !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
-            .a4-page:last-child {
-                page-break-after: auto;
-                break-after: auto;
+            .a4-page:last-child,
+            .a4-page:last-of-type {
+                page-break-after: auto !important;
+                break-after: auto !important;
             }
         }
     </style>
@@ -141,7 +166,7 @@
                 <div class="space-y-2">
                     <div class="inline-flex flex-wrap items-center gap-2">
                         <span class="px-3 py-1 rounded-full bg-amber-400/20 border border-amber-300/40 text-amber-200 text-xs font-extrabold tracking-wide">
-                            🌺 BALI ISLAND RESORT PLANNER 3.0
+                            🌺 BALI ISLAND RESORT PLANNER 4.5
                         </span>
                         <span id="autosave-badge" class="px-2.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-300/40 text-emerald-200 text-[11px] font-bold">
                             💾 已自動保存設定
@@ -151,7 +176,7 @@
                         探索神之島：巴里島自由行指南
                     </h1>
                     <p class="text-xs sm:text-sm text-cyan-100/95 max-w-2xl leading-relaxed">
-                        先山後海零折返順路排程・70 處實景美食榜單・領隊級景點故事導覽・一鍵輸出 VIP 雜誌手冊
+                        合情合理順路動線・70 處實景美食榜單・領隊級景點故事導覽・一鍵輸出 VIP 雜誌手冊
                     </p>
                 </div>
 
@@ -172,23 +197,36 @@
                         <span>VIP 旅遊手冊 / PDF</span>
                     </button>
 
+                    <button type="button" onclick="exportPlanJson()" class="px-3 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold transition cursor-pointer" title="匯出行程備份檔 (JSON)">
+                        💾 匯出備份
+                    </button>
+
+                    <button type="button" onclick="document.getElementById('json-import-input').click()" class="px-3 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/25 text-white text-xs font-bold transition cursor-pointer" title="匯入行程備份檔 (JSON)">
+                        📂 匯入設定
+                    </button>
+                    <input type="file" id="json-import-input" accept=".json,application/json" onchange="importPlanJson(event)" class="hidden">
+
                     <button type="button" onclick="resetAllPreferences()" class="px-3 py-2.5 rounded-2xl bg-white/10 hover:bg-rose-500/80 border border-white/20 text-white text-xs font-bold transition cursor-pointer" title="恢復預設範例">
                         ↺ 重設
                     </button>
                 </div>
             </div>
 
-            <!-- 3 Main Module Tabs -->
-            <nav class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-2.5" aria-label="主要功能分頁">
-                <button type="button" id="tab-btn-planner" onclick="switchMainTab('planner')" class="tab-active px-4 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
+            <!-- 4 Main Module Tabs -->
+            <nav class="mt-6 grid grid-cols-2 lg:grid-cols-4 gap-2.5" aria-label="主要功能分頁">
+                <button type="button" id="tab-btn-planner" onclick="switchMainTab('planner')" class="tab-active px-3.5 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
                     <span class="text-base">🗓️</span>
                     <span>1–14天行程 & 預算</span>
                 </button>
-                <button type="button" id="tab-btn-top70" onclick="switchMainTab('top70')" class="tab-inactive px-4 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
+                <button type="button" id="tab-btn-map" onclick="switchMainTab('map')" class="tab-inactive px-3.5 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
+                    <span class="text-base">🗺️</span>
+                    <span>互動動線地圖</span>
+                </button>
+                <button type="button" id="tab-btn-top70" onclick="switchMainTab('top70')" class="tab-inactive px-3.5 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
                     <span class="text-base">🏆</span>
                     <span>必訪美食景點 Top 70</span>
                 </button>
-                <button type="button" id="tab-btn-guide" onclick="switchMainTab('guide')" class="tab-inactive px-4 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
+                <button type="button" id="tab-btn-guide" onclick="switchMainTab('guide')" class="tab-inactive px-3.5 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer">
                     <span class="text-base">🎒</span>
                     <span>新手懶人包 & 換匯計算</span>
                 </button>
@@ -197,7 +235,7 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 pb-24 lg:pb-10 space-y-8">
 
         <!-- ========================================================= -->
         <!-- TAB 1: 1-14 DAYS ITINERARY & BUDGET PLANNER (DEFAULT)     -->
@@ -219,6 +257,7 @@
                         <button type="button" onclick="applyPresetBundle('family')" class="px-2.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-sky-800 text-[11px] font-black transition cursor-pointer">👨‍👩‍👧 親子不累渡假 5日</button>
                         <button type="button" onclick="applyPresetBundle('besties')" class="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-[11px] font-black transition cursor-pointer">👯‍♀️ 閨蜜 SPA 網美 5日</button>
                         <button type="button" onclick="applyPresetBundle('budget')" class="px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-[11px] font-black transition cursor-pointer">💰 小資高CP值 5日</button>
+                        <button type="button" onclick="applyPresetBundle('slow8')" class="px-2.5 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 border border-teal-300 text-teal-900 text-[11px] font-black transition cursor-pointer">🌴 8天海島慢活渡假</button>
                     </div>
                 </div>
 
@@ -356,7 +395,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
                 <!-- STEP 2: LEFT CONFIGURATION & BUDGET SUMMARY -->
-                <aside class="lg:col-span-4 space-y-5">
+                <aside id="step2-budget-sidebar" class="lg:col-span-4 space-y-5">
                     <div class="glass-card rounded-3xl p-5 shadow-md space-y-5">
                         <div class="flex items-center gap-2 border-b border-amber-200/70 pb-3">
                             <span class="px-3 py-1 rounded-xl bg-bali-sunset text-white font-black text-xs">STEP 2</span>
@@ -365,7 +404,7 @@
 
                         <!-- Theme Preferences -->
                         <div class="space-y-2">
-                            <span class="text-xs font-black text-stone-700 block">🌴 旅遊主題偏好（系統自動按「先山後海」順路聚類）</span>
+                            <span class="text-xs font-black text-stone-700 block">🌴 旅遊主題偏好（依所選主題合情合理順路編排）</span>
                             <div class="grid grid-cols-2 gap-1.5 text-xs">
                                 <label class="flex items-center gap-2 bg-white px-2.5 py-2 rounded-xl border border-stone-200 cursor-pointer hover:border-bali-lagoon">
                                     <input type="checkbox" class="theme-cb accent-bali-ocean" value="classic" checked onchange="generateItineraryData(); saveStateToStorage();">
@@ -390,10 +429,6 @@
                                 <label class="flex items-center gap-2 bg-white px-2.5 py-2 rounded-xl border border-stone-200 cursor-pointer hover:border-bali-lagoon">
                                     <input type="checkbox" class="theme-cb accent-bali-ocean" value="surf" onchange="generateItineraryData(); saveStateToStorage();">
                                     <span class="font-bold">🏄 倉古衝浪</span>
-                                </label>
-                                <label class="col-span-2 flex items-center gap-2 bg-white px-2.5 py-2 rounded-xl border border-stone-200 cursor-pointer hover:border-bali-lagoon">
-                                    <input type="checkbox" class="theme-cb accent-bali-ocean" value="shopping" onchange="generateItineraryData(); saveStateToStorage();">
-                                    <span class="font-bold">🛍️ 水明漾設計師精品＆伴手禮購物</span>
                                 </label>
                             </div>
                         </div>
@@ -532,7 +567,7 @@
                             <span class="px-3 py-1 rounded-xl bg-bali-lagoon text-white font-black text-xs">STEP 3</span>
                             <div>
                                 <h3 class="text-base sm:text-lg font-black text-bali-ocean">每日順路行程表・領隊深度導覽與三餐住宿</h3>
-                                <p class="text-[11px] text-stone-500">已自動依地理順序「先山後海」排列，跨區換飯店日早餐自動銜接前一晚下榻飯店</p>
+                                <p class="text-[11px] text-stone-500">依所選主題合情合理編排每日動線・含領隊深度導覽、三餐與順路住宿推薦</p>
                             </div>
                         </div>
                         <button type="button" onclick="switchMainTab('top70')" class="px-3.5 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 text-xs font-black transition shrink-0 cursor-pointer">
@@ -540,8 +575,57 @@
                         </button>
                     </div>
 
+                    <!-- Journey Value Highlight Dashboard -->
+                    <div id="journey-value-dashboard" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5"></div>
+
+                    <!-- Auto-Aggregated Booking Radar Panel -->
+                    <div id="booking-radar-panel"></div>
+
                     <!-- Dynamic Itinerary Cards Container -->
                     <div id="itinerary-cards-container" class="space-y-5"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 4 (NAV #2): INTERACTIVE BALI SVG ROUTE MAP            -->
+        <!-- ========================================================= -->
+        <section id="panel-map" class="hidden space-y-5">
+            <div class="glass-card rounded-3xl p-5 sm:p-6 shadow-md space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-amber-200/70 pb-4">
+                    <div>
+                        <span class="text-xs font-black text-bali-sunset uppercase tracking-wider">ZERO-API INTERACTIVE ROUTE MAP</span>
+                        <h2 class="text-xl sm:text-2xl font-black text-bali-ocean">🗺️ 巴里島全島互動分區動線圖（離線零報錯版）</h2>
+                        <p class="text-xs text-stone-600 mt-0.5">即時繪製您目前排定的每日移動路線・點擊地圖上任一區域圓點，即可查看當日行程與該區 Top 70 美食景點！</p>
+                    </div>
+                    <button type="button" onclick="switchMainTab('planner')" class="px-4 py-2 rounded-xl bg-bali-ocean hover:bg-bali-lagoon text-white text-xs font-black transition shrink-0 cursor-pointer">
+                        ← 返回調整每日行程
+                    </button>
+                </div>
+
+                <!-- Route Sequence Pill Chain -->
+                <div id="map-route-chain" class="flex flex-wrap items-center gap-1.5 bg-bali-sand/90 border border-amber-200/80 rounded-2xl p-3 text-xs"></div>
+
+                <!-- Main Grid: SVG Map (Left 7) + Region Inspector & Stats (Right 5) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    <div class="lg:col-span-7 bg-gradient-to-br from-sky-900 via-bali-ocean to-teal-900 rounded-3xl p-3 sm:p-4 shadow-inner border border-cyan-500/30 relative overflow-hidden">
+                        <div class="flex items-center justify-between text-[11px] text-cyan-100/90 font-bold mb-2 px-1">
+                            <span>🧭 點擊區域地標查看詳情</span>
+                            <span class="flex items-center gap-3">
+                                <span><span class="inline-block w-2.5 h-2.5 rounded-full bg-amber-400 mr-1"></span>本次造訪</span>
+                                <span><span class="inline-block w-2.5 h-2.5 rounded-full bg-white/50 mr-1"></span>其他區域</span>
+                            </span>
+                        </div>
+                        <div id="bali-svg-map-container" class="w-full"></div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-4">
+                        <!-- Map Quick Stats -->
+                        <div id="map-region-stats" class="grid grid-cols-3 gap-2.5"></div>
+
+                        <!-- Selected Region Inspector -->
+                        <div id="map-region-inspector" class="bg-white rounded-3xl p-4 sm:p-5 border border-amber-200/90 shadow-xs space-y-3"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -566,7 +650,82 @@
                 </div>
 
                 <!-- 7 Category Filter Pills -->
-                <div id="top70-category-pills" class="flex flex-wrap gap-2"></div>
+                <div class="space-y-2">
+                    <div id="top70-category-pills" class="flex flex-wrap gap-2"></div>
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1 border-t border-amber-200/60">
+                        <span class="text-[11px] font-black text-stone-500 mr-1">📍 依區域篩選：</span>
+                        <div id="top70-region-pills" class="flex flex-wrap gap-1.5"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Beach Club & Waterbom Quick Comparison Accordion -->
+            <div class="glass-card rounded-3xl p-4 sm:p-5 shadow-xs border border-amber-200/90 space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <span class="text-[10px] font-black text-bali-sunset uppercase tracking-wider">EXPERT QUICK COMPARE</span>
+                        <h3 class="text-sm sm:text-base font-black text-bali-ocean">🏖️ 巴里島人氣海灘俱樂部 ＆ Waterbom 水上樂園快速比較表</h3>
+                    </div>
+                    <button type="button" id="btn-toggle-club-compare" onclick="toggleClubCompareTable()" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 text-xs font-black transition cursor-pointer">
+                        收合比較表 ▴
+                    </button>
+                </div>
+                <div id="club-compare-table-wrap" class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs min-w-[640px]">
+                        <thead>
+                            <tr class="bg-bali-ocean text-white">
+                                <th class="py-2.5 px-3 rounded-tl-xl font-black">場館名稱</th>
+                                <th class="py-2.5 px-3 font-black">所在區域</th>
+                                <th class="py-2.5 px-3 font-black">門票 / 低消參考</th>
+                                <th class="py-2.5 px-3 font-black">最大亮點與氛圍</th>
+                                <th class="py-2.5 px-3 font-black">最適合族群</th>
+                                <th class="py-2.5 px-3 rounded-tr-xl font-black text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-amber-200/70 bg-white">
+                            <tr class="hover:bg-amber-50/50">
+                                <td class="py-2.5 px-3 font-black text-bali-ocean">🌊 Waterbom Bali 水上樂園</td>
+                                <td class="py-2.5 px-3 font-bold text-stone-600">庫塔 Kuta</td>
+                                <td class="py-2.5 px-3 font-bold text-bali-sunset">約 IDR 535,000/人</td>
+                                <td class="py-2.5 px-3 text-stone-700">亞洲第一熱帶花園水上樂園，從溫和漂漂河到極限滑水道都有，水質潔淨度滿分。</td>
+                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-900 font-black text-[10px]">親子／青少年首選</span></td>
+                                <td class="py-2.5 px-3 text-center"><button type="button" onclick="openDayPickerModal(71)" class="px-2.5 py-1 rounded-lg bg-bali-ocean hover:bg-bali-lagoon text-white font-black text-[11px] cursor-pointer">➕ 排入</button></td>
+                            </tr>
+                            <tr class="hover:bg-amber-50/50">
+                                <td class="py-2.5 px-3 font-black text-bali-ocean">🏝️ Sundays Beach Club</td>
+                                <td class="py-2.5 px-3 font-bold text-stone-600">烏魯瓦圖</td>
+                                <td class="py-2.5 px-3 font-bold text-bali-sunset">約 IDR 550,000（可折餐飲）</td>
+                                <td class="py-2.5 px-3 text-stone-700">搭專屬懸崖電梯直達私人白沙灣，免費玩立槳 SUP 與獨木舟，海水最清澈。</td>
+                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-md bg-rose-100 text-rose-900 font-black text-[10px]">情侶／親子戲水</span></td>
+                                <td class="py-2.5 px-3 text-center"><button type="button" onclick="openDayPickerModal(8)" class="px-2.5 py-1 rounded-lg bg-bali-ocean hover:bg-bali-lagoon text-white font-black text-[11px] cursor-pointer">➕ 排入</button></td>
+                            </tr>
+                            <tr class="hover:bg-amber-50/50">
+                                <td class="py-2.5 px-3 font-black text-bali-ocean">🎵 Finns Beach Club</td>
+                                <td class="py-2.5 px-3 font-bold text-stone-600">倉古 Canggu</td>
+                                <td class="py-2.5 px-3 font-bold text-bali-sunset">入場免費（躺椅區有低消）</td>
+                                <td class="py-2.5 px-3 text-stone-700">巨型竹編建築＋4 座無邊際泳池＋國際 DJ 日落派對，氣氛最嗨最熱鬧。</td>
+                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 font-black text-[10px]">閨蜜／派對愛好者</span></td>
+                                <td class="py-2.5 px-3 text-center"><button type="button" onclick="openDayPickerModal(10)" class="px-2.5 py-1 rounded-lg bg-bali-ocean hover:bg-bali-lagoon text-white font-black text-[11px] cursor-pointer">➕ 排入</button></td>
+                            </tr>
+                            <tr class="hover:bg-amber-50/50">
+                                <td class="py-2.5 px-3 font-black text-bali-ocean">🎨 Potato Head 薯片頭</td>
+                                <td class="py-2.5 px-3 font-bold text-stone-600">水明漾</td>
+                                <td class="py-2.5 px-3 font-bold text-bali-sunset">草坪區低消親民（約 35 萬）</td>
+                                <td class="py-2.5 px-3 text-stone-700">6,000 扇彩色古董木窗藝術地標，設計感最強、日落夕陽海景無敵。</td>
+                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-md bg-teal-100 text-teal-900 font-black text-[10px]">設計文青／初訪必去</span></td>
+                                <td class="py-2.5 px-3 text-center"><button type="button" onclick="openDayPickerModal(18)" class="px-2.5 py-1 rounded-lg bg-bali-ocean hover:bg-bali-lagoon text-white font-black text-[11px] cursor-pointer">➕ 排入</button></td>
+                            </tr>
+                            <tr class="hover:bg-amber-50/50">
+                                <td class="py-2.5 px-3 font-black text-bali-ocean">⛵ La Brisa 生態海盜船</td>
+                                <td class="py-2.5 px-3 font-bold text-stone-600">倉古 Echo</td>
+                                <td class="py-2.5 px-3 font-bold text-bali-sunset">約 IDR 350,000（依座位區）</td>
+                                <td class="py-2.5 px-3 text-stone-700">500 艘退役漁船實木打造的樹屋海濱俱樂部，週日早上有超好逛手作市集。</td>
+                                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-900 font-black text-[10px]">波希米亞慢活派</span></td>
+                                <td class="py-2.5 px-3 text-center"><button type="button" onclick="openDayPickerModal(59)" class="px-2.5 py-1 rounded-lg bg-bali-ocean hover:bg-bali-lagoon text-white font-black text-[11px] cursor-pointer">➕ 排入</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- Cards Grid -->
@@ -575,7 +734,7 @@
             <!-- Show More / Collapse Button -->
             <div class="text-center pt-2">
                 <button type="button" id="btn-toggle-all-top70" onclick="toggleShowAllDestinations()" class="px-6 py-3 rounded-2xl bg-bali-ocean hover:bg-bali-lagoon text-white font-black text-xs sm:text-sm shadow-md transition cursor-pointer">
-                    展開查看全部 70 筆必訪名單 ▾
+                    展開查看全部 71 筆必訪名單 ▾
                 </button>
             </div>
         </section>
@@ -584,6 +743,51 @@
         <!-- TAB 3: BEGINNER SURVIVAL PACK & IDR CONVERTER             -->
         <!-- ========================================================= -->
         <section id="panel-guide" class="hidden space-y-6">
+            <!-- DPS Airport 4-Step Arrival Visual Flow -->
+            <div class="glass-card rounded-3xl p-5 sm:p-6 shadow-md space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/70 pb-3">
+                    <div>
+                        <span class="text-xs font-black text-bali-sunset uppercase tracking-wider">DPS AIRPORT ARRIVAL FLOW</span>
+                        <h2 class="text-lg sm:text-xl font-black text-bali-ocean">🛬 巴里島伍拉賴機場（DPS）落地絲滑通關 4 步驟圖解</h2>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-[11px] font-black w-fit">⚡ 事先辦好線上申報，最快 15 分鐘出關</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                    <div class="bg-bali-sand/90 border border-amber-200 rounded-2xl p-4 space-y-1.5 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full bg-bali-ocean text-white font-black text-[10px]">STEP 1</span>
+                            <span class="text-xl">✈️</span>
+                        </div>
+                        <div class="font-black text-bali-ocean text-sm">下機備妥護照與離線截圖</div>
+                        <p class="text-[11px] text-stone-600 leading-relaxed">跟著「Arrival / Immigration」指標前進，先開啟手機相簿備妥 e-VOA PDF、觀光稅與海關 ECD 三張截圖（免依賴機場 Wi-Fi）。</p>
+                    </div>
+                    <div class="bg-bali-sand/90 border border-amber-200 rounded-2xl p-4 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full bg-bali-lagoon text-white font-black text-[10px]">STEP 2</span>
+                            <span class="text-xl">🛂</span>
+                        </div>
+                        <div class="font-black text-bali-ocean text-sm">走 e-VOA 電子自動通關</div>
+                        <p class="text-[11px] text-stone-600 leading-relaxed">已線上申請 e-VOA 且持晶片護照（年滿 6 歲）可直接排「Autogate」自動通關閘門，放護照＋看鏡頭 30 秒秒過！</p>
+                    </div>
+                    <div class="bg-bali-sand/90 border border-amber-200 rounded-2xl p-4 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-600 text-white font-black text-[10px]">STEP 3</span>
+                            <span class="text-xl">🧳</span>
+                        </div>
+                        <div class="font-black text-bali-ocean text-sm">領行李＆掃海關 ECD 碼</div>
+                        <p class="text-[11px] text-stone-600 leading-relaxed">提領託運行李後，於海關出口出示起飛前 72 小時填好的免費「ECD 電子海關申報」QR Code 給人員掃描即可通過。</p>
+                    </div>
+                    <div class="bg-bali-sand/90 border border-amber-200 rounded-2xl p-4 space-y-1.5">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-full bg-bali-sunset text-white font-black text-[10px]">STEP 4</span>
+                            <span class="text-xl">🌺</span>
+                        </div>
+                        <div class="font-black text-bali-ocean text-sm">確認觀光稅＆找舉牌司機</div>
+                        <p class="text-[11px] text-stone-600 leading-relaxed">出關後依指引確認 Love Bali 觀光稅憑證，接著走出迎賓大廳找尋專屬舉牌司機（切勿理會路邊拉客黑車）。</p>
+                    </div>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
                 <!-- Left: Interactive Pre-trip Checklist with Progress Bar -->
@@ -719,6 +923,47 @@
     </div>
 
     <!-- ========================================================= -->
+    <!-- MODAL 4: FLOATING BALI TRAVEL Q&A HELPER (OFFLINE 32 Q&A) -->
+    <!-- ========================================================= -->
+    <div id="qa-helper-modal" class="hidden fixed inset-0 z-50 bg-stone-950/65 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl border border-amber-200 space-y-4 max-h-[88vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-stone-200 pb-3">
+                <div>
+                    <span class="text-[11px] font-black text-bali-sunset">OFFLINE BALI EXPERT BOT</span>
+                    <h3 class="text-lg font-black text-bali-ocean">🌴 巴里島自由行救星 Q&amp;A 小幫手（32 題實戰秒查）</h3>
+                </div>
+                <button type="button" onclick="closeQaModal()" class="w-9 h-9 rounded-full bg-stone-100 hover:bg-stone-200 font-black text-stone-700 cursor-pointer">✕</button>
+            </div>
+            <div class="space-y-2.5">
+                <input id="qa-search-input" type="text" placeholder="🔍 輸入關鍵字：簽證、換匯、小費、腸胃炎、Grab、電壓、猴子..." oninput="renderQaList()" class="w-full px-4 py-2.5 rounded-2xl bg-bali-sand border border-amber-300 text-xs font-bold text-stone-800 focus:outline-none focus:border-bali-ocean">
+                <div id="qa-category-pills" class="flex flex-wrap gap-1.5"></div>
+            </div>
+            <div id="qa-list-container" class="space-y-2 overflow-y-auto pr-1 flex-1"></div>
+        </div>
+    </div>
+
+    <!-- Floating Q&A Trigger Button -->
+    <button type="button" onclick="openQaModal()" class="fixed bottom-20 lg:bottom-6 right-4 lg:right-6 z-40 px-4 py-3 rounded-full bg-gradient-to-r from-bali-ocean to-bali-lagoon hover:from-bali-lagoon hover:to-bali-ocean text-white font-black text-xs shadow-2xl border-2 border-amber-300/80 flex items-center gap-2 transition hover:scale-105 cursor-pointer no-print" title="開啟巴里島旅遊小幫手 Q&A">
+        <span class="text-base">🌴</span>
+        <span>旅遊小幫手 Q&amp;A</span>
+    </button>
+
+    <!-- Mobile Sticky Bottom Budget Bar -->
+    <div id="mobile-sticky-budget" class="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-stone-900/95 backdrop-blur-md text-white border-t border-amber-400/40 px-4 py-2.5 flex items-center justify-between gap-2 shadow-2xl no-print">
+        <div class="leading-tight">
+            <div class="text-[10px] text-cyan-200 font-bold">全團預估總旅費 / 人均</div>
+            <div class="flex items-baseline gap-1.5">
+                <span id="mobile-total-cost" class="text-sm font-black text-amber-300">NT$ 0</span>
+                <span id="mobile-per-adult-cost" class="text-[11px] font-bold text-white/90">(NT$ 0/人)</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="scrollToBudgetSettings()" class="px-2.5 py-2 rounded-xl bg-white/15 text-white text-[11px] font-black cursor-pointer">⚙️ 調預算</button>
+            <button type="button" onclick="printItineraryPlan()" class="px-3 py-2 rounded-xl bg-bali-sunset text-white text-[11px] font-black cursor-pointer">📖 手冊</button>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
     <!-- BOTTOM TOAST NOTIFICATION BAR                             -->
     <!-- ========================================================= -->
     <div id="toast-bar" class="hidden fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-stone-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl border border-amber-400/50 flex items-center gap-3 text-xs font-bold max-w-[92vw]">
@@ -733,12 +978,15 @@
         // -------------------------------------------------------------
         // 1. GLOBAL STATE & STORAGE KEY
         // -------------------------------------------------------------
-        const STORAGE_KEY = 'bali_resort_planner_v3_state';
+        const STORAGE_KEY = 'bali_resort_planner_v4_state';
         const IDR_PER_TWD = 490;
 
         let generatedDays = [];
         let currentDestFilter = 'all';
+        let currentRegionFilter = 'all';
         let currentSearchQuery = '';
+        let selectedMapRegionKey = null;
+        let currentQaCategory = 'all';
         let showAllDestinations = false;
         let lastAddedAction = null;
         let primaryCurrency = 'TWD'; // 'TWD' or 'IDR'
@@ -760,7 +1008,11 @@
             foodFeast: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=900&q=80',
             uluwatuCliff: 'https://images.unsplash.com/photo-1573790387438-4da905039392?auto=format&fit=crop&w=900&q=80',
             penidaCliff: 'https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?auto=format&fit=crop&w=900&q=80',
-            villaPool: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80'
+            villaPool: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80',
+            eastGate: 'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?auto=format&fit=crop&w=900&q=80',
+            waterTemple: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=900&q=80',
+            nusaDuaBeach: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80',
+            sanurCoast: 'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?auto=format&fit=crop&w=900&q=80'
         };
 
         function getFallbackSvgDataUri(labelText) {
@@ -854,7 +1106,8 @@
             { rank: 67, category: 'nature', catLabel: '🌋 火山自然', title: '佩尼達島鑽石海灘 Diamond Beach', region: '努沙佩尼達東線', costIdr: 50000, img: 'https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=800&q=80', highlight: '潔白石灰岩峭壁與如鑽石般閃耀的蒂芬妮藍海水，懸崖海景秋千超夢幻。', dishOrTip: '海浪較強不建議下海游泳，在沙灘踏浪與崖邊拍照最美。' },
             { rank: 68, category: 'spa', catLabel: '💆‍♀️ 頂級 SPA', title: 'Lluvia Spa 水明漾超高 CP 值精油按摩', region: '水明漾 Seminyak', costIdr: 280000, img: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80', highlight: '環境雅致乾淨、價格親民且手勁到位的口碑 SPA 館，天天按也不心疼。', dishOrTip: '推薦 2 小時巴里島傳統精油按摩＋去角質套餐。' },
             { rank: 69, category: 'food', catLabel: '🔥 人氣必吃', title: 'Gourmet Cafe 空港周邊早午餐與精品烘焙', region: '庫塔 / 努沙杜瓦', costIdr: 130000, img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=800&q=80', highlight: '現烤酸種麵包、煙燻鮭魚可頌與精品咖啡，是出發跳島或去機場前的好選擇。', dishOrTip: '距離機場僅 10 分鐘車程，環境舒適冷氣涼爽。' },
-            { rank: 70, category: 'shopping', catLabel: '🛍️ 購物商場', title: 'Pepito Market 精品進口超市巡禮', region: '全島多間分店', costIdr: 150000, img: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?auto=format&fit=crop&w=800&q=80', highlight: '遍布水明漾、倉古、烏布與烏魯瓦圖的精品超市，買新鮮山竹、椰子水與零食最方便。', dishOrTip: '部分分店附設現烤麵包坊與熱食熟食區。' }
+            { rank: 70, category: 'shopping', catLabel: '🛍️ 購物商場', title: 'Pepito Market 精品進口超市巡禮', region: '全島多間分店', costIdr: 150000, img: 'https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?auto=format&fit=crop&w=800&q=80', highlight: '遍布水明漾、倉古、烏布與烏魯瓦圖的精品超市，買新鮮山竹、椰子水與零食最方便。', dishOrTip: '部分分店附設現烤麵包坊與熱食熟食區。' },
+            { rank: 71, category: 'beach', catLabel: '🏖️ 絕美海灘', title: 'Waterbom Bali 亞洲第一熱帶水上樂園', region: '庫塔 Kuta', costIdr: 535000, img: 'https://images.unsplash.com/photo-1575429198097-0414ec08e8cd?auto=format&fit=crop&w=800&q=80', highlight: '連續多年榮獲亞洲第一的水上樂園！結合茂密熱帶雨林造景、刺激極限滑水道與超療癒漂漂河。', dishOrTip: '園區採用無現金感應手環，建議早上 09:30 開園即入場、租一間專屬涼亭 Gazebo 休息超爽！' }
         ];
 
         // -------------------------------------------------------------
@@ -862,10 +1115,14 @@
         // -------------------------------------------------------------
         const regionShortNames = {
             ubud: '烏布山林梯田區',
+            bedugul: '中北線百度庫山湖區',
+            karangasem: '東線阿貢山秘境區',
             canggu: '倉古潮流衝浪區',
             seminyak: '水明漾精品美食區',
             jimbaran: '金巴蘭夕陽海灣區',
             uluwatu: '烏魯瓦圖百米斷崖區',
+            nusadua: '努沙杜瓦五星白沙區',
+            sanur: '沙努爾海濱慢活區',
             penida: '努沙佩尼達離島'
         };
 
@@ -1282,11 +1539,373 @@
                 },
                 mustBring: '暈船藥（務必開船前 30 分鐘吃）、泳衣、大浴巾、好走的運動涼鞋',
                 baseCostIdr: 850000
+            },
+            {
+                id: 'east-karangasem',
+                theme: 'classic',
+                geoOrder: 1,
+                subOrder: 4,
+                region: '東線阿貢山秘境與皇室水宮線',
+                mapRegionKey: 'karangasem',
+                overnightRegionKey: 'sanur',
+                photoKey: 'eastGate',
+                defaultTransport: 'charter10',
+                durationTip: '⏱️ 專車東線環遊（沿途欣賞阿貢火山壯麗剪影）',
+                title: '天空之門連普揚寺倒影大片、恆河聖水宮殿餵錦鯉與東海岸海景午餐',
+                editorialIntro: '深入神聖阿貢火山腳下的巴里島東部秘境！站在雲端善惡門拍下夢幻鏡面倒影，午後漫步昔日皇室水上花園與肥美錦鯉同框。',
+                leaderStory: '今天領隊帶大家探訪峇里島最神聖、也最具史詩感的「東部卡朗阿森秘境」！我們一早出發避開人潮，前往海拔高處的連普揚寺（天空之門），在雄偉善惡門與聖山阿貢火山同框的絕景中拍下人生大片；午後走進昔日王室避暑行宮「恆河聖水宮殿花園（Tirta Gangga）」，踩在優雅的八角石墩上與成群肥美錦鯉互動，最後沿著東海岸公路返回沙努爾海濱，整趟行程充滿古文明靈氣與神祕美感！',
+                spotGuides: [
+                    {
+                        tag: '神聖地標',
+                        name: '【天空之門 Lempuyang 連普揚寺】',
+                        desc: '峇里島最古老且最受尊崇的六大聖廟之一！巨大的傳統善惡門（Candi Bentar）正好框住海拔 3,031 公尺的神聖阿貢火山，現場專業廟方攝影師以巧妙鏡面技巧拍出宛如佇立雲端天空之鏡的絕美倒影。'
+                    },
+                    {
+                        tag: '皇室花園',
+                        name: '【恆河聖水宮殿 Tirta Gangga】',
+                        desc: '1946 年由卡朗阿森國王建造的夢幻水上迷宮花園，融合巴里島石雕與歐式噴泉美學。清澈見底的山泉水池中悠游著數百尾金橘色巨型錦鯉，踏上水池石階撒下魚飼料，畫面夢幻宛如宮廷電影場景。'
+                    },
+                    {
+                        tag: '東岸秘境',
+                        name: '【東海岸海景露台午餐 ＆ 沙努爾海濱漫步】',
+                        desc: '午後在面向龍目海峽的微風露台享用新鮮現烤海魚料理，傍晚回到交通便利且靜謐優雅的沙努爾海岸區休息，完全不走回頭路。'
+                    }
+                ],
+                leaderTips: '天空之門拍照人氣極高，建議 07:00 前出發最能縮短排隊時間並拍到無雲遮擋的阿貢火山；入寺須著過膝長褲／長裙（現場可租沙龍）；在恆河聖水宮入口花 IDR 10,000 買魚飼料，錦鯉立刻成群靠過來超好拍！',
+                morning: '07:00 專車出發前往東線阿貢山麓 → 09:00 抵達天空之門連普揚寺（Lempuyang）換乘接駁車上山拍夢幻倒影大片',
+                crossRegionMorning: '09:00 抵達東線天空之門連普揚寺（Lempuyang）換乘接駁車上山拍阿貢火山倒影大片',
+                afternoon: '12:30 東線梯田海景餐廳享用午餐 → 14:00 漫步恆河聖水宮殿花園（Tirta Gangga）踏石墩與錦鯉合影',
+                evening: '17:30 返回沙努爾海濱飯店辦理入住 → 19:00 享用沙努爾海濱微風義式或南洋晚餐',
+                meals: {
+                    breakfast: '下榻飯店內享用早餐（建議 06:30 用餐或打包餐盒）',
+                    lunch: 'Maha Gangga Valley 東線山谷景觀南洋料理',
+                    dinner: 'Massimo Italian Restaurant 沙努爾人氣手工披薩與義式冰淇淋'
+                },
+                stayAdvice: {
+                    area: '沙努爾海岸區（東線往返最順路且靜謐舒適）',
+                    reason: '從東線返回沙努爾比回水明漾少塞車 40 分鐘，隔天逛海濱商場或跳島都超方便。',
+                    boutique: 'Prama Sanur Beach Bali',
+                    resort: 'Maya Sanur Resort & Spa',
+                    villa: 'Andaz Bali, a Concept by Hyatt'
+                },
+                mustBring: '過膝長裙／長褲、太陽眼鏡、行動電源、小額現金買魚飼料',
+                baseCostIdr: 460000
+            },
+            {
+                id: 'north-bedugul',
+                theme: 'nature',
+                geoOrder: 1,
+                subOrder: 5,
+                region: '中北線百度庫山湖與世界遺產梯田線',
+                mapRegionKey: 'bedugul',
+                overnightRegionKey: 'ubud',
+                photoKey: 'waterTemple',
+                defaultTransport: 'charter10',
+                durationTip: '⏱️ 海拔 1,200 公尺天然冷氣山區・清涼避暑首選',
+                title: '百度庫水神廟湖光山色、漢達拉天堂門與嘉帝路維世界遺產萬頃稻浪',
+                editorialIntro: '逃離海邊豔陽，前進平均氣溫僅 20°C 的高地湖泊區！探訪印在印尼盾 5 萬紙鈔上的水上古廟，再漫步全島最遼闊壯觀的嘉帝路維梯田。',
+                leaderStory: '如果說烏布是精緻小巧的山谷梯田，那今天領隊帶大家造訪的「中北線百度庫（Bedugul）」就是氣勢磅礴的高山大景！海拔 1,200 公尺的山區氣候涼爽宜人，我們先走訪佇立於布拉坦湖畔的國寶級「水神廟」，欣賞雲霧繚繞的湖中塔樓倒影；午後南下前往聯合國教科文組織（UNESCO）認證的「嘉帝路維梯田」，這裡面積比德哥拉朗大上數倍、遊客卻少得多，漫步在無邊無際的翠綠稻浪田埂間，身心瞬間被徹底療癒！',
+                spotGuides: [
+                    {
+                        tag: '紙鈔地標',
+                        name: '【百度庫水神廟 Ulun Danu Beratan】',
+                        desc: '建於 1633 年、供奉湖泊女神的湖畔古廟，也是印尼盾 50,000 元紙鈔背面的經典圖案！當湖面漲潮起霧時，十一層高的梅魯寶塔宛如漂浮在鏡面湖水中央，仙氣十足。'
+                    },
+                    {
+                        tag: '高地美拍',
+                        name: '【漢達拉高爾夫天堂門 ＆ 百度庫草莓園】',
+                        desc: '被翠綠山巒與薄霧環抱的巨型石雕善惡門，免去東線長途排隊也能拍出唯美霧氣大片；山區盛產香甜草莓，沿途還可順道品嚐現打新鮮草莓奶昔。'
+                    },
+                    {
+                        tag: '世界遺產',
+                        name: '【嘉帝路維梯田 Jatiluwih Rice Terraces】',
+                        desc: '綿延超過 600 公頃的壯麗高山梯田，完整保留了巴里島千年蘇巴克水資源共享文化。規劃完善的田間木棧道與步行環線平坦好走，隨手一拍都是國家地理雜誌等級的田園風光。'
+                    }
+                ],
+                leaderTips: '百度庫山區海拔較高、午後容易起霧微涼，請務必帶一件輕薄長袖外套與摺疊傘；嘉帝路維梯田步道開闊遮蔭較少，建議攜帶遮陽帽與防曬乳。',
+                morning: '08:30 專車北上前往百度庫高地 → 10:00 漫步水神廟（Ulun Danu）賞湖光山色與手搖船體驗',
+                crossRegionMorning: '10:00 抵達百度庫水神廟（Ulun Danu）欣賞湖畔古廟與高地涼爽雲霧',
+                afternoon: '12:30 高地景觀餐廳享用午餐 → 14:15 造訪嘉帝路維世界遺產梯田（Jatiluwih）悠閒田埂健行與下午茶',
+                evening: '17:30 返回烏布山林飯店休息 → 19:00 烏布口碑庭園餐廳享用溫暖南洋料理',
+                meals: {
+                    breakfast: '下榻飯店內享用豐盛早餐',
+                    lunch: 'Gong Jatiluwih 梯田全景餐廳印尼自助風味餐',
+                    dinner: 'Locavore NXT 風格餐館或烏布人氣手工義麵小酒館'
+                },
+                stayAdvice: {
+                    area: '烏布山林區（中北線往返距離最近、節奏從容）',
+                    reason: '住烏布往北去百度庫比從南部出發少 1 小時車程，回程還能順道做個足部按摩。',
+                    boutique: 'Komaneka at Rasa Sayang',
+                    resort: 'Maya Ubud Resort & Spa',
+                    villa: 'Mandapa, a Ritz-Carlton Reserve'
+                },
+                mustBring: '薄長袖外套（高地約 20°C）、好走運動鞋、遮陽帽與摺疊傘',
+                baseCostIdr: 440000
+            },
+            {
+                id: 'nusadua-family',
+                theme: 'beach',
+                geoOrder: 3,
+                subOrder: 2,
+                region: '努沙杜瓦五星白沙與親子水上特區',
+                mapRegionKey: 'nusadua',
+                overnightRegionKey: 'nusadua',
+                photoKey: 'nusaDuaBeach',
+                defaultTransport: 'grab',
+                durationTip: '⏱️ 封閉式五星渡假園區・治安滿分、零塞車最輕鬆',
+                title: '努沙杜瓦潔白私人沙灘水上活動、Waterblow 巨浪噴泉與皇家香料饗宴',
+                editorialIntro: '全島海灘最乾淨平緩、安全管理最完善的五星特區！不論是親子戲水玩拖曳傘、玻璃底船，還是欣賞印度洋巨浪衝擊石灰岩奇觀都超盡興。',
+                leaderStory: '今天領隊帶大家來到峇里島治安最完善、街道寬闊整潔、宛如世外桃源的「努沙杜瓦五星渡假特區（Nusa Dua）」！這裡擁有全島最細軟潔白的沙灘與珊瑚礁保護的平靜海域，非常適合親子與不擅泳技的旅人放心玩水。上午體驗玻璃底船看海龜或刺激有趣的香蕉船，午後走訪壯觀的天然海蝕奇景「Waterblow 巨浪噴泉」，傍晚在 Bali Collection 花園商場輕鬆漫步，晚上品嚐由前五星飯店行政主廚掌杓的正宗巴里島皇家香料晚宴！',
+                spotGuides: [
+                    {
+                        tag: '親子戲水',
+                        name: '【努沙杜瓦白沙灘水上活動（玻璃底船／拖曳傘／獨木舟）】',
+                        desc: '潔白平緩的珊瑚沙海灣浪小水清，可依喜好選擇輕鬆的玻璃底船出海賞熱帶魚、海龜島生態互動，或挑戰高空拖曳傘俯瞰整片蒂芬妮藍海岸線。'
+                    },
+                    {
+                        tag: '自然奇觀',
+                        name: '【Waterblow 天然海浪噴泉觀景台】',
+                        desc: '位於努沙杜瓦半島尖端的天然石灰岩峽縫，每當印度洋大浪湧入狹窄岩縫時，便會瞬間向上噴發出高達十餘公尺的雪白巨浪水花，氣勢震撼且步道平坦安全（推嬰兒車也 OK！）。'
+                    },
+                    {
+                        tag: '皇家味蕾',
+                        name: '【Bumbu Bali 正宗巴里島皇家香料料理】',
+                        desc: '由著名主廚 Heinz von Holzen 創立的傳奇餐廳，以傳統炭爐與古法香料烹調十餘道經典菜色組成 Rijsttafel 皇室拼盤，是認識正統巴里島飲食文化的殿堂級餐廳。'
+                    }
+                ],
+                leaderTips: '努沙杜瓦園區內治安極佳、人行道平整寬敞，非常適合帶長輩與小朋友推嬰兒車散步；前往 Waterblow 拍照請站在木棧護欄內，手機建議套上防水袋避免被突如其來的浪花濺濕。',
+                morning: '09:30 努沙杜瓦飯店享用海景早餐 → 10:30 私人白沙灘體驗玻璃底船、獨木舟或拖曳傘水上活動',
+                crossRegionMorning: '10:30 抵達努沙杜瓦五星白沙海灘，體驗玻璃底船、獨木舟或輕鬆海濱戲水時光',
+                afternoon: '13:00 Bali Collection 花園冷氣商場享用午餐與逛街 → 15:30 漫步 Waterblow 海浪噴泉木棧道看巨浪奇觀',
+                evening: '18:30 Bumbu Bali 享用正宗巴里島皇家香料拼盤晚宴，餐後享受五星渡假村璀璨夜景',
+                meals: {
+                    breakfast: '努沙杜瓦下榻五星渡假村內享用超豐盛國際自助早餐',
+                    lunch: 'Bali Collection 露天花園餐廳或海濱池畔簡餐',
+                    dinner: 'Bumbu Bali 努沙杜瓦正宗皇家香料拼盤晚宴'
+                },
+                stayAdvice: {
+                    area: '努沙杜瓦五星特區（全島最安靜、沙灘最乾淨安全）',
+                    reason: '適合親子家庭、長輩同行或想徹底放空享受大型五星渡假村泳池的旅人。',
+                    boutique: 'Courtyard by Marriott Bali Nusa Dua',
+                    resort: 'The Apurva Kempinski Bali',
+                    villa: 'The St. Regis Bali Resort'
+                },
+                mustBring: '泳衣、換洗衣物、防曬乳、墨鏡（推嬰兒車也完全無障礙）',
+                baseCostIdr: 560000
+            },
+            {
+                id: 'sanur-slow',
+                theme: 'shopping',
+                geoOrder: 2,
+                subOrder: 4,
+                region: '沙努爾海濱單車與新地標商場慢活線',
+                mapRegionKey: 'sanur',
+                overnightRegionKey: 'sanur',
+                photoKey: 'sanurCoast',
+                defaultTransport: 'walk',
+                durationTip: '⏱️ 5公里平整海濱步道・慢活騎單車＋吹冷氣逛最新百貨',
+                title: '沙努爾晨曦海濱單車漫騎、Icon Bali 室內水上市場與日落海景 SPA',
+                editorialIntro: '體驗巴里島最優雅愜意的歐風慢活海岸！清晨騎單車吹海風看日出，午後躲進全島最新冷氣海濱百貨 Icon Bali 逛室內漂浮市集、吃遍人氣名店。',
+                leaderStory: '如果水明漾是時尚派對女王，那「沙努爾（Sanur）」就是氣質最溫柔優雅的海濱小鎮！這裡擁有全島最長、最平整的 5 公里海濱木棧道，非常適合早上騎著單車吹著印度洋涼風喝杯手沖咖啡。午後太陽正大時，我們直接走進巴里島最新開幕的話題地標「Icon Bali 海濱購物中心」，在涼爽冷氣裡逛遍室內水上漂浮市集、國際選物與海景美食，傍晚再來場海風精油按摩，一整天不趕車、不流汗、質感滿分！',
+                spotGuides: [
+                    {
+                        tag: '晨間慢活',
+                        name: '【沙努爾 5 公里海濱步道單車晨騎】',
+                        desc: '面向東方日出的平靜海灣，沿著鋪設平整的臨海步道騎乘飯店免費單車，一邊是搖曳椰林與傳統彩繪螃蟹漁船（Jukung），一邊是歐式咖啡館與手工藝小店，節奏悠閒到讓人捨不得離開。'
+                    },
+                    {
+                        tag: '最新地標',
+                        name: '【Icon Bali 海濱購物中心 ＆ 室內水上漂浮市集】',
+                        desc: '巴里島最新開幕的大型濱海商場，將傳統水上市場搬進涼爽冷氣室內！館內擁有巨型蝴蝶投影中庭、直通沙灘的海景餐廳露台與豐富伴手禮專櫃，怕熱或遇雨都超好逛。'
+                    },
+                    {
+                        tag: '夜市尋味',
+                        name: '【沙努爾 Sindhu 傳統夜市 ＆ 海濱微風 SPA】',
+                        desc: '傍晚先享受 90 分鐘巴里島草本精油舒壓，入夜後可逛逛深受在地人與歐美客喜愛的 Sindhu 夜市，品嚐現烤沙嗲、印尼煎餅（Martabak）與鮮榨熱帶果汁。'
+                    }
+                ],
+                leaderTips: '沙努爾多數飯店皆提供免費借用腳踏車服務，建議早上 08:00–10:00 騎乘最涼爽不曬；Icon Bali 商場直通沙灘並設有乾淨洗手間與寄物服務，逛街超輕鬆。',
+                morning: '08:30 沙努爾飯店享用海景早餐 → 09:30 沿著 5 公里沙努爾海濱步道騎單車吹海風、喝海景咖啡',
+                crossRegionMorning: '10:30 抵達沙努爾海濱小鎮寄放行李，漫步椰林海濱步道與海景咖啡館小憩',
+                afternoon: '12:30 進入 Icon Bali 最新海濱購物中心吹冷氣逛室內水上漂浮市集與享用午餐 → 15:30 預約沙努爾海濱 90 分鐘精油 SPA',
+                evening: '18:30 沙努爾海濱餐廳享用炭烤海鮮或逛 Sindhu 夜市大啖道地印尼小吃',
+                meals: {
+                    breakfast: '沙努爾下榻海濱渡假村內享用晨光早餐',
+                    lunch: 'Icon Bali 海濱購物中心室內水上市場或海景露台餐廳',
+                    dinner: 'Soul on the Beach 沙努爾海濱餐酒館或 Sindhu 夜市美食巡禮'
+                },
+                stayAdvice: {
+                    area: '沙努爾海濱核心區（距離機場僅 25 分鐘、平靜舒適）',
+                    reason: '非常適合作為旅程中後段的慢活充電站，往返機場或佩尼達碼頭都只要幾分鐘。',
+                    boutique: 'Prama Sanur Beach Bali',
+                    resort: 'Maya Sanur Resort & Spa',
+                    villa: 'Andaz Bali, a Concept by Hyatt'
+                },
+                mustBring: '防曬帽、好穿涼鞋、環保購物袋與輕鬆散步心情',
+                baseCostIdr: 390000
             }
         ];
 
+        // -------------------------------------------------------------
+        // 5B. RAINY DAY BACKUP SCHEDULES (OPTION A: SAME-REGION INDOOR)
+        // -------------------------------------------------------------
+        const rainyBackupByRegion = {
+            ubud: {
+                morning: '09:30 雨天慢活免淋雨！於烏布下榻飯店享用悠閒早餐 → 10:30 預約「巴里島傳統香料烹飪教室（室內廚房）」或銀飾手作工坊',
+                afternoon: '13:00 享用親手料理的南洋午餐（或烏布景觀玻璃餐廳） → 14:45 預約烏布室內古法精油 SPA＋花瓣熱水浴（聽著雨聲按摩超療癒）',
+                evening: '18:30 烏布高評分室內景觀餐廳享用炭烤豬肋排或熱騰騰香料燉鴨，雨夜裡回飯店泡澡休息',
+                lunch: '烏布室內烹飪教室風味餐或 Clear Cafe 有機健康餐廳',
+                dinner: 'Naughty Nuri’s Ubud 室內區或烏布精緻庭園餐廳',
+                tip: '🌧️ 雨天備案已啟動：已保留烏布住宿，將戶外梯田／瀑布微調為室內手作體驗與雨林熱石 SPA，完全不掃興！'
+            },
+            seminyak: {
+                morning: '09:30 水明漾飯店享用早餐 → 10:30 走進 Seminyak Village 全冷氣精品購物中心吹冷氣逛設計師品牌',
+                afternoon: '12:45 Sisterfields 或 Revolver 室內咖啡館享用早午餐 → 14:30 預約 Bodyworks 摩洛哥粉紅宮殿 SPA 或 Spring Spa 享受 2 小時室內芳療',
+                evening: '18:30 Merah Putih 挑高玻璃屋餐廳（下雨看雨滴打在玻璃穹頂超浪漫！）享用皇家現代印尼晚宴',
+                lunch: 'Sisterfields 室內精品早午餐',
+                dinner: 'Merah Putih 皇家玻璃屋餐廳（全室內浪漫雨景）',
+                tip: '🌧️ 雨天備案已啟動：已保留水明漾住宿，改採「冷氣精品商場＋宮殿 SPA＋玻璃屋餐廳」全程免淋雨動線！'
+            },
+            canggu: {
+                morning: '09:30 倉古飯店享用早餐 → 10:30 預約倉古人氣室內早午餐咖啡館（Crate / Penny Lane 室內區）喝精品咖啡、逛設計師選物店',
+                afternoon: '13:30 預約倉古高質感室內 SPA 館享受 2 小時深層芳療，或體驗室內瑜珈／香氛蠟燭手作課',
+                evening: '18:30 Mason Canggu 現代炭火餐酒館享用煙燻料理與紅酒，感受倉古微醺雨夜氛圍',
+                lunch: 'Penny Lane 室內熱帶庭園漢堡與奶昔',
+                dinner: 'Mason Canggu 室內現代炭烤餐酒館',
+                tip: '🌧️ 雨天備案已啟動：遇雨海浪不適合衝浪，已自動改為倉古潮流咖啡館、室內手作與頂級餐酒館行程！'
+            },
+            uluwatu: {
+                morning: '09:30 烏魯瓦圖渡假村享用海景早餐 → 10:45 享受飯店室內無邊際景觀大廳、健身房或預約渡假村懸崖海景室內 SPA',
+                afternoon: '13:00 室內懸崖海景咖啡館享用南洋午茶看印度洋雨霧大景 → 15:00 前往鄰近 Sidewalk Jimbaran 室內商場輕鬆採買',
+                evening: '18:30 改赴 El Kabron 室內落地窗海景區或金巴蘭有頂棚海鮮餐廳享用龍蝦晚餐（避開露天火舞淋雨）',
+                lunch: '烏魯瓦圖落地窗懸崖海景餐廳午茶與輕食',
+                dinner: 'El Kabron 室內懸崖海景西班牙海鮮燉飯',
+                tip: '🌧️ 雨天備案已啟動：下雨時露天卡恰火舞可能改棚內或較濕滑，已貼心微調為懸崖室內 SPA 與落地窗海景餐酒館！'
+            },
+            nusadua: {
+                morning: '09:30 努沙杜瓦五星飯店享用豐盛自助早餐 → 10:30 體驗飯店室內兒童遊戲室／手作課程或預約館內頂級阿育吠陀 SPA',
+                afternoon: '13:00 前往 Bali Collection 有遮雨廊道商場逛街喝咖啡 → 15:30 參觀 Pasifika 太平洋藝術博物館（冷氣超涼、藏品豐富）',
+                evening: '18:30 Bumbu Bali 室內傳統木雕餐廳享用正宗巴里島皇家香料熱騰騰晚宴',
+                lunch: 'Bali Collection 室內冷氣餐廳或飯店海景下午茶',
+                dinner: 'Bumbu Bali 正宗皇家香料料理晚宴',
+                tip: '🌧️ 雨天備案已啟動：已保留努沙杜瓦五星住宿，將戶外沙灘戲水微調為藝術博物館、商場與頂級室內 SPA！'
+            },
+            sanur: {
+                morning: '09:30 沙努爾飯店享用早餐 → 10:30 直奔巴里島最新「Icon Bali 全室內冷氣海濱商場」逛室內水上漂浮市集與伴手禮',
+                afternoon: '13:00 Icon Bali 海景落地窗餐廳享用午餐 → 15:00 預約沙努爾口碑室內芳療館享受 2 小時巴里島古法熱石按摩',
+                evening: '18:30 Massimo 室內義式餐廳享用現烤窯烤披薩與手工義式冰淇淋，悠閒度過雨夜',
+                lunch: 'Icon Bali 室內水上市場美食街或海景餐廳',
+                dinner: 'Massimo Italian Restaurant 室內手工披薩晚宴',
+                tip: '🌧️ 雨天備案已啟動：沙努爾擁有全島最新室內百貨 Icon Bali，下雨天逛街吃美食完全不受影響！'
+            },
+            jimbaran: {
+                morning: '09:30 金巴蘭飯店享用早餐 → 10:30 前往 Samasta Lifestyle Village 或 Sidewalk Jimbaran 商場逛街喝精品咖啡',
+                afternoon: '13:00 預約金巴蘭室內精油 SPA＋草本去角質 → 16:00 參觀 Jenggala 巴里島頂級手工陶瓷旗艦館（可體驗室內彩繪陶瓷）',
+                evening: '18:30 金巴蘭有雨棚景觀海鮮餐廳享用現烤龍蝦與熱蛤蜊湯，聽雨看海同樣浪漫',
+                lunch: 'Samasta 商場特色南洋料理',
+                dinner: '金巴蘭室內遮雨海景炭烤海鮮拼盤',
+                tip: '🌧️ 雨天備案已啟動：已微調為 Jenggala 陶瓷藝術館、室內商場與遮雨海景海鮮大餐！'
+            },
+            penida: {
+                morning: '09:00 雨天風浪大建議改留本島！於飯店悠閒用早餐 → 10:30 改往沙努爾 Icon Bali 最新全室內冷氣商場逛水上漂浮市集',
+                afternoon: '13:00 商場海景美食街享用午餐 → 15:00 預約 2 小時頂級室內古法精油按摩與花瓣浴，徹底放鬆身心',
+                evening: '18:30 沙努爾或水明漾高評價室內餐廳享用豐盛海鮮晚餐，零暈船零淋雨最安全',
+                lunch: 'Icon Bali 海濱購物中心室內景觀餐廳',
+                dinner: '沙努爾／水明漾口碑室內南洋餐廳',
+                tip: '🌧️ 雨天安全備案已啟動：若遇大雨海象不佳，強烈建議取消快艇跳島，改留本島享受冷氣商場與頂級 SPA 最安全！'
+            },
+            karangasem: {
+                morning: '09:30 雨天雲霧易遮蔽火山，改享悠閒早餐 → 10:30 改赴吉安雅／沙努爾室內蠟染藝術工坊或銀飾手作體驗',
+                afternoon: '13:00 享用室內特色印尼風味午餐 → 15:00 前往 Icon Bali 或 Living World 巨型生態冷氣商場逛街採買伴手禮',
+                evening: '18:30 沙努爾海濱室內口碑餐廳享用豐盛晚餐，安全舒適回飯店休息',
+                lunch: '室內南洋風味景觀餐館',
+                dinner: '沙努爾口碑義式或海鮮餐酒館',
+                tip: '🌧️ 雨天備案已啟動：豪雨時東線山路濕滑且雲霧易遮住火山，已自動微調為同方向室內工藝體驗與大型生態商場！'
+            },
+            bedugul: {
+                morning: '09:30 山區雨天起霧微涼，於烏布飯店悠閒用早餐 → 10:30 改體驗烏布室內藝術美術館（Blanco / ARMA）與精品咖啡品鑑',
+                afternoon: '13:00 烏布室內景觀餐廳享用熱騰騰髒鴨餐 → 15:00 預約烏布河谷遮雨涼亭熱石精油 SPA，聽著雨聲徹底釋放壓力',
+                evening: '18:30 烏布口碑室內庭園餐廳享用暖胃南洋料理',
+                lunch: 'Bebek Bengil 髒鴨餐室內涼亭區',
+                dinner: '烏布特色暖胃南洋料理與熱薑茶',
+                tip: '🌧️ 雨天備案已啟動：山區雨天路滑起霧，已自動微調為烏布室內美術館、咖啡品鑑與河谷熱石 SPA！'
+            }
+        };
+
         function createFreeDayObject(dayNum, inheritRegionKey = 'seminyak') {
             const areaLabel = regionShortNames[inheritRegionKey] || '水明漾精品美食區';
+            const isMountainUbud = inheritRegionKey === 'ubud';
+
+            if (isMountainUbud) {
+                return {
+                    id: `free-day-${dayNum}`,
+                    day: dayNum,
+                    isFlightOnly: false,
+                    isFreeDay: true,
+                    theme: 'free',
+                    geoOrder: 1,
+                    subOrder: 9,
+                    region: `${areaLabel}・雨林渡假村慢活放空日（零包車省錢日）`,
+                    mapRegionKey: 'ubud',
+                    overnightRegionKey: 'ubud',
+                    photoKey: 'riceTerrace',
+                    defaultTransport: 'walk',
+                    durationTip: '⏱️ 零拉車疲勞！全日享受烏布山谷無邊際泳池與雨林下午茶',
+                    title: '睡到自然醒、雨林無邊際泳池放空、山谷三層架下午茶與烏布藝術街漫步',
+                    editorialIntro: '自由行最迷人的節奏就是「留白」！今天不設鬧鐘、不趕景點，盡情享用烏布雨林渡假村的無邊際山谷泳池與叢林鳥鳴下午茶，同時省下一整天包車費用。',
+                    leaderStory: '資深領隊常說：「來到烏布山林，如果每天都在趕行程，那就太可惜這些世界頂級的雨林渡假村了！」今天我們特地為大家保留一整天的自由慢活時光，不設任何集合鬧鐘，睡到自然醒後在翠綠山嵐與鳥鳴中享用豐盛早午餐，白天盡情享受渡假村的雨林無邊際泳池與三層架山谷下午茶，傍晚沿著烏布文青林蔭街道散步挖寶，不用花一毛包車費就能體會最道地的山居慵懶哲學！',
+                    spotGuides: [
+                        {
+                            tag: '晨間慢活',
+                            name: '【睡到自然醒 ＆ 雨林山谷無邊際泳池日光浴】',
+                            desc: '把鬧鐘關掉，從容享受飯店現點現做的熱帶早午餐，接著換上最美的泳衣在俯瞰翠綠溪谷的無邊際泳池畔看書、拍照、點杯新鮮椰子水，讓芬多精與山風為身心徹底充電。'
+                        },
+                        {
+                            tag: '山谷午茶',
+                            name: '【烏布翠綠梯田三層架景觀下午茶時光】',
+                            desc: '午後山區微風涼爽時，在渡假村懸谷露台品嚐融合巴里島斑蘭糕、手工司康與印尼精品手沖咖啡的精緻三層架下午茶，看著雲霧在對面椰林梯田間緩緩流動。'
+                        },
+                        {
+                            tag: '林蔭漫步',
+                            name: '【烏布文青街區散步 ＆ 傳統草本足部舒壓按摩】',
+                            desc: '傍晚 17:00 沿著烏布 Jl. Raya Ubud 或 Dewi Sita 藝術小街散步逛香氛選物店，晚餐後順道在口碑按摩館來場 60 分鐘草本足部與肩頸舒壓，為接下來的旅程儲備滿滿能量。'
+                        }
+                    ],
+                    leaderTips: '烏布山區傍晚氣溫涼爽舒適，外出散步可隨身帶件薄罩衫與防蚊液；若想從飯店前往烏布市中心街區，使用 Grab 叫車或搭乘飯店免費接駁車最輕鬆。',
+                    morning: `09:30 睡到自然醒於【${areaLabel}】下榻渡假村享用豐盛早餐 → 10:30 在雨林無邊際泳池畔看書、曬日光浴與拍渡假美照`,
+                    crossRegionMorning: `10:30 抵達【${areaLabel}】渡假村辦理行李寄放，在雨林無邊際泳池畔看書、曬日光浴與拍渡假美照`,
+                    afternoon: '14:30 渡假村山谷景觀三層架下午茶 → 16:30 漫步烏布藝術林蔭街區逛香氛小店，順路體驗草本足部按摩',
+                    evening: '19:00 步行前往烏布口碑庭園餐廳享用南洋創意晚餐，聆聽蟲鳴蛙叫度過悠閒山居夜晚',
+                    meals: {
+                        breakfast: `【${areaLabel}】下榻渡假村內享用悠閒早午餐（睡飽再吃最享受）`,
+                        lunch: '山谷池畔酒吧輕食沙拉、現烤窯烤披薩或雨林三層架下午茶組',
+                        dinner: '烏布市區步行可達之庭園景觀餐廳或有機創意料理'
+                    },
+                    stayAdvice: {
+                        area: `續住前一晚【${areaLabel}】下榻渡假村（免換飯店零折返）`,
+                        reason: '不用整理行李退房，完整享受烏布雨林渡假村設施從早玩到晚最划算。',
+                        boutique: 'Komaneka at Rasa Sayang',
+                        resort: 'Maya Ubud Resort & Spa',
+                        villa: 'Four Seasons Resort Bali at Sayan'
+                    },
+                    mustBring: '泳衣、太陽眼鏡、薄罩衫與悠閒渡假節奏',
+                    baseCostIdr: 220000,
+                    customSpots: []
+                };
+            }
+
+            const coastalHotelsMap = {
+                canggu: { boutique: 'The Haven Suites Bali Berawa', resort: 'COMO Uma Canggu', villa: 'Theanna Eco Villa and Spa' },
+                uluwatu: { boutique: 'Anantara Uluwatu Cliff View', resort: 'The Apurva Kempinski Bali', villa: 'Alila Villas Uluwatu' },
+                nusadua: { boutique: 'Courtyard by Marriott Bali Nusa Dua', resort: 'The Apurva Kempinski Bali', villa: 'The St. Regis Bali Resort' },
+                sanur: { boutique: 'Prama Sanur Beach Bali', resort: 'Maya Sanur Resort & Spa', villa: 'Andaz Bali, a Concept by Hyatt' },
+                karangasem: { boutique: 'Prama Sanur Beach Bali', resort: 'Maya Sanur Resort & Spa', villa: 'Andaz Bali, a Concept by Hyatt' },
+                bedugul: { boutique: 'Komaneka at Rasa Sayang', resort: 'Maya Ubud Resort & Spa', villa: 'Mandapa, a Ritz-Carlton Reserve' },
+                jimbaran: { boutique: 'Fox Hotel Jimbaran Beach', resort: 'InterContinental Bali Resort', villa: 'Four Seasons Resort Bali at Jimbaran Bay' },
+                seminyak: { boutique: 'Lloyd’s Inn Bali', resort: 'The Legian Seminyak', villa: 'The Samaya Seminyak' }
+            };
+            const matchedHotels = coastalHotelsMap[inheritRegionKey] || coastalHotelsMap.seminyak;
+
             return {
                 id: `free-day-${dayNum}`,
                 day: dayNum,
@@ -1295,25 +1914,25 @@
                 theme: 'free',
                 geoOrder: 2,
                 subOrder: 9,
-                region: `${areaLabel}・渡假村慢活放空日（零包車省錢日）`,
+                region: `${areaLabel}・海濱渡假村慢活放空日（零包車省錢日）`,
                 mapRegionKey: inheritRegionKey,
                 overnightRegionKey: inheritRegionKey,
                 photoKey: 'villaPool',
                 defaultTransport: 'walk',
-                durationTip: '⏱️ 零拉車疲勞！全日享受渡假村設施與周邊漫步',
-                title: '睡到自然醒、渡假村無邊際泳池放空、下午茶與海灘日落漫步',
+                durationTip: '⏱️ 零拉車疲勞！全日享受海岸渡假村設施與沙灘夕陽',
+                title: '睡到自然醒、渡假村無邊際泳池放空、海景下午茶與沙灘日落漫步',
                 editorialIntro: '自由行最迷人的節奏就是「留白」！今天不設鬧鐘、不趕景點，盡情享用飯店五星泳池、私人沙灘與海風午茶，同時省下一整天包車費用。',
-                leaderStory: '資深領隊常說：「來峇里島如果每天都在趕景點，那就太可惜這些世界頂級的渡假飯店了！」今天我們特地為大家保留一整天的自由慢活時光，不設任何集合鬧鐘，睡到自然醒後在鳥語花香中享用豐盛早午餐，白天盡情享受渡假村的無邊際泳池、私人白沙灘與海風下午茶，傍晚沿著海濱步道追逐夕陽，不用花一毛包車費就能體會最道地的海島慵懶哲學！',
+                leaderStory: '資深領隊常說：「來峇里島如果每天都在趕景點，那就太可惜這些世界頂級的海岸渡假飯店了！」今天我們特地為大家保留一整天的自由慢活時光，不設任何集合鬧鐘，睡到自然醒後在海風與椰影中享用豐盛早午餐，白天盡情享受渡假村的無邊際泳池、私人白沙灘與海景下午茶，傍晚沿著金色海岸步道追逐夕陽，不用花一毛包車費就能體會最道地的海島慵懶哲學！',
                 spotGuides: [
                     {
                         tag: '晨間慢活',
                         name: '【睡到自然醒 ＆ 渡假村無邊際泳池日光浴】',
-                        desc: '把鬧鐘關掉，從容享受飯店現點現做的熱帶早午餐，接著換上最美的泳衣在無邊際泳池畔看書、拍照、點杯新鮮椰子水，讓南洋陽光與微風為身心徹底充電。'
+                        desc: '把鬧鐘關掉，從容享受飯店現點現做的熱帶早午餐，接著換上最美的泳衣在無邊際泳池畔看書、拍照、點杯新鮮椰子水，讓南洋陽光與海風為身心徹底充電。'
                     },
                     {
                         tag: '海風午茶',
                         name: '【南洋三層架海景下午茶時光】',
-                        desc: '午後暑氣漸消時，在飯店海景露台品嚐融合巴里島斑蘭糕、熱帶水果塔與印尼精品咖啡的精緻下午茶，看著遠方海浪拍岸發呆。'
+                        desc: '午後暑氣漸消時，在飯店海景露台品嚐融合巴里島斑蘭糕、熱帶水果塔與印尼精品咖啡的精緻下午茶，看著遠方印度洋海浪拍岸發呆。'
                     },
                     {
                         tag: '黃昏漫步',
@@ -1324,19 +1943,19 @@
                 leaderTips: '自由活動日無須包車，若想出門逛街或去附近餐廳用餐，手機開啟 Grab App 叫車即可（綁定信用卡免找零最方便）；在沙灘戲水時請留意海灘紅黃旗警示標誌。',
                 morning: `09:30 睡到自然醒於【${areaLabel}】下榻飯店享用豐盛早餐 → 10:30 在無邊際泳池畔看書、曬日光浴與拍渡假美照`,
                 crossRegionMorning: `10:30 抵達【${areaLabel}】渡假村辦理行李寄放，在無邊際泳池畔看書、曬日光浴與拍渡假美照`,
-                afternoon: '14:30 飯店海景下午茶 → 16:30 沿著周邊海灘或花園步道散步吹海風，順路體驗足部按摩',
+                afternoon: '14:30 飯店海景三層架下午茶 → 16:30 沿著周邊海灘或花園步道散步吹海風，順路體驗足部按摩',
                 evening: '19:00 步行前往飯店周邊口碑餐廳享用南洋晚餐，享受微醺海島夜晚',
                 meals: {
                     breakfast: `【${areaLabel}】下榻渡假村內享用悠閒早午餐（睡飽再吃最享受）`,
-                    lunch: '池畔酒吧輕食沙拉、現烤披薩或飯店下午茶組',
-                    dinner: '飯店周邊步行可達之在地特色餐廳或景觀餐酒館'
+                    lunch: '池畔酒吧輕食沙拉、現烤披薩或飯店海景下午茶組',
+                    dinner: '飯店周邊步行可達之在地特色餐廳或海濱餐酒館'
                 },
                 stayAdvice: {
                     area: `續住前一晚【${areaLabel}】下榻渡假村（免換飯店零折返）`,
-                    reason: '不用整理行李退房，完整享受飯店設施從早玩到晚最划算。',
-                    boutique: 'Lloyd’s Inn Bali',
-                    resort: 'The Legian Seminyak',
-                    villa: 'The Samaya Seminyak'
+                    reason: '不用整理行李退房，完整享受海濱飯店設施從早玩到晚最划算。',
+                    boutique: matchedHotels.boutique,
+                    resort: matchedHotels.resort,
+                    villa: matchedHotels.villa
                 },
                 mustBring: '泳衣、太陽眼鏡、好心情與悠閒渡假節奏',
                 baseCostIdr: 220000,
@@ -1431,9 +2050,9 @@
             const qBooking = encodeURIComponent(`${cleanName} Bali Booking.com`);
             return `
                 <div class="flex flex-wrap items-center gap-1.5 mt-1">
-                    <a href="https://www.google.com/search?q=${qOfficial}" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded-md bg-teal-100 hover:bg-teal-200 text-bali-ocean text-[10px] font-black transition">🌐 官網查詢</a>
-                    <a href="https://www.google.com/search?q=${qAgoda}" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-950 text-[10px] font-black transition">🏨 Agoda</a>
-                    <a href="https://www.google.com/search?q=${qBooking}" target="_blank" rel="noopener noreferrer" class="px-2 py-0.5 rounded-md bg-sky-100 hover:bg-sky-200 text-sky-950 text-[10px] font-black transition">🛏️ Booking</a>
+                    <a href="https://www.google.com/search?q=${qOfficial}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-md bg-teal-100 hover:bg-teal-200 text-bali-ocean text-[10px] font-black transition">🌐 官網查詢</a>
+                    <a href="https://www.google.com/search?q=${qAgoda}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-md bg-amber-100 hover:bg-amber-200 text-amber-950 text-[10px] font-black transition">🏨 Agoda</a>
+                    <a href="https://www.google.com/search?q=${qBooking}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="px-2 py-0.5 rounded-md bg-sky-100 hover:bg-sky-200 text-sky-950 text-[10px] font-black transition">🛏️ Booking</a>
                 </div>
             `;
         }
@@ -1442,17 +2061,20 @@
         // 8. TAB NAVIGATION & TOAST NOTIFICATION
         // -------------------------------------------------------------
         function switchMainTab(tabKey) {
-            const tabs = ['planner', 'top70', 'guide'];
+            const tabs = ['planner', 'map', 'top70', 'guide'];
             tabs.forEach(t => {
                 const panel = document.getElementById(`panel-${t}`);
                 const btn = document.getElementById(`tab-btn-${t}`);
                 if (panel) panel.classList.toggle('hidden', t !== tabKey);
                 if (btn) {
                     btn.className = t === tabKey
-                        ? 'tab-active px-4 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer'
-                        : 'tab-inactive px-4 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer';
+                        ? 'tab-active px-3.5 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer'
+                        : 'tab-inactive px-3.5 py-3.5 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer';
                 }
             });
+            if (tabKey === 'map') {
+                renderInteractiveBaliMap();
+            }
         }
 
         let toastTimeout = null;
@@ -1559,6 +2181,7 @@
             }
 
             syncHotelNightsUi();
+            syncDayTiersFromHotelNights();
             renderItineraryCards();
             updateBudget();
             saveStateToStorage();
@@ -1654,6 +2277,15 @@
                     mode: 'custom',
                     targetBudget: 26000,
                     label: '💰 小資高 CP 值 5日（精品設計旅店＋在地排隊美食）'
+                },
+                slow8: {
+                    days: 8,
+                    themes: ['spa', 'beach', 'food', 'shopping'],
+                    dining: 'balanced',
+                    airline: 'direct',
+                    nights: { boutique: 0, resort: 5, villa: 2 },
+                    mode: 'auto',
+                    label: '🌴 8天7夜海島慢活渡假包（庫塔水明漾＋沙努爾＋SPA美食不趕路）'
                 }
             };
 
@@ -1681,7 +2313,7 @@
             }
             setBudgetMode(cfg.mode);
 
-            generateItineraryData();
+            generateItineraryData(true);
             saveStateToStorage();
             showToast(`⚡ 已一鍵套用：${cfg.label}`);
         }
@@ -1735,17 +2367,21 @@
             };
         }
 
-        function generateItineraryData() {
+        function generateItineraryData(forceResetHotelTiers = false) {
             const totalDays = parseInt(document.getElementById('days-slider')?.value || '5', 10);
             const selectedThemes = Array.from(document.querySelectorAll('.theme-cb:checked')).map(cb => cb.value);
             const activeThemes = selectedThemes.length > 0 ? selectedThemes : ['classic', 'spa', 'beach'];
 
-            // Preserve custom added spots & user transport overrides across regenerations
+            // Preserve custom added spots, transport, rainy mode & selected hotel tier overrides across regenerations
             const prevCustomByDay = {};
             const prevTransportByDay = {};
+            const prevHotelTierByDay = {};
+            const prevRainyByDay = {};
             generatedDays.forEach(d => {
                 if (d.customSpots && d.customSpots.length > 0) prevCustomByDay[d.day] = d.customSpots;
                 if (d.transport) prevTransportByDay[d.day] = d.transport;
+                if (d.isRainyMode) prevRainyByDay[d.day] = true;
+                if (!forceResetHotelTiers && d.selectedHotelTier) prevHotelTierByDay[d.day] = d.selectedHotelTier;
             });
 
             const { outInfo, retInfo } = getFlightDetails();
@@ -1871,50 +2507,95 @@
                 afternoon: retInfo.afternoon,
                 evening: retInfo.evening,
                 meals: {
-                    breakfast: '飯店最後一頓南洋早餐（多吃幾盤山竹與熱帶水果）',
+                    breakfast: '水明漾／庫塔下榻飯店內享用離境前南洋早餐',
                     lunch: 'Beachwalk 商場海景美食或庫塔早午餐名店',
                     dinner: '機場候機室簡餐或機上餐點（記得把果醬、辣醬放進託運行李！）'
                 },
                 stayAdvice: {
-                    area: '庫塔／金巴蘭／水明漾南端（離境日不住宿，專車送往機場）',
-                    reason: '巴里島下午極易塞車，最後一天活動鎖定機場周邊能完全杜絕趕飛機焦慮。',
-                    boutique: 'Harris Hotel Kuta Tuban',
-                    resort: 'The Anvaya Beach Resort Bali',
-                    villa: 'Four Seasons Resort Bali at Jimbaran Bay'
+                    area: '當晚搭機返家（無需預訂住宿）',
+                    reason: '建議善用機場周邊海景 SPA 館免費行李寄放與淋浴間，清爽登機。',
+                    boutique: '-',
+                    resort: '-',
+                    villa: '-'
                 },
-                mustBring: '備一套乾淨上機輕便衣物放在隨身包，做完 SPA 換上超清爽',
-                baseCostIdr: 380000,
+                mustBring: '退稅單據、伴手禮全數裝入託運行李、護照登機證',
+                baseCostIdr: 360000,
                 transport: prevTransportByDay[totalDays] || 'dropoff',
                 customSpots: prevCustomByDay[totalDays] || []
             };
 
-            // Filter candidate routes by selected themes & infant safety
-            let candidatePool = routeTemplates.filter(rt => activeThemes.includes(rt.theme));
+            // Filter candidate routes by selected themes & infant safety (strictly zero duplicate routes!)
+            let safeAllTemplates = [...routeTemplates];
             if (travelerCounts.infant > 0) {
-                const safePool = candidatePool.filter(rt => rt.id !== 'penida-island' && rt.id !== 'kintamani-nature');
-                if (safePool.length > 0) candidatePool = safePool;
+                safeAllTemplates = safeAllTemplates.filter(rt => rt.id !== 'penida-island' && rt.id !== 'kintamani-nature');
             }
+
+            let candidatePool = safeAllTemplates.filter(rt => activeThemes.includes(rt.theme));
             if (candidatePool.length === 0) {
-                candidatePool = routeTemplates.slice(0, 4);
+                candidatePool = safeAllTemplates.slice(0, 4);
             }
 
             const middleCount = Math.max(0, totalDays - 2);
             const selectedMiddleRoutes = [];
+            const usedRouteIds = new Set();
+
             for (let i = 0; i < middleCount; i++) {
                 if (i >= 4 && i % 4 === 3) {
                     selectedMiddleRoutes.push(createFreeDayObject(i + 2));
+                    continue;
+                }
+
+                // 1. Prefer unused route from user's selected themes
+                let chosenTpl = candidatePool.find(rt => !usedRouteIds.has(rt.id));
+
+                // 2. If user only selected 1-2 themes and ran out of unique routes, supplement with unused safe routes (preferring same region first)
+                if (!chosenTpl) {
+                    const lastUsed = selectedMiddleRoutes[selectedMiddleRoutes.length - 1];
+                    const preferredRegion = lastUsed ? lastUsed.mapRegionKey : null;
+                    chosenTpl =
+                        safeAllTemplates.find(rt => !usedRouteIds.has(rt.id) && rt.mapRegionKey === preferredRegion) ||
+                        safeAllTemplates.find(rt => !usedRouteIds.has(rt.id));
+                }
+
+                if (chosenTpl) {
+                    usedRouteIds.add(chosenTpl.id);
+                    selectedMiddleRoutes.push(JSON.parse(JSON.stringify(chosenTpl)));
                 } else {
-                    const tpl = candidatePool[i % candidatePool.length];
-                    selectedMiddleRoutes.push(JSON.parse(JSON.stringify(tpl)));
+                    // Only if all unique routes in the entire database are exhausted (e.g., 11+ day trip)
+                    selectedMiddleRoutes.push(createFreeDayObject(i + 2));
                 }
             }
 
-            // Sort middle days by geographic order ("先山後海" geoOrder + subOrder so Ubud culture/SPA precedes early volcano sunrise)
+            // Arrange middle days reasonably (group same-region days in first-seen order without forcing mountain-first,
+            // keep regular Ubud day before early volcano sunrise, and avoid back-to-back early-morning trips)
+            const regionFirstIndex = {};
+            selectedMiddleRoutes.forEach((rt, idx) => {
+                const rKey = rt.mapRegionKey || 'seminyak';
+                if (regionFirstIndex[rKey] === undefined) {
+                    regionFirstIndex[rKey] = idx;
+                }
+            });
+
             selectedMiddleRoutes.sort((a, b) => {
-                const gDiff = (a.geoOrder || 2) - (b.geoOrder || 2);
-                if (gDiff !== 0) return gDiff;
+                const rA = a.mapRegionKey || 'seminyak';
+                const rB = b.mapRegionKey || 'seminyak';
+                if (rA !== rB) {
+                    return (regionFirstIndex[rA] ?? 0) - (regionFirstIndex[rB] ?? 0);
+                }
                 return (a.subOrder || 5) - (b.subOrder || 5);
             });
+
+            // Avoid back-to-back early-morning departures (volcano sunrise & Penida fast boat) when possible
+            for (let i = 1; i < selectedMiddleRoutes.length; i++) {
+                if (selectedMiddleRoutes[i].isEarlyDeparture && selectedMiddleRoutes[i - 1].isEarlyDeparture) {
+                    const swapIdx = selectedMiddleRoutes.findIndex((item, idx) => idx > i && !item.isEarlyDeparture);
+                    if (swapIdx !== -1) {
+                        const temp = selectedMiddleRoutes[i];
+                        selectedMiddleRoutes[i] = selectedMiddleRoutes[swapIdx];
+                        selectedMiddleRoutes[swapIdx] = temp;
+                    }
+                }
+            }
 
             const middleDays = selectedMiddleRoutes.map((item, idx) => {
                 const dayNum = idx + 2;
@@ -1932,33 +2613,111 @@
                     day: dayNum,
                     isFlightOnly: false,
                     isFreeDay: false,
+                    isRainyMode: !!prevRainyByDay[dayNum],
                     transport: prevTransportByDay[dayNum] || item.defaultTransport || 'charter10',
                     customSpots: prevCustomByDay[dayNum] || []
                 };
             });
 
             generatedDays = [day1Obj, ...middleDays, lastDayObj];
+            generatedDays.forEach((d, idx) => {
+                if (idx < generatedDays.length - 1 && prevHotelTierByDay[d.day]) {
+                    d.selectedHotelTier = prevHotelTierByDay[d.day];
+                }
+            });
+            syncDayTiersFromHotelNights();
             renderItineraryCards();
             updateBudget();
         }
+        // Sync per-day selected hotel tiers with STEP 2 hotelNights counts (two-way binding)
+        function syncDayTiersFromHotelNights() {
+            const targetNights = Math.max(0, generatedDays.length - 1);
+            if (targetNights === 0) return;
 
-        // Cross-Region Hotel & Breakfast Consistency Helper
-        // Rule: Morning breakfast ALWAYS happens at the PREVIOUS NIGHT'S hotel area (Area A) before checking out and transferring to Area B!
+            const desiredSequence = [];
+            for (let i = 0; i < hotelNights.boutique; i++) desiredSequence.push('boutique');
+            for (let i = 0; i < hotelNights.resort; i++) desiredSequence.push('resort');
+            for (let i = 0; i < hotelNights.villa; i++) desiredSequence.push('villa');
+            while (desiredSequence.length < targetNights) desiredSequence.push('resort');
+
+            const currentCounts = { boutique: 0, resort: 0, villa: 0 };
+            for (let i = 0; i < targetNights; i++) {
+                const chosen = generatedDays[i].selectedHotelTier || desiredSequence[i];
+                generatedDays[i].selectedHotelTier = chosen;
+                currentCounts[chosen] = (currentCounts[chosen] || 0) + 1;
+            }
+
+            // Adjust only excess/deficit nights so user's existing selections remain intact
+            for (let i = 0; i < targetNights; i++) {
+                const cur = generatedDays[i].selectedHotelTier;
+                if (currentCounts[cur] > hotelNights[cur]) {
+                    const neededTier = ['boutique', 'resort', 'villa'].find(k => currentCounts[k] < hotelNights[k]);
+                    if (neededTier) {
+                        currentCounts[cur]--;
+                        generatedDays[i].selectedHotelTier = neededTier;
+                        currentCounts[neededTier]++;
+                    }
+                }
+            }
+        }
+
+        function recalculateHotelNightsFromDays() {
+            const targetNights = Math.max(0, generatedDays.length - 1);
+            const counts = { boutique: 0, resort: 0, villa: 0 };
+            for (let i = 0; i < targetNights; i++) {
+                const t = generatedDays[i]?.selectedHotelTier || 'resort';
+                if (counts[t] !== undefined) counts[t]++;
+                else counts.resort++;
+            }
+            hotelNights = counts;
+        }
+
+        function selectDayHotelTier(dayIdx, tierKey) {
+            const totalDays = generatedDays.length;
+            if (dayIdx < 0 || dayIdx >= totalDays - 1 || !generatedDays[dayIdx]) return;
+            if (generatedDays[dayIdx].selectedHotelTier === tierKey) return;
+
+            generatedDays[dayIdx].selectedHotelTier = tierKey;
+            recalculateHotelNightsFromDays();
+            syncHotelNightsUi();
+            renderItineraryCards();
+            updateBudget();
+            saveStateToStorage();
+
+            const tierLabels = { boutique: '精品設計旅店', resort: '四星渡假村', villa: '五星獨棟 Villa' };
+            const hotelName = generatedDays[dayIdx].stayAdvice?.[tierKey] || tierLabels[tierKey];
+            showToast(`🏨 DAY ${generatedDays[dayIdx].day} 已選定「${hotelName}」，並自動更新住宿晚數混搭配置！`);
+        }
+
+        // Map Nightly Hotel Tier Allocation to Each Night (Day 1 to Day N-1)
+        function getAssignedHotelTierForNight(dayIdx) {
+            const totalDays = generatedDays.length;
+            if (dayIdx >= totalDays - 1) return null; // Last day departs
+
+            const tierMeta = {
+                boutique: { key: 'boutique', label: '精品設計旅店', badgeClass: 'bg-teal-100 text-teal-900 border border-teal-300' },
+                resort: { key: 'resort', label: '四星渡假村', badgeClass: 'bg-sky-100 text-sky-900 border border-sky-300' },
+                villa: { key: 'villa', label: '五星獨棟泳池 Villa', badgeClass: 'bg-amber-100 text-amber-950 border border-amber-300' }
+            };
+            const selectedKey = generatedDays[dayIdx]?.selectedHotelTier || 'resort';
+            return tierMeta[selectedKey] || tierMeta.resort;
+        }
+
         function getConsistentDailySchedule(dayObj, dayIdx) {
-            const currStayKey = dayObj.overnightRegionKey || dayObj.mapRegionKey || 'seminyak';
-            const currStayAreaName = regionShortNames[currStayKey] || '水明漾精品美食區';
-
+            const currStayKey = dayObj.overnightRegionKey || dayObj.mapRegionKey;
             if (dayIdx === 0) {
                 return {
-                    prevStayAreaName: '台灣出發',
-                    breakfastAreaName: '機上／出發機場',
-                    nextStayAreaName: generatedDays.length > 1 ? currStayAreaName : '當日往返無需住宿',
                     morning: dayObj.morning,
+                    afternoon: dayObj.afternoon,
+                    evening: dayObj.evening,
                     breakfast: dayObj.meals.breakfast,
                     lunch: dayObj.meals.lunch,
                     dinner: dayObj.meals.dinner,
-                    hotelChangeAlert: null,
-                    stayMatchedNote: '首晚入住水明漾／庫塔'
+                    rainyTip: null,
+                    isCrossRegionTransfer: false,
+                    prevAreaName: '',
+                    currActivityAreaName: regionShortNames[currStayKey] || '水明漾精品美食區',
+                    driveTime: ''
                 };
             }
 
@@ -1968,46 +2727,75 @@
             const currActivityKey = dayObj.mapRegionKey || currStayKey;
             const currActivityAreaName = regionShortNames[currActivityKey] || '今日目的地';
 
-            // True if yesterday's overnight hotel area differs from today's main activity area
             const isCrossRegionMorning = prevStayKey !== currActivityKey;
 
-            // Approximate realistic transfer duration between regions
             const transferMinsMap = {
                 'seminyak->ubud': '75–90 分鐘',
                 'canggu->ubud': '65–80 分鐘',
                 'uluwatu->ubud': '95–110 分鐘',
+                'nusadua->ubud': '75–90 分鐘',
+                'sanur->ubud': '50–65 分鐘',
                 'ubud->canggu': '65–80 分鐘',
                 'ubud->seminyak': '75–90 分鐘',
                 'ubud->uluwatu': '95–110 分鐘',
-                'ubud->penida': '60 分鐘至碼頭',
+                'ubud->nusadua': '75–90 分鐘',
+                'ubud->sanur': '50–65 分鐘',
+                'ubud->penida': '55 分鐘至沙努爾碼頭',
+                'ubud->bedugul': '60–75 分鐘',
+                'ubud->karangasem': '90–105 分鐘',
                 'canggu->seminyak': '25–35 分鐘',
                 'canggu->uluwatu': '55–70 分鐘',
+                'canggu->nusadua': '50–65 分鐘',
+                'canggu->sanur': '45–60 分鐘',
                 'seminyak->canggu': '25–35 分鐘',
                 'seminyak->uluwatu': '40–50 分鐘',
+                'seminyak->nusadua': '35–45 分鐘',
+                'seminyak->sanur': '30–40 分鐘',
                 'seminyak->penida': '30 分鐘至碼頭',
                 'uluwatu->seminyak': '40–50 分鐘',
                 'uluwatu->canggu': '55–70 分鐘',
-                'uluwatu->penida': '45 分鐘至碼頭'
+                'uluwatu->nusadua': '25–35 分鐘',
+                'uluwatu->sanur': '40–50 分鐘',
+                'uluwatu->penida': '45 分鐘至碼頭',
+                'nusadua->seminyak': '35–45 分鐘',
+                'nusadua->uluwatu': '25–35 分鐘',
+                'nusadua->sanur': '25–35 分鐘',
+                'sanur->seminyak': '30–40 分鐘',
+                'sanur->nusadua': '25–35 分鐘',
+                'sanur->penida': '10 分鐘至碼頭',
+                'sanur->karangasem': '85–100 分鐘'
             };
             const driveTime = transferMinsMap[`${prevStayKey}->${currActivityKey}`] || '45–60 分鐘';
+
+            // Case 0: Rainy Day Backup Mode (Option A: Same-Region Indoor Adjustment)
+            if (dayObj.isRainyMode && !dayObj.isFlightOnly) {
+                const rainy = rainyBackupByRegion[currActivityKey] || rainyBackupByRegion[currStayKey] || rainyBackupByRegion.seminyak;
+                return {
+                    morning: isCrossRegionMorning
+                        ? `09:00 於${prevAreaName}下榻飯店享用早餐並退房，專車前往${currActivityAreaName}（車程約 ${driveTime}） → ${rainy.morning}`
+                        : rainy.morning,
+                    afternoon: rainy.afternoon,
+                    evening: rainy.evening,
+                    breakfast: `${prevAreaName}下榻飯店內享用悠閒早餐`,
+                    lunch: rainy.lunch,
+                    dinner: rainy.dinner,
+                    rainyTip: rainy.tip
+                };
+            }
 
             // Case 1: Return Flight Day (Last Day)
             if (dayObj.isFlightOnly) {
                 const isFarFromAirport = prevStayKey !== 'seminyak';
                 return {
-                    prevStayAreaName: prevAreaName,
-                    breakfastAreaName: `${prevAreaName}飯店`,
-                    nextStayAreaName: '晚班機返家（不住宿）',
                     morning: isFarFromAirport
-                        ? `09:00 於前一晚【${prevAreaName}】下榻飯店享用早餐並辦理退房，行李放包車後車廂前往庫塔／水明漾機場生活圈（車程約 ${driveTime}） → 10:45 前往 GrandLucky 旗艦超市掃貨伴手禮`
+                        ? `09:00 於${prevAreaName}下榻飯店享用早餐並退房，專車前往庫塔／水明漾機場生活圈（車程約 ${driveTime}） → 10:45 前往 GrandLucky 旗艦超市掃貨伴手禮`
                         : dayObj.morning,
-                    breakfast: `前一晚【${prevAreaName}】下榻飯店內享用離境前南洋早餐（用完餐再退房出發）`,
+                    afternoon: dayObj.afternoon,
+                    evening: dayObj.evening,
+                    breakfast: `${prevAreaName}下榻飯店內享用南洋早餐`,
                     lunch: dayObj.meals.lunch,
                     dinner: dayObj.meals.dinner,
-                    hotelChangeAlert: isFarFromAirport
-                        ? `🧳 跨區退房動線：昨晚住【${prevAreaName}】，今早先在該飯店用完早餐再退房，行李放包車後車廂順路前往機場生活圈。`
-                        : null,
-                    stayMatchedNote: `早餐於${prevAreaName}飯店`
+                    rainyTip: null
                 };
             }
 
@@ -2017,85 +2805,209 @@
                     const departTime = dayObj.id === 'kintamani-nature' ? '02:45' : '06:30';
                     const nextStep = dayObj.crossRegionMorning || dayObj.morning;
                     return {
-                        prevStayAreaName: prevAreaName,
-                        breakfastAreaName: `${prevAreaName}飯店（外帶餐盒）`,
-                        nextStayAreaName: currStayAreaName,
-                        morning: `${departTime} 於前一晚【${prevAreaName}】下榻飯店領取外帶早餐餐盒並辦理退房，行李放包車後車廂出發（車程約 ${driveTime}） → ${nextStep}`,
-                        breakfast: `前一晚【${prevAreaName}】下榻飯店櫃檯一早準備外帶早餐餐盒（Breakfast Box，前晚先申請）`,
+                        morning: `${departTime} 於${prevAreaName}下榻飯店領取外帶早餐餐盒並退房出發（車程約 ${driveTime}） → ${nextStep}`,
+                        afternoon: dayObj.afternoon,
+                        evening: dayObj.evening,
+                        breakfast: `${prevAreaName}下榻飯店外帶早餐餐盒（Breakfast Box）`,
                         lunch: dayObj.meals.lunch,
                         dinner: dayObj.meals.dinner,
-                        hotelChangeAlert: `🧳 清晨跨區退房提醒：昨晚住【${prevAreaName}】，因清晨即出發，請前晚先向飯店申請外帶早餐餐盒，退房行李直接放包車後車廂！`,
-                        stayMatchedNote: `餐盒由${prevAreaName}飯店準備`
+                        rainyTip: null
                     };
                 }
                 return {
-                    prevStayAreaName: prevAreaName,
-                    breakfastAreaName: `${prevAreaName}飯店（外帶餐盒）`,
-                    nextStayAreaName: currStayAreaName,
                     morning: dayObj.morning,
+                    afternoon: dayObj.afternoon,
+                    evening: dayObj.evening,
                     breakfast: dayObj.meals.breakfast,
                     lunch: dayObj.meals.lunch,
                     dinner: dayObj.meals.dinner,
-                    hotelChangeAlert: null,
-                    stayMatchedNote: `餐盒由${prevAreaName}飯店準備`
+                    rainyTip: null
                 };
             }
 
-            // Case 3: Normal Cross-Region Transfer Day (Slept in Area A last night -> Eat breakfast in Area A -> Check out -> Transfer to Area B)
+            // Case 3: Normal Cross-Region Transfer Day
             if (isCrossRegionMorning) {
                 const afterTransferMorning = dayObj.crossRegionMorning || dayObj.morning;
                 return {
-                    prevStayAreaName: prevAreaName,
-                    breakfastAreaName: `${prevAreaName}飯店`,
-                    nextStayAreaName: currStayAreaName,
-                    morning: `08:30 於前一晚【${prevAreaName}】下榻飯店享用早餐並辦理退房，行李放包車後車廂順路前往【${currActivityAreaName}】（車程約 ${driveTime}） → ${afterTransferMorning}`,
-                    breakfast: `前一晚【${prevAreaName}】下榻飯店內享用豐盛早餐（在 A 區飯店用完餐再退房，絕不跨區折返吃早餐）`,
+                    morning: `08:30 於${prevAreaName}下榻飯店享用早餐並退房，專車前往${currActivityAreaName}（車程約 ${driveTime}） → ${afterTransferMorning}`,
+                    afternoon: dayObj.afternoon,
+                    evening: dayObj.evening,
+                    breakfast: `${prevAreaName}下榻飯店餐廳享用豐盛早餐`,
                     lunch: dayObj.meals.lunch,
                     dinner: dayObj.meals.dinner,
-                    hotelChangeAlert: `🧳 換飯店順路日：昨晚入住【${prevAreaName}】，今早在原飯店吃完早餐退房後，專車載行李前往【${currActivityAreaName}】玩一天，傍晚直接入住今晚新飯店！`,
-                    stayMatchedNote: `早餐於${prevAreaName}飯店`
+                    rainyTip: null
                 };
             }
 
-            // Case 4: Same-Region Stay (Slept in Area A last night -> Breakfast in Area A -> Activities in Area A)
+            // Case 4: Same-Region Stay
             return {
-                prevStayAreaName: prevAreaName,
-                breakfastAreaName: `${prevAreaName}飯店`,
-                nextStayAreaName: currStayAreaName,
                 morning: dayObj.morning,
+                afternoon: dayObj.afternoon,
+                evening: dayObj.evening,
                 breakfast: dayObj.meals.breakfast,
                 lunch: dayObj.meals.lunch,
                 dinner: dayObj.meals.dinner,
-                hotelChangeAlert: null,
-                stayMatchedNote: `連住${prevAreaName}免搬行李`
+                rainyTip: null
             };
         }
 
-        // Map Nightly Hotel Tier Allocation to Each Night (Day 1 to Day N-1)
-        function getAssignedHotelTierForNight(dayIdx) {
-            const totalDays = generatedDays.length;
-            if (dayIdx >= totalDays - 1) return null; // Last day departs
+        // Compute cross-region hotel transfer metadata for luggage handover tips
+        function getDayTransferMeta(dayObj, dayIdx) {
+            if (dayIdx <= 0) return { isTransfer: false, prevArea: '', nextArea: '', isLastDay: false };
+            const prevDay = generatedDays[dayIdx - 1];
+            const prevStayKey = prevDay ? (prevDay.overnightRegionKey || prevDay.mapRegionKey) : 'seminyak';
+            const currStayKey = dayObj.overnightRegionKey || dayObj.mapRegionKey || 'seminyak';
+            const currActivityKey = dayObj.mapRegionKey || currStayKey;
+            const isHotelMove = (prevStayKey !== currStayKey) || (dayObj.isFlightOnly && dayIdx === generatedDays.length - 1);
+            return {
+                isTransfer: isHotelMove,
+                isLastDay: !!dayObj.isFlightOnly,
+                prevArea: regionShortNames[prevStayKey] || '前晚住宿區',
+                nextArea: dayObj.isFlightOnly ? 'DPS 機場生活圈' : (regionShortNames[currStayKey] || regionShortNames[currActivityKey] || '今晚住宿區')
+            };
+        }
 
-            const tiersSequence = [];
-            for (let i = 0; i < hotelNights.boutique; i++) {
-                tiersSequence.push({ key: 'boutique', label: '精品設計旅店', badgeClass: 'bg-teal-100 text-teal-900 border border-teal-300' });
-            }
-            for (let i = 0; i < hotelNights.resort; i++) {
-                tiersSequence.push({ key: 'resort', label: '四星渡假村', badgeClass: 'bg-sky-100 text-sky-900 border border-sky-300' });
-            }
-            for (let i = 0; i < hotelNights.villa; i++) {
-                tiersSequence.push({ key: 'villa', label: '五星獨棟泳池 Villa', badgeClass: 'bg-amber-100 text-amber-950 border border-amber-300' });
-            }
+        // -------------------------------------------------------------
+        // 10B. ENERGY LEVEL, TRAFFIC ALERT & BOOKING RADAR ENGINE
+        // -------------------------------------------------------------
+        const routeMetricsMap = {
+            'ubud-culture':      { energy: 3, energyLabel: '適中', traffic: 'medium', trafficLabel: '烏布市區午後微塞' },
+            'ubud-spa':          { energy: 1, energyLabel: '極輕鬆', traffic: 'low',    trafficLabel: '綠燈順暢慢活' },
+            'kintamani-nature':  { energy: 5, energyLabel: '高體力・早起', traffic: 'low', trafficLabel: '凌晨出發零塞車' },
+            'canggu-surf':       { energy: 3, energyLabel: '適中', traffic: 'high',   trafficLabel: '倉古16-19點重塞' },
+            'seminyak-shopping': { energy: 2, energyLabel: '輕鬆', traffic: 'high',   trafficLabel: '水明漾傍晚易塞' },
+            'seminyak-food':     { energy: 3, energyLabel: '適中', traffic: 'high',   trafficLabel: '西岸午後車流多' },
+            'uluwatu-beach':     { energy: 4, energyLabel: '充實', traffic: 'medium', trafficLabel: '火舞散場略塞' },
+            'penida-island':     { energy: 5, energyLabel: '高體力・跳島', traffic: 'medium', trafficLabel: '碼頭早班車流多' },
+            'east-karangasem':   { energy: 4, energyLabel: '充實・拉車', traffic: 'medium', trafficLabel: '東線單程約2hr' },
+            'north-bedugul':     { energy: 3, energyLabel: '適中・避暑', traffic: 'low',    trafficLabel: '高地山路順暢' },
+            'nusadua-family':    { energy: 2, energyLabel: '輕鬆親子', traffic: 'low',    trafficLabel: '五星園區零塞車' },
+            'sanur-slow':        { energy: 1, energyLabel: '極輕鬆', traffic: 'low',    trafficLabel: '沙努爾順暢好走' }
+        };
 
-            return tiersSequence[dayIdx] || { key: 'resort', label: '四星渡假村', badgeClass: 'bg-sky-100 text-sky-900 border border-sky-300' };
+        function getDayMetrics(dayObj) {
+            if (dayObj.isFlightOnly) {
+                return { energy: 2, energyLabel: '輕鬆移動', traffic: 'medium', trafficLabel: '機場周邊留意車潮' };
+            }
+            if (dayObj.isFreeDay) {
+                return { energy: 1, energyLabel: '純放空', traffic: 'low', trafficLabel: '零拉車免塞車' };
+            }
+            if (dayObj.isRainyMode) {
+                return { energy: 1, energyLabel: '室內輕鬆', traffic: 'medium', trafficLabel: '雨天路滑預留車程' };
+            }
+            return routeMetricsMap[dayObj.id] || { energy: 3, energyLabel: '適中', traffic: 'medium', trafficLabel: '午後留意車潮' };
+        }
+
+        const bookingRadarRules = [
+            { keywords: ['Karsa Spa'], name: 'Karsa Spa 烏布蓮花池芳療', lead: '提前 3 週', urgency: 'high', tip: '全島最搶手 SPA，請務必上官網搶先預約時段。' },
+            { keywords: ['Swept Away'], name: 'Swept Away 河畔百支蠟燭晚餐', lead: '提前 2 週', urgency: 'high', tip: '限量河畔燭光席位極少，蜜月慶生務必提早訂位。' },
+            { keywords: ['Bodyworks'], name: 'Bodyworks 摩洛哥粉紅宮殿 SPA', lead: '提前 1–2 週', urgency: 'medium', tip: '水明漾超人氣網美芳療館，建議官網先約 90 分鐘療程。' },
+            { keywords: ['Maya Ubud'], name: 'Maya Ubud 河谷懸空森林 SPA', lead: '提前 1–2 週', urgency: 'medium', tip: '雙人河谷套房席次有限，建議提早 Email 或官網預訂。' },
+            { keywords: ['Sundays Beach Club'], name: 'Sundays Beach Club 懸崖白沙灣', lead: '提前 1 週', urgency: 'medium', tip: '建議事先預約 VIP 涼亭或提早入園搶海灘第一排。' },
+            { keywords: ['Merah Putih'], name: 'Merah Putih 皇家玻璃屋餐廳', lead: '提前 1 週', urgency: 'medium', tip: '晚餐熱門時段常客滿，請先線上訂位並留意服裝儀容。' },
+            { keywords: ['El Kabron'], name: 'El Kabron 懸崖西班牙餐酒館', lead: '提前 1 週', urgency: 'medium', tip: '17:00 日落懸崖第一排座位極搶手，務必預訂。' },
+            { keywords: ['Mason'], name: 'Mason Canggu 現代炭烤餐酒館', lead: '提前 5–7 天', urgency: 'medium', tip: '倉古最難訂位餐廳之一，建議出發前上網搶位。' },
+            { keywords: ['巴杜爾火山', '4x4 吉普車'], name: '巴杜爾火山 4x4 吉普車追日出', lead: '提前 3–5 天', urgency: 'normal', tip: '需提前確認飯店接駁時間與前晚打包外帶早餐盒。' },
+            { keywords: ['佩尼達島', '精靈墜崖'], name: '佩尼達島高速快艇＋離島包車', lead: '提前 3–5 天', urgency: 'normal', tip: '預先買好沙努爾來回船票與離島專車，避免碼頭現場被抬價。' },
+            { keywords: ['卡恰火舞'], name: '烏魯瓦圖斷崖卡恰火舞門票', lead: '提前 2–3 天', urgency: 'normal', tip: '旺季 18:00 場次常提早售罄，建議預先線上購票或請司機代訂。' },
+            { keywords: ['Theta Spa'], name: 'Theta Spa 機場海景臨行按摩', lead: '提前 3 天', urgency: 'normal', tip: '預約時同步備註需要免費寄放行李與獨立淋浴間。' },
+            { keywords: ['Waterbom'], name: 'Waterbom Bali 水上樂園門票', lead: '提前 2–3 天', urgency: 'normal', tip: '線上預購門票通常比現場便宜，若要租私人涼亭 Gazebo 建議先訂。' }
+        ];
+
+        function collectBookingRadarItems() {
+            const found = [];
+            const seen = new Set();
+            generatedDays.forEach(d => {
+                const haystack = [
+                    d.title || '',
+                    d.morning || '',
+                    d.afternoon || '',
+                    d.evening || '',
+                    d.meals?.lunch || '',
+                    d.meals?.dinner || '',
+                    ...(d.customSpots || []).map(s => s.title || '')
+                ].join(' ');
+
+                bookingRadarRules.forEach(rule => {
+                    if (seen.has(rule.name)) return;
+                    if (rule.keywords.some(kw => haystack.includes(kw))) {
+                        seen.add(rule.name);
+                        found.push({ day: d.day, ...rule });
+                    }
+                });
+            });
+            return found;
+        }
+
+        let isBookingRadarCollapsed = false;
+        function toggleBookingRadar() {
+            isBookingRadarCollapsed = !isBookingRadarCollapsed;
+            renderBookingRadar();
+        }
+
+        function renderBookingRadar() {
+            const panel = document.getElementById('booking-radar-panel');
+            if (!panel) return;
+            const items = collectBookingRadarItems();
+            if (items.length === 0) {
+                panel.innerHTML = '';
+                return;
+            }
+            const urgencyBadge = u => u === 'high'
+                ? 'bg-rose-100 text-rose-900 border-rose-300'
+                : (u === 'medium' ? 'bg-amber-100 text-amber-950 border-amber-300' : 'bg-sky-100 text-sky-900 border-sky-300');
+
+            panel.innerHTML = `
+                <div class="glass-card rounded-3xl p-4 shadow-xs border border-rose-200/90 space-y-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-sm font-black">🔔</span>
+                            <div>
+                                <div class="text-xs sm:text-sm font-black text-bali-ocean">出發前必先預約雷達（自動偵測本次行程共 ${items.length} 項）</div>
+                                <div class="text-[10px] text-stone-500 font-bold">系統已從您目前的行程與加排景點中，自動挑出現場容易客滿的項目</div>
+                            </div>
+                        </div>
+                        <button type="button" onclick="toggleBookingRadar()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-amber-50 border border-stone-200 text-[11px] font-black text-bali-ocean shrink-0 cursor-pointer">
+                            ${isBookingRadarCollapsed ? '展開清單 ▾' : '收合 ▴'}
+                        </button>
+                    </div>
+                    ${!isBookingRadarCollapsed ? `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                            ${items.map(it => `
+                                <div class="bg-white rounded-2xl p-2.5 border border-stone-200 flex flex-col justify-between gap-1">
+                                    <div class="flex items-center justify-between gap-1.5">
+                                        <span class="text-xs font-black text-stone-800 truncate"><span class="text-bali-sunset mr-1">D${it.day}</span>${it.name}</span>
+                                        <span class="px-2 py-0.5 rounded-md border text-[10px] font-black shrink-0 ${urgencyBadge(it.urgency)}">${it.lead}</span>
+                                    </div>
+                                    <div class="text-[10px] text-stone-500 leading-snug">${it.tip}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function toggleClubCompareTable() {
+            const wrap = document.getElementById('club-compare-table-wrap');
+            const btn = document.getElementById('btn-toggle-club-compare');
+            if (!wrap || !btn) return;
+            const hidden = wrap.classList.toggle('hidden');
+            btn.textContent = hidden ? '展開比較表 ▾' : '收合比較表 ▴';
         }
 
         // -------------------------------------------------------------
         // 11. RENDER DAILY ITINERARY CARDS & INLINE INTERACTIONS
         // -------------------------------------------------------------
         function changeDayTransport(dayIdx, transportId) {
-            if (!generatedDays[dayIdx]) return;
-            generatedDays[dayIdx].transport = transportId;
+            const current = generatedDays[dayIdx];
+            if (!current) return;
+            // Sync: selecting 'walk' (zero-car resort relaxation day) automatically switches content to Free Day
+            if (transportId === 'walk' && !current.isFreeDay && !current.isFlightOnly) {
+                toggleFreeDay(dayIdx);
+                return;
+            }
+            current.transport = transportId;
             renderItineraryCards();
             updateBudget();
             saveStateToStorage();
@@ -2105,9 +3017,21 @@
             const current = generatedDays[dayIdx];
             if (!current || current.isFlightOnly) return;
 
-            const sameRegionPool = routeTemplates.filter(rt => rt.mapRegionKey === current.mapRegionKey && rt.id !== current.id);
-            const fallbackPool = routeTemplates.filter(rt => rt.id !== current.id);
-            const pool = sameRegionPool.length > 0 ? sameRegionPool : fallbackPool;
+            // Strict Zero-Duplicate Rule: exclude ALL route IDs currently used across the trip
+            const usedIds = new Set(generatedDays.filter(d => !d.isFreeDay && !d.isFlightOnly).map(d => d.id));
+            let safeTemplates = [...routeTemplates];
+            if (travelerCounts.infant > 0) {
+                safeTemplates = safeTemplates.filter(rt => rt.id !== 'penida-island' && rt.id !== 'kintamani-nature');
+            }
+
+            const sameRegionUnused = safeTemplates.filter(rt => rt.mapRegionKey === current.mapRegionKey && !usedIds.has(rt.id));
+            const anyUnused = safeTemplates.filter(rt => !usedIds.has(rt.id));
+
+            const pool = sameRegionUnused.length > 0 ? sameRegionUnused : anyUnused;
+            if (pool.length === 0) {
+                showToast('⚠️ 所有不重複主題路線皆已排入行程中！若想調整可切換「自由日」或上下調整天數順序。');
+                return;
+            }
             const nextTpl = pool[Math.floor(Math.random() * pool.length)];
 
             generatedDays[dayIdx] = {
@@ -2115,13 +3039,108 @@
                 day: current.day,
                 isFlightOnly: false,
                 isFreeDay: false,
+                isRainyMode: false,
                 transport: nextTpl.defaultTransport || 'charter10',
+                selectedHotelTier: current.selectedHotelTier || 'resort',
                 customSpots: current.customSpots || []
             };
+
+            // Keep any immediately following free days synced to the updated overnight hotel region
+            for (let k = dayIdx + 1; k < generatedDays.length - 1; k++) {
+                if (generatedDays[k].isFreeDay) {
+                    const prevStay = generatedDays[k - 1].overnightRegionKey || generatedDays[k - 1].mapRegionKey || 'seminyak';
+                    const keepSpots = generatedDays[k].customSpots || [];
+                    const keepTransport = generatedDays[k].transport || 'walk';
+                    const keepTier = generatedDays[k].selectedHotelTier || 'resort';
+                    const updatedFree = createFreeDayObject(generatedDays[k].day, prevStay);
+                    updatedFree.customSpots = keepSpots;
+                    updatedFree.transport = keepTransport;
+                    updatedFree.selectedHotelTier = keepTier;
+                    generatedDays[k] = updatedFree;
+                } else {
+                    break;
+                }
+            }
+
             renderItineraryCards();
             updateBudget();
             saveStateToStorage();
             showToast(`🔄 已為 DAY ${current.day} 替換為「${nextTpl.title.slice(0, 16)}...」`);
+        }
+
+        function moveDayOrder(dayIdx, delta) {
+            const targetIdx = dayIdx + delta;
+            if (dayIdx <= 0 || dayIdx >= generatedDays.length - 1) return;
+            if (targetIdx <= 0 || targetIdx >= generatedDays.length - 1) return;
+
+            const temp = generatedDays[dayIdx];
+            generatedDays[dayIdx] = generatedDays[targetIdx];
+            generatedDays[targetIdx] = temp;
+
+            // Renumber days and re-sync any free day's overnight region
+            generatedDays.forEach((d, idx) => {
+                d.day = idx + 1;
+                if (d.isFreeDay && idx > 0 && idx < generatedDays.length - 1) {
+                    const prevStay = generatedDays[idx - 1].overnightRegionKey || generatedDays[idx - 1].mapRegionKey || 'seminyak';
+                    const updatedFree = createFreeDayObject(d.day, prevStay);
+                    updatedFree.customSpots = d.customSpots || [];
+                    updatedFree.transport = d.transport || 'walk';
+                    updatedFree.selectedHotelTier = d.selectedHotelTier || 'resort';
+                    updatedFree.isRainyMode = !!d.isRainyMode;
+                    generatedDays[idx] = updatedFree;
+                }
+            });
+
+            renderItineraryCards();
+            updateBudget();
+            saveStateToStorage();
+            showToast(`↕️ 已調整為 DAY ${targetIdx + 1}，並自動同步跨區車程與早餐地點！`);
+        }
+
+        function toggleRainyBackup(dayIdx) {
+            const d = generatedDays[dayIdx];
+            if (!d || d.isFlightOnly) return;
+            d.isRainyMode = !d.isRainyMode;
+            renderItineraryCards();
+            saveStateToStorage();
+            showToast(d.isRainyMode
+                ? `🌦️ DAY ${d.day} 已切換為「同區室內雨天備案」（保留原區住宿）`
+                : `☀️ DAY ${d.day} 已恢復晴天原定行程！`
+            );
+        }
+
+        function renderJourneyValueDashboard() {
+            const dash = document.getElementById('journey-value-dashboard');
+            if (!dash || generatedDays.length === 0) return;
+
+            const uniqueNonFree = new Set(generatedDays.filter(d => !d.isFlightOnly && !d.isFreeDay).map(d => d.id)).size;
+            let crossRegionCount = 0;
+            for (let i = 1; i < generatedDays.length; i++) {
+                const prevKey = generatedDays[i - 1].overnightRegionKey || generatedDays[i - 1].mapRegionKey;
+                const currKey = generatedDays[i].mapRegionKey || generatedDays[i].overnightRegionKey;
+                if (prevKey !== currKey) crossRegionCount++;
+            }
+            const freeDaysCount = generatedDays.filter(d => d.isFreeDay).length;
+            const savedCharterTwd = Math.round((freeDaysCount * 680000) / IDR_PER_TWD);
+
+            dash.innerHTML = `
+                <div class="bg-white rounded-2xl p-3 border border-amber-200/80 shadow-2xs">
+                    <div class="text-[10px] font-bold text-stone-400">不重複主題路線</div>
+                    <div class="text-sm sm:text-base font-black text-bali-ocean mt-0.5">${uniqueNonFree} 條 <span class="text-[10px] text-emerald-700 font-bold">0 重複</span></div>
+                </div>
+                <div class="bg-white rounded-2xl p-3 border border-amber-200/80 shadow-2xs">
+                    <div class="text-[10px] font-bold text-stone-400">跨區移動次數</div>
+                    <div class="text-sm sm:text-base font-black text-bali-lagoon mt-0.5">${crossRegionCount} 次 <span class="text-[10px] text-stone-500 font-bold">順路串聯</span></div>
+                </div>
+                <div class="bg-white rounded-2xl p-3 border border-amber-200/80 shadow-2xs">
+                    <div class="text-[10px] font-bold text-stone-400">五星獨棟 Villa</div>
+                    <div class="text-sm sm:text-base font-black text-bali-sunset mt-0.5">${hotelNights.villa} 晚 <span class="text-[10px] text-stone-500 font-bold">奢華體驗</span></div>
+                </div>
+                <div class="bg-white rounded-2xl p-3 border border-amber-200/80 shadow-2xs">
+                    <div class="text-[10px] font-bold text-stone-400">自由日省包車費</div>
+                    <div class="text-sm sm:text-base font-black text-emerald-700 mt-0.5">NT$${savedCharterTwd.toLocaleString()}</div>
+                </div>
+            `;
         }
 
         function toggleFreeDay(dayIdx) {
@@ -2135,7 +3154,9 @@
 
             const prevRegion = dayIdx > 0 ? (generatedDays[dayIdx - 1].overnightRegionKey || generatedDays[dayIdx - 1].mapRegionKey) : 'seminyak';
             const freeObj = createFreeDayObject(current.day, prevRegion || 'seminyak');
+            freeObj.transport = 'walk';
             freeObj.customSpots = current.customSpots || [];
+            freeObj.selectedHotelTier = current.selectedHotelTier || 'resort';
 
             generatedDays[dayIdx] = freeObj;
             renderItineraryCards();
@@ -2222,6 +3243,15 @@
                 const consistentPlan = getConsistentDailySchedule(d, idx);
                 const assignedTier = getAssignedHotelTierForNight(idx);
                 const cashInfo = getDayCashBreakdown(d);
+                const metrics = getDayMetrics(d);
+                const prevMetrics = idx > 0 ? getDayMetrics(generatedDays[idx - 1]) : null;
+                const isBackToBackHeavy = !d.isFlightOnly && metrics.energy >= 4 && prevMetrics && prevMetrics.energy >= 4;
+                const transferMeta = getDayTransferMeta(d, idx);
+                const energyStars = '⚡'.repeat(metrics.energy);
+                const trafficDot = metrics.traffic === 'high' ? '🔴' : (metrics.traffic === 'medium' ? '🟡' : '🟢');
+                const trafficBadgeCls = metrics.traffic === 'high'
+                    ? 'bg-rose-500/85 text-white border-rose-300/60'
+                    : (metrics.traffic === 'medium' ? 'bg-amber-500/85 text-stone-950 border-amber-200/60' : 'bg-emerald-500/85 text-white border-emerald-200/60');
                 const bannerPhoto = verifiedPhotos[d.photoKey] || verifiedPhotos.riceTerrace;
                 const fallbackUri = getFallbackSvgDataUri(`DAY ${d.day}`);
 
@@ -2312,7 +3342,7 @@
                 `;
 
                 return `
-                <article class="glass-card rounded-3xl overflow-hidden shadow-md border border-amber-200/80 transition hover:shadow-lg">
+                <article id="day-card-${d.day}" class="glass-card rounded-3xl overflow-hidden shadow-md border border-amber-200/80 transition hover:shadow-lg">
                     <!-- Top Visual Banner -->
                     <div class="relative h-44 sm:h-52 w-full overflow-hidden">
                         <img src="${bannerPhoto}" alt="${d.title}" onerror="this.onerror=null;this.src='${fallbackUri}'" class="w-full h-full object-cover">
@@ -2325,9 +3355,14 @@
                                 <span class="px-3 py-1 rounded-full bg-black/55 backdrop-blur-xs text-amber-200 font-bold text-xs border border-white/20">📍 ${d.region}</span>
                             </div>
 
-                            <div class="flex items-center gap-1.5">
+                            <div class="flex flex-wrap items-center gap-1.5">
                                 ${!d.isFlightOnly ? `
-                                    <button type="button" onclick="swapDayRoute(${idx})" class="px-2.5 py-1 rounded-full bg-white/90 hover:bg-amber-100 text-stone-800 font-black text-[11px] shadow-xs transition cursor-pointer" title="更換同區順路路線">
+                                    ${idx > 1 ? `<button type="button" onclick="moveDayOrder(${idx}, -1)" class="px-2 py-1 rounded-full bg-white/90 hover:bg-sky-100 text-stone-800 font-black text-[11px] shadow-xs transition cursor-pointer" title="往前移一天">⬆️</button>` : ''}
+                                    ${idx < totalDays - 2 ? `<button type="button" onclick="moveDayOrder(${idx}, 1)" class="px-2 py-1 rounded-full bg-white/90 hover:bg-sky-100 text-stone-800 font-black text-[11px] shadow-xs transition cursor-pointer" title="往後移一天">⬇️</button>` : ''}
+                                    <button type="button" onclick="toggleRainyBackup(${idx})" class="px-2.5 py-1 rounded-full ${d.isRainyMode ? 'bg-sky-500 text-white' : 'bg-white/90 hover:bg-sky-100 text-sky-900'} font-black text-[11px] shadow-xs transition cursor-pointer" title="同區微調室內雨天備案">
+                                        ${d.isRainyMode ? '☀️ 恢復晴天' : '🌦️ 雨天備案'}
+                                    </button>
+                                    <button type="button" onclick="swapDayRoute(${idx})" class="px-2.5 py-1 rounded-full bg-white/90 hover:bg-amber-100 text-stone-800 font-black text-[11px] shadow-xs transition cursor-pointer" title="更換不重複順路路線">
                                         🔄 換路線
                                     </button>
                                     <button type="button" onclick="toggleFreeDay(${idx})" class="px-2.5 py-1 rounded-full ${d.isFreeDay ? 'bg-emerald-500 text-white' : 'bg-white/90 hover:bg-emerald-100 text-emerald-900'} font-black text-[11px] shadow-xs transition cursor-pointer">
@@ -2337,31 +3372,19 @@
                             </div>
                         </div>
 
-                        <!-- Banner Title -->
-                        <div class="absolute bottom-3.5 left-4 right-4 text-white space-y-1">
-                            <div class="text-[11px] font-bold text-cyan-200">${d.durationTip || ''}</div>
+                        <!-- Banner Title + Energy & Traffic Indicators -->
+                        <div class="absolute bottom-3.5 left-4 right-4 text-white space-y-1.5">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <span class="px-2 py-0.5 rounded-md bg-black/55 backdrop-blur-xs border border-amber-300/40 text-amber-200 text-[10px] font-black">${energyStars} 體力：${metrics.energyLabel}</span>
+                                <span class="px-2 py-0.5 rounded-md border text-[10px] font-black ${trafficBadgeCls}">${trafficDot} ${metrics.trafficLabel}</span>
+                                <span class="text-[11px] font-bold text-cyan-200 hidden sm:inline">${d.durationTip || ''}</span>
+                            </div>
                             <h4 class="text-base sm:text-xl font-black leading-snug drop-shadow-xs">${d.title}</h4>
                         </div>
                     </div>
 
                     <!-- Card Body -->
                     <div class="p-4 sm:p-5 space-y-4">
-                        <!-- Accommodation & Breakfast Continuity Pill Bar -->
-                        <div class="bg-teal-50/90 border border-teal-200/90 rounded-2xl px-3.5 py-2 flex flex-wrap items-center gap-2 text-[11px] font-bold text-teal-950">
-                            <span>🛏️ 昨晚下榻：<strong class="text-bali-ocean">${consistentPlan.prevStayAreaName}</strong></span>
-                            <span class="text-teal-400">➔</span>
-                            <span>🍳 早餐地點：<strong class="text-bali-sunset">${consistentPlan.breakfastAreaName}</strong></span>
-                            <span class="text-teal-400">➔</span>
-                            <span>🏨 今晚入住：<strong class="text-bali-ocean">${consistentPlan.nextStayAreaName}</strong></span>
-                        </div>
-
-                        <!-- Cross-Region Hotel Switch Banner (if applicable) -->
-                        ${consistentPlan.hotelChangeAlert ? `
-                            <div class="bg-amber-100/90 border border-amber-300 text-amber-950 px-3.5 py-2.5 rounded-2xl text-xs font-black flex items-center gap-2">
-                                <span>${consistentPlan.hotelChangeAlert}</span>
-                            </div>
-                        ` : ''}
-
                         <!-- Transport Selector & Add Custom Spot Bar -->
                         <div class="bg-bali-sand/90 border border-amber-200/80 rounded-2xl p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                             <div class="flex flex-wrap items-center gap-2 flex-1">
@@ -2384,19 +3407,45 @@
                             <button type="submit" class="sm:col-span-2 py-2 px-3 rounded-xl bg-bali-sunset text-white font-black text-xs cursor-pointer">加入</button>
                         </form>
 
+                        ${isBackToBackHeavy ? `
+                            <div class="bg-rose-50 border border-rose-300 text-rose-900 rounded-2xl px-3.5 py-2.5 text-xs font-bold flex flex-wrap items-center justify-between gap-2">
+                                <span>🔥 <strong>達人護腿提醒：</strong>前一天與今日皆為高體力行程，建議用上方 ⬆️/⬇️ 調換順序，中間安插一天 SPA 或自由放空日更舒服！</span>
+                            </div>
+                        ` : ''}
+
+                        ${transferMeta.isTransfer ? `
+                            <div class="bg-teal-50/90 border border-teal-300/90 text-teal-950 rounded-2xl px-3.5 py-2.5 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                <div class="leading-snug">
+                                    <strong>🧳 跨區換飯店行李銜接（${transferMeta.prevArea} ➔ ${transferMeta.nextArea}）：</strong>
+                                    巴里島飯店多為 11:00–12:00 退房、15:00 入住，建議全程將大行李放包車後車廂（護照現金隨身帶），零寄放煩惱！
+                                </div>
+                                ${(!transferMeta.isLastDay && d.transport !== 'charter10') ? `
+                                    <button type="button" onclick="changeDayTransport(${idx}, 'charter10')" class="px-2.5 py-1.5 rounded-xl bg-bali-ocean hover:bg-bali-lagoon text-white text-[11px] font-black shrink-0 cursor-pointer">
+                                        🚐 一鍵改選 10hr 包車
+                                    </button>
+                                ` : ''}
+                            </div>
+                        ` : ''}
+
+                        ${consistentPlan.rainyTip ? `
+                            <div class="bg-sky-50 border border-sky-300 text-sky-950 rounded-2xl px-3.5 py-2.5 text-xs font-bold leading-snug">
+                                ${consistentPlan.rainyTip}
+                            </div>
+                        ` : ''}
+
                         <!-- Morning / Afternoon / Evening Timeline -->
-                        <div class="space-y-2.5 text-xs sm:text-sm border-l-2 border-bali-lagoon pl-3.5">
+                        <div class="space-y-2.5 text-xs sm:text-sm border-l-2 ${d.isRainyMode ? 'border-sky-500' : 'border-bali-lagoon'} pl-3.5">
                             <div class="flex flex-col sm:flex-row sm:items-baseline gap-1.5">
                                 <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-900 font-black text-[11px] w-fit shrink-0">上午</span>
                                 <span class="text-stone-800 leading-relaxed">${consistentPlan.morning}</span>
                             </div>
                             <div class="flex flex-col sm:flex-row sm:items-baseline gap-1.5">
                                 <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 font-black text-[11px] w-fit shrink-0">下午</span>
-                                <span class="text-stone-800 leading-relaxed">${d.afternoon}</span>
+                                <span class="text-stone-800 leading-relaxed">${consistentPlan.afternoon}</span>
                             </div>
                             <div class="flex flex-col sm:flex-row sm:items-baseline gap-1.5">
                                 <span class="px-2 py-0.5 rounded-md bg-orange-100 text-orange-950 font-black text-[11px] w-fit shrink-0">晚上</span>
-                                <span class="text-stone-800 leading-relaxed">${d.evening}</span>
+                                <span class="text-stone-800 leading-relaxed">${consistentPlan.evening}</span>
                             </div>
                         </div>
 
@@ -2406,10 +3455,7 @@
                         <!-- Daily Meals & Recommended Hotels (with Official/Agoda/Booking links) -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
                             <div class="bg-orange-50/65 border border-orange-200/80 rounded-2xl p-3.5 space-y-1.5 text-xs">
-                                <div class="flex items-center justify-between gap-1">
-                                    <span class="font-black text-bali-sunset">🍽️ 當日順路三餐建議</span>
-                                    ${consistentPlan.stayMatchedNote ? `<span class="text-[10px] font-bold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md">${consistentPlan.stayMatchedNote}</span>` : ''}
-                                </div>
+                                <div class="font-black text-bali-sunset">🍽️ 當日順路三餐建議</div>
                                 <div class="text-[11px] text-stone-700"><strong>早餐：</strong>${consistentPlan.breakfast}</div>
                                 <div class="text-[11px] text-stone-700"><strong>午餐：</strong>${consistentPlan.lunch}</div>
                                 <div class="text-[11px] text-stone-700"><strong>晚餐：</strong>${consistentPlan.dinner}</div>
@@ -2417,23 +3463,32 @@
 
                             <div class="bg-teal-50/65 border border-teal-200/80 rounded-2xl p-3.5 space-y-2 text-xs">
                                 <div class="flex flex-wrap items-center justify-between gap-1">
-                                    <span class="font-black text-bali-ocean">🏨 今晚順路住宿推薦</span>
-                                    ${assignedTier ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-md ${assignedTier.badgeClass}">✨ 本晚已配：${assignedTier.label}</span>` : '<span class="text-[10px] font-bold text-stone-500">離境返家日</span>'}
+                                    <span class="font-black text-bali-ocean">🏨 今晚順路住宿推薦（點擊可自選）</span>
+                                    ${assignedTier ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-md ${assignedTier.badgeClass}">✨ 今晚已選：${assignedTier.label}</span>` : '<span class="text-[10px] font-bold text-stone-500">離境返家日</span>'}
                                 </div>
                                 <div class="text-[11px] font-bold text-teal-900">📍 ${d.stayAdvice.area}</div>
                                 <div class="text-[10px] text-stone-600">${d.stayAdvice.reason}</div>
                                 ${idx < totalDays - 1 ? `
                                     <div class="text-[11px] text-stone-700 pt-0.5 space-y-1.5">
-                                        <div class="bg-white/80 p-2 rounded-xl border border-teal-100">
-                                            <div>• <span class="font-bold">精品旅店：</span>${d.stayAdvice.boutique}</div>
+                                        <div onclick="selectDayHotelTier(${idx}, 'boutique')" class="p-2.5 rounded-xl border transition cursor-pointer ${assignedTier?.key === 'boutique' ? 'bg-teal-100/80 border-bali-ocean ring-2 ring-bali-ocean/30 shadow-2xs' : 'bg-white/85 hover:bg-teal-50 border-teal-100'}">
+                                            <div class="flex items-center justify-between gap-1">
+                                                <div>• <span class="font-bold">精品旅店：</span>${d.stayAdvice.boutique}</div>
+                                                ${assignedTier?.key === 'boutique' ? '<span class="px-2 py-0.5 rounded-full bg-bali-ocean text-white text-[10px] font-black shrink-0">✅ 今晚已選</span>' : '<span class="text-[10px] text-stone-400 font-bold shrink-0">點擊選擇</span>'}
+                                            </div>
                                             ${renderHotelBookingLinks(d.stayAdvice.boutique)}
                                         </div>
-                                        <div class="bg-white/80 p-2 rounded-xl border border-teal-100">
-                                            <div>• <span class="font-bold">四星渡假：</span>${d.stayAdvice.resort}</div>
+                                        <div onclick="selectDayHotelTier(${idx}, 'resort')" class="p-2.5 rounded-xl border transition cursor-pointer ${assignedTier?.key === 'resort' ? 'bg-sky-100/80 border-bali-lagoon ring-2 ring-bali-lagoon/30 shadow-2xs' : 'bg-white/85 hover:bg-sky-50 border-teal-100'}">
+                                            <div class="flex items-center justify-between gap-1">
+                                                <div>• <span class="font-bold">四星渡假：</span>${d.stayAdvice.resort}</div>
+                                                ${assignedTier?.key === 'resort' ? '<span class="px-2 py-0.5 rounded-full bg-bali-lagoon text-white text-[10px] font-black shrink-0">✅ 今晚已選</span>' : '<span class="text-[10px] text-stone-400 font-bold shrink-0">點擊選擇</span>'}
+                                            </div>
                                             ${renderHotelBookingLinks(d.stayAdvice.resort)}
                                         </div>
-                                        <div class="bg-white/80 p-2 rounded-xl border border-amber-200/80">
-                                            <div>• <span class="font-bold text-bali-sunset">五星 Villa：</span>${d.stayAdvice.villa}</div>
+                                        <div onclick="selectDayHotelTier(${idx}, 'villa')" class="p-2.5 rounded-xl border transition cursor-pointer ${assignedTier?.key === 'villa' ? 'bg-amber-100/90 border-bali-sunset ring-2 ring-bali-sunset/30 shadow-2xs' : 'bg-white/85 hover:bg-amber-50 border-amber-200/80'}">
+                                            <div class="flex items-center justify-between gap-1">
+                                                <div>• <span class="font-bold text-bali-sunset">五星 Villa：</span>${d.stayAdvice.villa}</div>
+                                                ${assignedTier?.key === 'villa' ? '<span class="px-2 py-0.5 rounded-full bg-bali-sunset text-white text-[10px] font-black shrink-0">✅ 今晚已選</span>' : '<span class="text-[10px] text-stone-400 font-bold shrink-0">點擊選擇</span>'}
+                                            </div>
                                             ${renderHotelBookingLinks(d.stayAdvice.villa)}
                                         </div>
                                     </div>
@@ -2462,6 +3517,9 @@
                 </article>
                 `;
             }).join('');
+            renderJourneyValueDashboard();
+            renderBookingRadar();
+            renderInteractiveBaliMap();
         }
 
         // -------------------------------------------------------------
@@ -2518,6 +3576,18 @@
                 perAdultEl.textContent = primaryCurrency === 'TWD'
                     ? `NT$ ${perAdultTwd.toLocaleString()}`
                     : `IDR ${(perAdultTwd * IDR_PER_TWD).toLocaleString()}`;
+            }
+            const mobTotal = document.getElementById('mobile-total-cost');
+            const mobAdult = document.getElementById('mobile-per-adult-cost');
+            if (mobTotal) {
+                mobTotal.textContent = primaryCurrency === 'TWD'
+                    ? `NT$ ${grandTotalTwd.toLocaleString()}`
+                    : `IDR ${(grandTotalTwd * IDR_PER_TWD).toLocaleString()}`;
+            }
+            if (mobAdult) {
+                mobAdult.textContent = primaryCurrency === 'TWD'
+                    ? `(NT$ ${perAdultTwd.toLocaleString()}/人)`
+                    : `(IDR ${(perAdultTwd * IDR_PER_TWD).toLocaleString()}/人)`;
             }
 
             // Breakdown labels & stacked bar
@@ -2583,6 +3653,7 @@
             if (actionType === 'downgradeVilla') {
                 hotelNights = { boutique: Math.ceil(targetNights / 2), resort: Math.floor(targetNights / 2), villa: 0 };
                 syncHotelNightsUi();
+                syncDayTiersFromHotelNights();
                 renderItineraryCards();
                 updateBudget();
                 showToast('✅ 已將 Villa 晚數調整為精品旅店與四星渡假村！');
@@ -2615,10 +3686,15 @@
                 `----------------------------------`
             ];
 
-            generatedDays.forEach(d => {
+            generatedDays.forEach((d, idx) => {
                 lines.push(`📅 DAY ${d.day}｜${d.region}`);
                 lines.push(`   ✨ ${d.title}`);
                 lines.push(`   🍽️ 午：${d.meals.lunch} / 晚：${d.meals.dinner}`);
+                if (idx < generatedDays.length - 1) {
+                    const tier = d.selectedHotelTier || 'resort';
+                    const tierText = tier === 'boutique' ? '精品旅店' : (tier === 'villa' ? '五星 Villa' : '四星渡假');
+                    lines.push(`   🏨 住宿（${tierText}）：${d.stayAdvice[tier]}`);
+                }
             });
 
             lines.push(`----------------------------------`);
@@ -2671,9 +3747,42 @@
             }).join('');
         }
 
+        const top70Regions = [
+            { key: 'all', label: '全島區域', match: () => true },
+            { key: 'ubud', label: '烏布 Ubud', match: r => /烏布|ubud|吉安雅/i.test(r) },
+            { key: 'seminyak', label: '水明漾 Seminyak', match: r => /水明漾|seminyak/i.test(r) },
+            { key: 'canggu', label: '倉古 Canggu', match: r => /倉古|canggu/i.test(r) },
+            { key: 'uluwatu', label: '烏魯瓦圖 Uluwatu', match: r => /烏魯瓦圖|uluwatu/i.test(r) },
+            { key: 'kuta_jimbaran', label: '庫塔 / 金巴蘭', match: r => /庫塔|kuta|金巴蘭|jimbaran|登巴薩/i.test(r) },
+            { key: 'sanur_nusadua', label: '沙努爾 / 努沙杜瓦', match: r => /沙努爾|sanur|努沙杜瓦|nusa dua/i.test(r) },
+            { key: 'island_north', label: '佩尼達 / 火山 / 東北', match: r => /佩尼達|penida|京打馬尼|塔巴南|阿貢|卡朗阿森|百度庫/i.test(r) }
+        ];
+
+        function renderTop70RegionPills() {
+            const container = document.getElementById('top70-region-pills');
+            if (!container) return;
+            container.innerHTML = top70Regions.map(reg => {
+                const isActive = currentRegionFilter === reg.key;
+                return `
+                    <button type="button" onclick="setTop70Region('${reg.key}')" class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                        isActive
+                            ? 'bg-bali-sunset text-white shadow-2xs'
+                            : 'bg-bali-sand hover:bg-amber-100 text-stone-700 border border-amber-200/80'
+                    }">${reg.label}</button>
+                `;
+            }).join('');
+        }
+
+        function setTop70Region(regKey) {
+            currentRegionFilter = regKey;
+            renderTop70RegionPills();
+            renderDestinations();
+        }
+
         function setTop70Category(catKey) {
             currentDestFilter = catKey;
             renderTop70CategoryPills();
+            renderTop70RegionPills();
             renderDestinations();
         }
 
@@ -2697,7 +3806,7 @@
         function findAssignedDaysForSpot(spotTitle) {
             const days = [];
             generatedDays.forEach(d => {
-                if ((d.customSpots || []).some(s => s.title === spotTitle)) {
+                if (Array.isArray(d.customSpots) && d.customSpots.some(s => s.title === spotTitle)) {
                     days.push(`DAY ${d.day}`);
                 }
             });
@@ -2709,17 +3818,19 @@
             const toggleBtn = document.getElementById('btn-toggle-all-top70');
             if (!grid) return;
 
+            const regionObj = top70Regions.find(r => r.key === currentRegionFilter) || top70Regions[0];
             let filtered = destinationsData.filter(item => {
                 const matchCat = currentDestFilter === 'all' || item.category === currentDestFilter;
+                const matchReg = currentRegionFilter === 'all' || regionObj.match(item.region);
                 const matchQuery = !currentSearchQuery ||
                     item.title.toLowerCase().includes(currentSearchQuery) ||
                     item.region.toLowerCase().includes(currentSearchQuery) ||
                     item.highlight.toLowerCase().includes(currentSearchQuery) ||
                     item.dishOrTip.toLowerCase().includes(currentSearchQuery);
-                return matchCat && matchQuery;
+                return matchCat && matchReg && matchQuery;
             });
 
-            const isSearchingOrFiltered = currentDestFilter !== 'all' || currentSearchQuery.length > 0;
+            const isSearchingOrFiltered = currentDestFilter !== 'all' || currentRegionFilter !== 'all' || currentSearchQuery.length > 0;
             const visibleList = (showAllDestinations || isSearchingOrFiltered) ? filtered : filtered.slice(0, 12);
 
             if (toggleBtn) {
@@ -2968,22 +4079,23 @@
             const totalCostText = document.getElementById('total-trip-cost')?.textContent || '';
             const perAdultText = document.getElementById('per-adult-cost')?.textContent || '';
             const monthVal = document.getElementById('travel-month')?.value || '5';
+            const travelerSummaryText = `成人 ${travelerCounts.adult} / 兒童 ${travelerCounts.child} / 嬰兒 ${travelerCounts.infant}`;
 
             // 1. Cover Page
             const coverHtml = `
-                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-stone-200 flex flex-col justify-between min-h-[1040px]">
-                    <div class="relative h-[460px] w-full">
+                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-stone-200 flex flex-col justify-between min-h-[980px]">
+                    <div class="relative h-[400px] w-full">
                         <img src="${verifiedPhotos.uluwatuCliff}" alt="Bali Cover" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/45 to-transparent"></div>
-                        <div class="absolute bottom-8 left-8 right-8 text-white space-y-2">
+                        <div class="absolute bottom-7 left-8 right-8 text-white space-y-2">
                             <span class="px-3 py-1 rounded-full bg-bali-sunset text-xs font-black tracking-widest">VIP PRIVATE TRAVEL HANDBOOK</span>
-                            <h1 class="text-4xl font-black tracking-tight">探索神之島：巴里島私人訂製旅遊手冊</h1>
-                            <p class="text-sm text-cyan-200">先山後海零折返動線・領隊深度導覽・隨身翻譯與緊急通關指南</p>
+                            <h1 class="text-3xl sm:text-4xl font-black tracking-tight">探索神之島：巴里島私人訂製旅遊手冊</h1>
+                            <p class="text-sm text-cyan-200">合情合理順路動線・領隊深度導覽・隨身翻譯與緊急通關指南</p>
                         </div>
                     </div>
 
-                    <div class="p-8 space-y-6 flex-1 flex flex-col justify-between">
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-bali-sand p-5 rounded-2xl border border-amber-200 text-xs">
+                    <div class="p-7 space-y-5 flex-1 flex flex-col justify-between">
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-bali-sand p-4 rounded-2xl border border-amber-200 text-xs">
                             <div>
                                 <div class="text-stone-400 font-bold">行程天數</div>
                                 <div class="text-base font-black text-bali-ocean mt-0.5">${generatedDays.length} 天 ${Math.max(0, generatedDays.length - 1)} 夜</div>
@@ -2994,7 +4106,7 @@
                             </div>
                             <div>
                                 <div class="text-stone-400 font-bold">同行人數</div>
-                                <div class="text-base font-black text-bali-ocean mt-0.5">成人 ${travelerCounts.adult} / 兒童 ${travelerCounts.child}</div>
+                                <div class="text-sm font-black text-bali-ocean mt-0.5">${travelerSummaryText}</div>
                             </div>
                             <div>
                                 <div class="text-stone-400 font-bold">預估總預算</div>
@@ -3003,18 +4115,21 @@
                         </div>
 
                         <div class="space-y-2 text-xs">
-                            <div class="font-black text-bali-ocean text-sm">📑 全程行程總覽目錄</div>
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-bali-ocean text-sm">📑 全程行程總覽目錄</span>
+                                ${travelerCounts.infant > 0 ? '<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-[10px] font-black">👶 已啟用嬰兒安全守護路線</span>' : ''}
+                            </div>
                             <div class="grid grid-cols-1 gap-1.5">
                                 ${generatedDays.map(d => `
                                     <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-stone-50 border border-stone-200">
                                         <span class="font-black text-bali-ocean">DAY ${d.day}｜${d.region}</span>
-                                        <span class="text-stone-600 truncate max-w-[60%]">${d.title}</span>
+                                        <span class="text-stone-600 truncate max-w-[56%]">${d.title}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
 
-                        <div class="text-center text-[11px] text-stone-400 border-t border-stone-200 pt-4">
+                        <div class="text-center text-[11px] text-stone-400 border-t border-stone-200 pt-3">
                             成人人均預估：${perAdultText}・本手冊專為自由行貴賓量身編排
                         </div>
                     </div>
@@ -3023,7 +4138,7 @@
 
             // 2. Pre-trip & Baggage Warning Page
             const preTripHtml = `
-                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl p-8 shadow-2xl border border-stone-200 space-y-6 min-h-[1040px]">
+                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl p-7 shadow-2xl border border-stone-200 space-y-5 min-h-[980px]">
                     <div class="border-b-2 border-bali-ocean pb-3 flex items-center justify-between">
                         <h2 class="text-2xl font-black text-bali-ocean">🛂 入境快速通關與行李託運防雷專頁</h2>
                         <span class="text-xs font-black text-bali-sunset">PRE-DEPARTURE GUIDE</span>
@@ -3049,6 +4164,19 @@
                             <p class="text-stone-700 leading-relaxed">• 小費禮儀：請一律給<strong>紙鈔</strong>（切勿給硬幣，在當地被視為施捨）。包車司機每日約 IDR 50,000～100,000；SPA 芳療師每人約 IDR 20,000～50,000。</p>
                         </div>
                     </div>
+
+                    ${(() => {
+                        const radarItems = collectBookingRadarItems();
+                        if (radarItems.length === 0) return '';
+                        return `
+                            <div class="bg-amber-50 border border-amber-300 rounded-2xl p-4 space-y-1.5 text-xs">
+                                <div class="font-black text-bali-ocean">🔔 本次行程出發前必搶預約清單（共 ${radarItems.length} 項）</div>
+                                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] text-stone-700">
+                                    ${radarItems.map(it => `<div>☐ <strong>[D${it.day}・${it.lead}]</strong> ${it.name}</div>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    })()}
                 </div>
             `;
 
@@ -3057,7 +4185,7 @@
                 const consistentPlan = getConsistentDailySchedule(d, idx);
                 const customSpotsList = d.customSpots || [];
                 const customPrintHtml = customSpotsList.length > 0 ? `
-                    <div class="bg-amber-50 border border-amber-300 rounded-xl p-2.5 text-[11px] text-amber-950">
+                    <div class="bg-amber-50 border border-amber-300 rounded-xl p-2 text-[11px] text-amber-950">
                         <strong>⭐ 本日特別加排：</strong>${customSpotsList.map(s => `${s.title} (IDR ${(s.costIdr || 0).toLocaleString()})`).join('、')}
                     </div>
                 ` : '';
@@ -3065,57 +4193,54 @@
                 const printSpotGuidesHtml = Array.isArray(d.spotGuides) && d.spotGuides.length > 0 ? `
                     <div class="bg-bali-sand/80 border border-amber-200 rounded-xl p-3 space-y-1.5 text-[11px]">
                         <div class="font-black text-bali-ocean">🧭 領隊今日行程導覽與景點詳解</div>
-                        <p class="text-stone-700 leading-relaxed">${d.leaderStory || d.editorialIntro}</p>
+                        <p class="text-stone-700 leading-snug">${d.leaderStory || d.editorialIntro}</p>
                         <div class="space-y-1 pt-1 border-t border-amber-200/60">
                             ${d.spotGuides.map(sg => `
-                                <div class="text-stone-700"><strong class="text-bali-ocean">${sg.name}</strong> ${sg.desc}</div>
+                                <div class="text-stone-700 leading-snug"><strong class="text-bali-ocean">${sg.name}</strong> ${sg.desc}</div>
                             `).join('')}
                         </div>
                     </div>
                 ` : '';
 
                 return `
-                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-stone-200 flex flex-col justify-between min-h-[1040px]">
+                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-stone-200 flex flex-col justify-between min-h-[980px]">
                     <div>
-                        <div class="relative h-44 w-full">
+                        <div class="relative h-40 w-full">
                             <img src="${verifiedPhotos[d.photoKey] || verifiedPhotos.riceTerrace}" alt="Day ${d.day}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-gradient-to-t from-stone-950/90 via-stone-900/40 to-transparent"></div>
-                            <div class="absolute bottom-4 left-6 right-6 text-white">
+                            <div class="absolute bottom-3.5 left-6 right-6 text-white">
                                 <div class="flex items-center gap-2 mb-1">
                                     <span class="px-3 py-0.5 rounded-full bg-bali-sunset text-xs font-black">DAY ${d.day}</span>
                                     <span class="text-xs font-bold text-amber-200">📍 ${d.region}</span>
                                 </div>
-                                <h3 class="text-xl font-black">${d.title}</h3>
+                                <h3 class="text-lg sm:text-xl font-black">${d.title}</h3>
                             </div>
                         </div>
 
-                        <div class="p-6 space-y-4">
-                            <!-- Driver & Accommodation Continuity Memo Box -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-stone-100 border border-stone-300 rounded-xl p-2.5 text-[11px]">
-                                <div><strong>🍳 今早早餐地點：</strong>${consistentPlan.breakfastAreaName}</div>
-                                <div><strong>🏨 今晚入住區域：</strong>${consistentPlan.nextStayAreaName}</div>
-                            </div>
-
+                        <div class="p-5 space-y-3">
                             <!-- Morning / Afternoon / Evening -->
-                            <div class="space-y-2 text-xs border-l-2 border-bali-lagoon pl-3.5">
+                            <div class="space-y-1.5 text-xs border-l-2 border-bali-lagoon pl-3.5">
+                                ${d.isRainyMode ? `<div class="text-sky-800 font-black">🌧️ 本日已啟用同區室內雨天備案</div>` : ''}
                                 <div><span class="font-black text-sky-900">【上午】</span>${consistentPlan.morning}</div>
-                                <div><span class="font-black text-amber-900">【下午】</span>${d.afternoon}</div>
-                                <div><span class="font-black text-orange-950">【晚上】</span>${d.evening}</div>
+                                <div><span class="font-black text-amber-900">【下午】</span>${consistentPlan.afternoon}</div>
+                                <div><span class="font-black text-orange-950">【晚上】</span>${consistentPlan.evening}</div>
                             </div>
 
                             ${printSpotGuidesHtml}
                             ${customPrintHtml}
 
                             <div class="grid grid-cols-2 gap-3 text-[11px]">
-                                <div class="bg-orange-50 border border-orange-200 rounded-xl p-3 space-y-1">
+                                <div class="bg-orange-50 border border-orange-200 rounded-xl p-2.5 space-y-1">
                                     <div class="font-black text-bali-sunset">🍽️ 當日三餐推薦</div>
                                     <div><strong>早：</strong>${consistentPlan.breakfast}</div>
                                     <div><strong>午：</strong>${consistentPlan.lunch}</div>
                                     <div><strong>晚：</strong>${consistentPlan.dinner}</div>
                                 </div>
-                                <div class="bg-teal-50 border border-teal-200 rounded-xl p-3 space-y-1">
-                                    <div class="font-black text-bali-ocean">🏨 順路住宿與必備提醒</div>
-                                    <div><strong>推薦：</strong>${d.stayAdvice.resort} / ${d.stayAdvice.villa}</div>
+                                <div class="bg-teal-50 border border-teal-200 rounded-xl p-2.5 space-y-1">
+                                    <div class="font-black text-bali-ocean">🏨 已選住宿與必備提醒</div>
+                                    ${idx < generatedDays.length - 1 ? `
+                                        <div><strong>今晚入住（${(d.selectedHotelTier === 'boutique' ? '精品旅店' : d.selectedHotelTier === 'villa' ? '五星 Villa' : '四星渡假')}）：</strong>${d.stayAdvice[d.selectedHotelTier || 'resort']}</div>
+                                    ` : `<div><strong>今晚安排：</strong>晚班機搭機返家（無需住宿）</div>`}
                                     <div><strong>必備：</strong>${d.mustBring}</div>
                                 </div>
                             </div>
@@ -3123,7 +4248,7 @@
                     </div>
 
                     <!-- Bottom Expense Tracker Table -->
-                    <div class="px-6 pb-6">
+                    <div class="px-5 pb-5">
                         <div class="border border-stone-300 rounded-xl overflow-hidden text-[10px]">
                             <div class="bg-stone-800 text-white px-3 py-1 font-black">📝 DAY ${d.day} 隨身記帳對帳欄（印尼盾 IDR）</div>
                             <div class="grid grid-cols-4 divide-x divide-stone-300 bg-stone-50 text-stone-600">
@@ -3140,7 +4265,7 @@
 
             // 4. Indonesian Language & Restaurant Dialogue Page
             const phrasePageHtml = `
-                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl p-8 shadow-2xl border border-stone-200 space-y-6 min-h-[1040px]">
+                <div class="a4-page bg-white max-w-4xl mx-auto rounded-3xl p-7 shadow-2xl border border-stone-200 space-y-5 min-h-[980px]">
                     <div class="border-b-2 border-bali-ocean pb-3 flex items-center justify-between">
                         <h2 class="text-2xl font-black text-bali-ocean">📖 當地實用印尼語＆巴里島餐廳日常對話專頁</h2>
                         <span class="text-xs font-black text-bali-sunset">BAHASA INDONESIA PHRASEBOOK</span>
@@ -3185,31 +4310,31 @@
                 </div>
             `;
 
-            // 5. Back Cover with 3 Real Scannable Official QR Codes
+            // 5. Back Cover with 3 Real Scannable Official QR Codes + Driver/Hotel Memo Grid
             const backCoverHtml = `
-                <div class="a4-page bg-gradient-to-br from-stone-900 via-bali-ocean to-stone-900 text-white max-w-4xl mx-auto rounded-3xl p-8 shadow-2xl flex flex-col justify-between min-h-[1040px]">
-                    <div class="space-y-2 text-center pt-4">
+                <div class="a4-page bg-gradient-to-br from-stone-900 via-bali-ocean to-stone-900 text-white max-w-4xl mx-auto rounded-3xl p-7 shadow-2xl flex flex-col justify-between min-h-[980px]">
+                    <div class="space-y-1.5 text-center pt-2">
                         <span class="px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 text-xs font-black">OFFICIAL .GO.ID PORTALS</span>
                         <h2 class="text-2xl sm:text-3xl font-black">手機掃碼直達印尼官方通關系統（防詐騙認證）</h2>
                         <p class="text-xs text-cyan-200">請認明政府專屬 .go.id 網域，出發前完成申報並截圖保存</p>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 my-auto">
-                        <div class="bg-white text-stone-900 rounded-2xl p-5 text-center space-y-3 shadow-lg">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-3">
+                        <div class="bg-white text-stone-900 rounded-2xl p-4 text-center space-y-2.5 shadow-lg">
                             <div class="font-black text-bali-ocean text-sm">1. 電子落地簽證 e-VOA</div>
                             <div id="qr-evoa" class="flex justify-center"></div>
                             <div class="text-[11px] font-bold text-bali-sunset">evisa.imigrasi.go.id</div>
                             <p class="text-[10px] text-stone-500">費用 IDR 500,000，入境可直接走自動通關閘門</p>
                         </div>
 
-                        <div class="bg-white text-stone-900 rounded-2xl p-5 text-center space-y-3 shadow-lg">
+                        <div class="bg-white text-stone-900 rounded-2xl p-4 text-center space-y-2.5 shadow-lg">
                             <div class="font-black text-bali-ocean text-sm">2. 巴里島觀光稅</div>
                             <div id="qr-lovebali" class="flex justify-center"></div>
                             <div class="text-[11px] font-bold text-bali-sunset">lovebali.baliprov.go.id</div>
                             <p class="text-[10px] text-stone-500">費用 IDR 150,000，每位外籍旅客皆須繳納</p>
                         </div>
 
-                        <div class="bg-white text-stone-900 rounded-2xl p-5 text-center space-y-3 shadow-lg">
+                        <div class="bg-white text-stone-900 rounded-2xl p-4 text-center space-y-2.5 shadow-lg">
                             <div class="font-black text-bali-ocean text-sm">3. 電子海關申報 ECD</div>
                             <div id="qr-ecd" class="flex justify-center"></div>
                             <div class="text-[11px] font-bold text-bali-sunset">ecd.beacukai.go.id</div>
@@ -3217,11 +4342,24 @@
                         </div>
                     </div>
 
-                    <div class="bg-white/10 border border-white/20 rounded-2xl p-5 text-xs space-y-1.5">
-                        <div class="font-black text-amber-300 text-sm">🆘 巴里島緊急聯絡與 24 小時國際醫院</div>
-                        <div>• 駐印尼台北經濟貿易代表處（急難救助）：<strong>+62-811-984-676</strong></div>
-                        <div>• 駐泗水辦事處（轄區含巴里島）：<strong>+62-822-5766-9680</strong></div>
-                        <div>• 24H 國際醫院：<strong>BIMC Hospital Kuta (+62-361-761263)</strong> / <strong>Siloam Hospitals (+62-361-779900)</strong></div>
+                    <div class="space-y-3">
+                        <!-- Handwritten Memo Box for Driver & Hotel Contacts -->
+                        <div class="bg-white/10 border border-amber-300/40 rounded-2xl p-4 text-xs space-y-2">
+                            <div class="font-black text-amber-300 text-sm">🚘 當地包車司機 ＆ 🏨 住宿飯店聯絡備忘手寫格</div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-cyan-100">
+                                <div>• 包車司機姓名 / 車牌：_________________________</div>
+                                <div>• 司機 WhatsApp / 電話：_______________________</div>
+                                <div>• 前半段下榻飯店 / 電話：_______________________</div>
+                                <div>• 後半段下榻飯店 / 電話：_______________________</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white/10 border border-white/20 rounded-2xl p-4 text-xs space-y-1.5">
+                            <div class="font-black text-amber-300 text-sm">🆘 巴里島緊急聯絡與 24 小時國際醫院</div>
+                            <div>• 駐印尼台北經濟貿易代表處（急難救助）：<strong>+62-811-984-676</strong></div>
+                            <div>• 駐泗水辦事處（轄區含巴里島）：<strong>+62-822-5766-9680</strong></div>
+                            <div>• 24H 國際醫院：<strong>BIMC Hospital Kuta (+62-361-761263)</strong> / <strong>Siloam Hospitals (+62-361-779900)</strong></div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -3259,6 +4397,381 @@
             document.getElementById('print-handbook-modal')?.classList.add('hidden');
         }
 
+
+        // -------------------------------------------------------------
+        // 17. INTERACTIVE BALI SVG ROUTE MAP ENGINE (ZERO API KEY)
+        // -------------------------------------------------------------
+        const baliMapNodes = [
+            { key: 'bedugul', name: '百度庫山湖', x: 245, y: 125, top70Key: 'island_north', desc: '海拔 1,200 公尺高地避暑區，水神廟與嘉帝路維世界遺產梯田所在地。' },
+            { key: 'karangasem', name: '東線阿貢山', x: 425, y: 180, top70Key: 'island_north', desc: '神聖阿貢火山腳下，聚集天空之門連普揚寺與恆河聖水宮殿花園。' },
+            { key: 'ubud', name: '烏布山林', x: 295, y: 215, top70Key: 'ubud', desc: '巴里島文化與梯田心臟，必訪德哥拉朗梯田、聖泉寺、髒鴨餐與河谷 SPA。' },
+            { key: 'canggu', name: '倉古衝浪', x: 220, y: 280, top70Key: 'canggu', desc: '全球衝浪客與數位遊牧最愛的潮流街區，早午餐名店與 Finns 日落俱樂部。' },
+            { key: 'seminyak', name: '水明漾/庫塔', x: 245, y: 315, top70Key: 'seminyak', desc: '距機場最近的美食精品核心區，集結設計師選物店、粉紅宮殿 SPA 與海神廟動線。' },
+            { key: 'sanur', name: '沙努爾海岸', x: 320, y: 300, top70Key: 'sanur_nusadua', desc: '優雅靜謐的東岸海濱小鎮，擁有最新 Icon Bali 商場與前往佩尼達島的高速快艇碼頭。' },
+            { key: 'jimbaran', name: '金巴蘭海灣', x: 248, y: 362, top70Key: 'kuta_jimbaran', desc: '全球最浪漫的沙灘燭光炭烤龍蝦海灣，夕陽與飛機起降絕景。' },
+            { key: 'nusadua', name: '努沙杜瓦', x: 305, y: 380, top70Key: 'sanur_nusadua', desc: '治安滿分的封閉式五星白沙灘渡假特區，親子戲水與 Waterblow 巨浪奇觀首選。' },
+            { key: 'uluwatu', name: '烏魯瓦圖斷崖', x: 228, y: 405, top70Key: 'uluwatu', desc: '巴里島最南端百米石灰岩峭壁，Sundays 秘境白沙灣與斷崖卡恰火舞必看。' },
+            { key: 'penida', name: '佩尼達離島', x: 438, y: 345, top70Key: 'island_north', desc: '快艇 45 分鐘直達的原始奇蹟離島，精靈墜崖恐龍背脊與水晶灣浮潛天堂。' }
+        ];
+
+        function renderInteractiveBaliMap() {
+            const svgWrap = document.getElementById('bali-svg-map-container');
+            const chainWrap = document.getElementById('map-route-chain');
+            const statsWrap = document.getElementById('map-region-stats');
+            if (!svgWrap || generatedDays.length === 0) return;
+
+            // Collect ordered route sequence from generatedDays
+            const visitedByRegion = {};
+            const sequencePoints = [];
+            generatedDays.forEach(d => {
+                const rKey = d.mapRegionKey || d.overnightRegionKey || 'seminyak';
+                if (!visitedByRegion[rKey]) visitedByRegion[rKey] = [];
+                visitedByRegion[rKey].push(d);
+                const node = baliMapNodes.find(n => n.key === rKey) || baliMapNodes[4];
+                if (sequencePoints.length === 0 || sequencePoints[sequencePoints.length - 1].key !== node.key) {
+                    sequencePoints.push({ ...node, firstDay: d.day });
+                }
+            });
+
+            if (!selectedMapRegionKey || !baliMapNodes.some(n => n.key === selectedMapRegionKey)) {
+                selectedMapRegionKey = sequencePoints[0]?.key || 'seminyak';
+            }
+
+            // Route pill chain
+            if (chainWrap) {
+                chainWrap.innerHTML = `<span class="font-black text-bali-ocean mr-1">🧭 本次動線順序：</span>` +
+                    generatedDays.map((d, idx) => {
+                        const rKey = d.mapRegionKey || 'seminyak';
+                        const node = baliMapNodes.find(n => n.key === rKey);
+                        return `
+                            <button type="button" onclick="selectMapRegion('${rKey}')" class="px-2.5 py-1 rounded-xl ${selectedMapRegionKey === rKey ? 'bg-bali-sunset text-white' : 'bg-white hover:bg-amber-100 text-stone-800 border border-amber-200'} font-black text-[11px] transition cursor-pointer">
+                                D${d.day} ${node ? node.name : rKey}
+                            </button>
+                            ${idx < generatedDays.length - 1 ? '<span class="text-amber-500 font-black">➔</span>' : ''}
+                        `;
+                    }).join('');
+            }
+
+            // Build SVG curved route paths
+            let routePathsSvg = '';
+            for (let i = 0; i < sequencePoints.length - 1; i++) {
+                const p1 = sequencePoints[i];
+                const p2 = sequencePoints[i + 1];
+                const mx = (p1.x + p2.x) / 2;
+                const my = (p1.y + p2.y) / 2 - 18;
+                routePathsSvg += `
+                    <path d="M ${p1.x} ${p1.y} Q ${mx} ${my} ${p2.x} ${p2.y}"
+                        fill="none" stroke="#FBBF24" stroke-width="3" stroke-dasharray="6 5" stroke-linecap="round" opacity="0.92" />
+                `;
+            }
+
+            // Build SVG clickable region pins
+            const nodesSvg = baliMapNodes.map(n => {
+                const daysHere = visitedByRegion[n.key] || [];
+                const isVisited = daysHere.length > 0;
+                const isSelected = selectedMapRegionKey === n.key;
+                const dayBadge = daysHere.map(d => 'D' + d.day).join(',');
+                const fillColor = isSelected ? '#E05A47' : (isVisited ? '#FBBF24' : 'rgba(255,255,255,0.45)');
+                const strokeColor = isSelected ? '#FFFFFF' : (isVisited ? '#083344' : '#94A3B8');
+                const radius = isSelected ? 12 : (isVisited ? 9 : 6.5);
+
+                return `
+                    <g onclick="selectMapRegion('${n.key}')" style="cursor:pointer;">
+                        ${isSelected ? `<circle cx="${n.x}" cy="${n.y}" r="20" fill="#E05A47" fill-opacity="0.28" />` : ''}
+                        <circle cx="${n.x}" cy="${n.y}" r="${radius}" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2.5" />
+                        <text x="${n.x}" y="${n.y - 15}" text-anchor="middle" fill="#FFFFFF" font-size="11.5" font-weight="800" style="text-shadow:0 1px 4px rgba(0,0,0,0.85);">${n.name}</text>
+                        ${isVisited ? `
+                            <rect x="${n.x - 24}" y="${n.y + 12}" width="48" height="16" rx="8" fill="#083344" fill-opacity="0.88" stroke="#FBBF24" stroke-width="1" />
+                            <text x="${n.x}" y="${n.y + 23.5}" text-anchor="middle" fill="#FDE68A" font-size="9.5" font-weight="800">${dayBadge.slice(0, 9)}</text>
+                        ` : ''}
+                    </g>
+                `;
+            }).join('');
+
+            svgWrap.innerHTML = `
+                <svg viewBox="0 0 540 445" class="w-full h-auto select-none" role="img" aria-label="巴里島互動區域動線圖">
+                    <defs>
+                        <linearGradient id="baliLandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#15803D"/>
+                            <stop offset="55%" stop-color="#166534"/>
+                            <stop offset="100%" stop-color="#0F766E"/>
+                        </linearGradient>
+                    </defs>
+                    <!-- Decorative Sea Ripples -->
+                    <circle cx="95" cy="360" r="55" fill="#38BDF8" fill-opacity="0.06"/>
+                    <circle cx="465" cy="95" r="70" fill="#FBBF24" fill-opacity="0.08"/>
+                    <!-- Bali Main Island Silhouette -->
+                    <path d="M 48 165 C 85 110, 165 82, 245 84 C 325 86, 405 118, 468 176 C 488 195, 476 232, 435 248 C 392 264, 354 275, 336 312 C 326 334, 324 358, 326 385 C 322 406, 286 418, 242 422 C 208 424, 198 402, 212 378 C 228 352, 212 315, 185 282 C 145 245, 92 225, 58 202 C 42 192, 38 178, 48 165 Z"
+                        fill="url(#baliLandGrad)" stroke="#6EE7B7" stroke-width="2.5" stroke-opacity="0.65" />
+                    <!-- Nusa Penida Island Silhouette -->
+                    <path d="M 402 332 C 418 312, 456 314, 474 335 C 488 354, 474 382, 444 386 C 416 389, 392 362, 402 332 Z"
+                        fill="url(#baliLandGrad)" stroke="#6EE7B7" stroke-width="2" stroke-opacity="0.65" />
+                    <!-- Mt. Agung & Mt. Batur Decorative Peaks -->
+                    <polygon points="370,175 390,142 410,175" fill="#FFFFFF" fill-opacity="0.22" />
+                    <polygon points="315,155 330,132 345,155" fill="#FFFFFF" fill-opacity="0.2" />
+                    <text x="390" y="137" text-anchor="middle" fill="#BAE6FD" font-size="9" font-weight="700">▲ 阿貢火山</text>
+                    <text x="95" y="425" fill="#7DD3FC" font-size="11" font-weight="700" opacity="0.75">INDIAN OCEAN 印度洋</text>
+                    <!-- Route Paths & Clickable Region Pins -->
+                    ${routePathsSvg}
+                    ${nodesSvg}
+                </svg>
+            `;
+
+            if (statsWrap) {
+                const visitedCount = Object.keys(visitedByRegion).length;
+                statsWrap.innerHTML = `
+                    <div class="bg-white rounded-2xl p-3 border border-amber-200 text-center">
+                        <div class="text-[10px] font-bold text-stone-400">造訪區域</div>
+                        <div class="text-lg font-black text-bali-ocean">${visitedCount} 區</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-amber-200 text-center">
+                        <div class="text-[10px] font-bold text-stone-400">行程總天數</div>
+                        <div class="text-lg font-black text-bali-sunset">${generatedDays.length} 天</div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-3 border border-amber-200 text-center">
+                        <div class="text-[10px] font-bold text-stone-400">跨區切換</div>
+                        <div class="text-lg font-black text-bali-lagoon">${Math.max(0, sequencePoints.length - 1)} 次</div>
+                    </div>
+                `;
+            }
+
+            renderMapRegionInspector(selectedMapRegionKey, visitedByRegion);
+        }
+
+        function selectMapRegion(regKey) {
+            selectedMapRegionKey = regKey;
+            renderInteractiveBaliMap();
+        }
+
+        function renderMapRegionInspector(regKey, visitedByRegion) {
+            const box = document.getElementById('map-region-inspector');
+            if (!box) return;
+            const node = baliMapNodes.find(n => n.key === regKey) || baliMapNodes[4];
+            const daysHere = visitedByRegion[regKey] || [];
+            const regionObj = top70Regions.find(r => r.key === node.top70Key) || top70Regions[0];
+            const topSpots = destinationsData.filter(item => regionObj.match(item.region)).slice(0, 4);
+
+            box.innerHTML = `
+                <div class="flex items-start justify-between gap-2 border-b border-amber-200/70 pb-2.5">
+                    <div>
+                        <span class="text-[10px] font-black text-bali-sunset">SELECTED REGION</span>
+                        <h3 class="text-lg font-black text-bali-ocean">📍 ${node.name}</h3>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full text-[11px] font-black ${daysHere.length > 0 ? 'bg-emerald-100 text-emerald-900' : 'bg-stone-100 text-stone-600'}">
+                        ${daysHere.length > 0 ? `本次安排 ${daysHere.length} 天` : '本次未排入'}
+                    </span>
+                </div>
+                <p class="text-xs text-stone-600 leading-relaxed">${node.desc}</p>
+
+                <div class="space-y-1.5">
+                    <div class="text-xs font-black text-bali-ocean">🗓️ 本次行程造訪日：</div>
+                    ${daysHere.length > 0 ? daysHere.map(d => `
+                        <button type="button" onclick="jumpToDayFromMap(${d.day})" class="w-full text-left p-2.5 rounded-xl bg-bali-sand hover:bg-amber-100 border border-amber-200 flex items-center justify-between gap-2 transition cursor-pointer">
+                            <div class="truncate">
+                                <span class="font-black text-bali-sunset text-xs mr-1.5">DAY ${d.day}</span>
+                                <span class="text-xs font-bold text-stone-800">${d.title}</span>
+                            </div>
+                            <span class="text-[11px] font-black text-bali-ocean shrink-0">查看 ➔</span>
+                        </button>
+                    `).join('') : '<div class="text-xs text-stone-400 bg-stone-50 p-2.5 rounded-xl">目前行程尚未排入本區，可在 STEP 2 勾選對應主題或於行程卡片點擊「🔄 換路線」。</div>'}
+                </div>
+
+                <div class="space-y-1.5 pt-1">
+                    <div class="text-xs font-black text-bali-ocean">🏆 該區必訪 Top 70 精選：</div>
+                    <div class="grid grid-cols-1 gap-1.5">
+                        ${topSpots.map(s => `
+                            <div class="text-xs bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 flex items-center justify-between gap-2">
+                                <span class="font-bold text-stone-800 truncate">#${String(s.rank).padStart(2, '0')} ${s.title}</span>
+                                <span class="text-[10px] font-black text-bali-sunset shrink-0">${s.catLabel}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button type="button" onclick="jumpToTop70RegionFromMap('${node.top70Key}')" class="w-full mt-2 py-2.5 rounded-xl bg-bali-ocean hover:bg-bali-lagoon text-white font-black text-xs transition cursor-pointer">
+                        🏆 前往 Top 70 篩選查看本區全部美食景點 ➔
+                    </button>
+                </div>
+            `;
+        }
+
+        function jumpToDayFromMap(dayNum) {
+            switchMainTab('planner');
+            setTimeout(() => {
+                const el = document.getElementById(`day-card-${dayNum}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 80);
+        }
+
+        function jumpToTop70RegionFromMap(regKey) {
+            currentRegionFilter = regKey;
+            currentDestFilter = 'all';
+            renderTop70CategoryPills();
+            renderTop70RegionPills();
+            renderDestinations();
+            switchMainTab('top70');
+        }
+
+        // -------------------------------------------------------------
+        // 17B. OFFLINE BALI TRAVEL Q&A HELPER (32 PRACTICAL Q&AS)
+        // -------------------------------------------------------------
+        const baliQaData = [
+            { cat: '簽證通關', q: '去巴里島需要簽證嗎？e-VOA 要去哪裡申請才不會被騙？', a: '需要！台灣旅客可線上申請電子落地簽證 e-VOA（費用 IDR 500,000，約台幣 1,020 元），唯一官方網址為 evisa.imigrasi.go.id（認明 .go.id），申請完可直接走機場自動通關閘門。' },
+            { cat: '簽證通關', q: '巴里島觀光稅（Love Bali）多少錢？小朋友也要繳嗎？', a: '每人 IDR 150,000（約台幣 305 元），不分年齡包含嬰兒與兒童皆須繳納，唯一官網為 lovebali.baliprov.go.id，繳完將 QR Code 截圖備查。' },
+            { cat: '簽證通關', q: '電子海關申報（ECD）什麼時候填？需要收費嗎？', a: '完全免費！請於起飛前 72 小時內上官網 ecd.beacukai.go.id 填寫（一家人可合填一張），若遇到要刷卡的網站就是釣魚假網站，切勿刷卡！' },
+            { cat: '簽證通關', q: '護照效期不足 6 個月可以入境巴里島嗎？', a: '絕對不行！印尼海關嚴格要求護照效期自入境日起算必須滿 6 個月以上，且無破損、有空白頁，出發前務必檢查。' },
+            { cat: '簽證通關', q: '抵達 DPS 機場需要排隊很久嗎？', a: '若事先辦好 e-VOA 並持晶片護照（年滿 6 歲），可直接走電子自動通關 Autogate，30 秒就能絲滑過關；未辦電子簽證現場排落地簽常需 45–90 分鐘。' },
+            { cat: '換匯小費', q: '建議帶台幣還是美金去巴里島換印尼盾？', a: '美金百元大鈔（須 2009 年後大頭新版、無摺痕蓋章）匯率最好；若嫌麻煩直接帶台幣千元鈔到正規換匯所（BMC / Central Kuta）也很方便。' },
+            { cat: '換匯小費', q: '換匯最常見的詐騙手法是什麼？如何防坑？', a: '路邊匯率高得離譜的小木屋常會用「手腳魔術」少給鈔票！請只去有冷氣、招牌清楚的正規連鎖換匯所（BMC、Central Kuta），拿到錢務必自己親手點清最後一遍再離開。' },
+            { cat: '換匯小費', q: '巴里島要給小費嗎？給多少才合理？', a: '巴里島有小費文化，且務必給「紙鈔」（不要給硬幣）。參考行情：行李員/房務每日 IDR 10,000–20,000、SPA 芳療師 IDR 20,000–50,000、全日包車司機 IDR 50,000–100,000。' },
+            { cat: '換匯小費', q: '在巴里島刷卡方便嗎？需要換多少現金？', a: '五星飯店、大型商場、網美餐廳與 Grab 都可刷卡；但傳統市集、路邊小吃、神廟門票、停車費與小費只收現金。建議 5 天每人先換約 NT$5,000–8,000 等值印尼盾，不夠再換。' },
+            { cat: '換匯小費', q: '印尼盾零好多怎麼快速換算台幣？', a: '超簡單心算口訣：「去掉 4 個零，再乘以 2」！例如 IDR 100,000 → 去 4 個零變 10 → 乘以 2 ≈ 台幣 200 元。' },
+            { cat: '交通包車', q: '巴里島自由行建議包車、叫 Grab 還是租機車？', a: '跨區旅遊（如水明漾去烏布、烏魯瓦圖、海神廟）強烈建議「包車 10 小時」（約台幣 1,350 元起/台，免找路吹冷氣）；同區短程（水明漾/倉古街區）用 Grab 或 Gojek 叫車最划算。' },
+            { cat: '交通包車', q: '在巴里島使用 Grab / Gojek 叫車要注意什麼？', a: '建議先在台灣下載並綁定信用卡免找零。少數傳統市區或飯店門口有在地計程車公會限制 Grab 進入，遇到時走到大馬路口 50 公尺再上車即可。' },
+            { cat: '交通包車', q: '巴里島真的很會塞車嗎？行程怎麼排才順？', a: '南部（庫塔、水明漾、倉古）下午 16:00–19:00 非常容易塞車！黃金原則是「同區集中玩、分區換飯店（例如先住烏布山區，再住南部海岸）」，且回程班機當天只排距機場 15 分鐘內的行程。' },
+            { cat: '交通包車', q: '搭快艇去佩尼達島會暈船嗎？路況好嗎？', a: '沙努爾搭快艇到佩尼達島約 45 分鐘，開船前 30 分鐘務必先吃暈船藥；島上部分景點道路較顛簸，不建議帶 2 歲以下嬰兒或行動不便長輩前往。' },
+            { cat: '交通包車', q: '可以在巴里島租機車自駕嗎？', a: '巴里島為右駕且路況複雜、無紅綠燈巷弄多，加上警察常臨檢外國人國際駕照，無豐富右駕經驗者不建議自駕，包車或搭 Grab 安全許多。' },
+            { cat: '網路電壓', q: '巴里島買哪一家電信網卡或 eSIM 訊號最穩？', a: '首選印尼最大電信「Telkomsel」！在烏布山區、京打馬尼火山與佩尼達離島的訊號覆蓋率遠勝其他電信。' },
+            { cat: '網路電壓', q: '巴里島的插座跟電壓跟台灣一樣嗎？', a: '不一樣！巴里島電壓為 220V、插座為「歐洲雙圓孔（Type C / F）」。手機與筆電充電器通常支援 100–240V 只要帶轉接頭即可，但台灣 110V 吹風機／離子夾切勿直接插！' },
+            { cat: '網路電壓', q: 'WhatsApp 在巴里島很常用嗎？', a: '超級重要！巴里島幾乎所有包車司機、SPA 館、餐廳訂位與渡假村管家都使用 WhatsApp 聯繫，出發前請務必先下載註冊好。' },
+            { cat: '健康防坑', q: '聽說去巴里島很容易得「巴里島肚（Bali Belly）」怎麼預防？', a: '巴里島自來水不可生飲！刷牙漱口都建議用瓶裝水、避免吃路邊衛生不明的生菜或冰塊（正規餐廳與飯店的製冰機冰塊通常安全），並隨身攜帶腸胃藥與電解質粉。' },
+            { cat: '健康防坑', q: '在巴里島生病或受傷要找哪間醫院？', a: '請直接前往國際級 24 小時醫院：BIMC Hospital（庫塔與努沙杜瓦皆有院區）或 Siloam Hospitals，英文溝通無礙且支援海外旅平險理賠單據。' },
+            { cat: '健康防坑', q: '烏魯瓦圖斷崖廟與聖猴森林的猴子會搶東西嗎？', a: '會！牠們特別愛搶眼鏡、太陽眼鏡、耳環、帽子、手機與塑膠袋。入園前請全部收進拉鍊背包內，切勿與猴子對視或主動餵食。' },
+            { cat: '健康防坑', q: '參觀巴里島神廟有什麼穿著禁忌？', a: '男女下半身都必須遮過膝蓋（入口處多提供免費或銅板價租借沙龍與腰帶），女性生理期期間依印度教傳統習俗不可進入神廟內殿。' },
+            { cat: '健康防坑', q: '路上地上看到小竹籃花朵（Canang Sari）可以踩嗎？', a: '那是巴里島居民每天早晚敬神的供品，走路時請留意避開，千萬不要踩踏或踢到喔！' },
+            { cat: '健康防坑', q: '什麼是巴里島安寧日（Nyepi）？', a: '每年 3 月左右的印度教新年，當天全島 24 小時關閉機場、禁止外出、不能開燈喧嘩，只能待在飯店內靜心休息。3 月訂機票前務必先查好當年安寧日日期！' },
+            { cat: '健康防坑', q: '雨季（11月–3月）去巴里島還能玩嗎？', a: '可以！巴里島雨季多為午後 1–2 小時的熱帶陣雨，不會整天連下，且雨後氣溫涼爽、渡假村房價便宜很多。善用本網頁的「🌦️ 雨天備案」按鈕就能輕鬆應對！' },
+            { cat: '健康防坑', q: '巴里島防曬乳有規定嗎？', a: '出海浮潛或戲水請選用「海洋友善（Reef-Safe）」防曬乳，保護美麗珊瑚礁生態；烏布山林傍晚蚊蟲較多，記得隨身帶防蚊液。' },
+            { cat: '購物退稅', q: '巴里島必買伴手禮有哪些？哪裡買最便宜？', a: '人氣必買：Ellips 護髮膠囊、Kou Cuisine 手工果醬海鹽、貓屎咖啡、手工香皂、藤編包、Sensa 天然保養品。明碼標價首推 GrandLucky 超市與 Krisna 特產中心。' },
+            { cat: '購物退稅', q: '哪些伴手禮回程絕對不能放隨身行李？', a: '⚠️ 手工果醬、ABC 辣醬、椰子油、身體乳液、超過 100ml 的香氛精油與防曬噴霧，通通屬於液體／膏狀物，回程務必放進「託運行李」，否則過安檢會當場沒收！' },
+            { cat: '購物退稅', q: '在烏布傳統市集購物可以殺價嗎？', a: '可以！傳統市集通常開價偏高，建議保持微笑禮貌從開價的 4～5 折開始談，雙方開心就成交；若是商場（Icon Bali、Beachwalk）與超市則是不二價。' },
+            { cat: '購物退稅', q: '在巴里島購物可以辦退稅嗎？', a: '在標有「VAT Refund for Tourists」標誌的店家單日單店消費滿 IDR 500,000（且總計達門檻），憑護照索取退稅單，離境前在 DPS 機場退稅櫃檯（託運前）辦理即可。' },
+            { cat: '購物退稅', q: '可以買新鮮山竹或蛇皮果帶回台灣嗎？', a: '絕對不行！新鮮水果、肉類製品（含肉鬆、含肉泡麵）皆嚴禁攜帶入境台灣，違者將面臨高額罰款，新鮮水果請在當地超市買來吃個過癮就好！' },
+            { cat: '購物退稅', q: '最後一天退房後行李怎麼辦？去機場前怎麼安排最順？', a: '可將行李免費寄放飯店或直接放包車後車廂，強烈推薦預約機場周邊海景 SPA（如 Theta Spa），提供免費寄行李與淋浴間，按完洗香香直達機場超舒服！' }
+        ];
+
+        const qaCategories = ['全部', '簽證通關', '換匯小費', '交通包車', '網路電壓', '健康防坑', '購物退稅'];
+
+        function openQaModal() {
+            const modal = document.getElementById('qa-helper-modal');
+            if (!modal) return;
+            renderQaCategoryPills();
+            renderQaList();
+            modal.classList.remove('hidden');
+        }
+
+        function closeQaModal() {
+            document.getElementById('qa-helper-modal')?.classList.add('hidden');
+        }
+
+        function renderQaCategoryPills() {
+            const wrap = document.getElementById('qa-category-pills');
+            if (!wrap) return;
+            wrap.innerHTML = qaCategories.map(cat => {
+                const key = cat === '全部' ? 'all' : cat;
+                const isActive = currentQaCategory === key;
+                return `
+                    <button type="button" onclick="setQaCategory('${key}')" class="px-2.5 py-1 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                        isActive ? 'bg-bali-ocean text-white' : 'bg-stone-100 hover:bg-amber-100 text-stone-700'
+                    }">${cat}</button>
+                `;
+            }).join('');
+        }
+
+        function setQaCategory(catKey) {
+            currentQaCategory = catKey;
+            renderQaCategoryPills();
+            renderQaList();
+        }
+
+        function renderQaList() {
+            const container = document.getElementById('qa-list-container');
+            if (!container) return;
+            const qText = (document.getElementById('qa-search-input')?.value || '').trim().toLowerCase();
+
+            const list = baliQaData.filter(item => {
+                const matchCat = currentQaCategory === 'all' || item.cat === currentQaCategory;
+                const matchQ = !qText || item.q.toLowerCase().includes(qText) || item.a.toLowerCase().includes(qText) || item.cat.toLowerCase().includes(qText);
+                return matchCat && matchQ;
+            });
+
+            if (list.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-xs text-stone-500">找不到符合「${qText}」的問答，試試搜尋「簽證」、「小費」、「換匯」或「插座」！</div>`;
+                return;
+            }
+
+            container.innerHTML = list.map((item, i) => `
+                <details class="group bg-bali-sand/80 border border-amber-200/80 rounded-2xl p-3.5 text-xs" ${i === 0 ? 'open' : ''}>
+                    <summary class="font-black text-bali-ocean cursor-pointer flex items-center justify-between gap-2 list-none">
+                        <span><span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-950 text-[10px] mr-1.5">${item.cat}</span>${item.q}</span>
+                        <span class="text-stone-400 group-open:rotate-180 transition">▾</span>
+                    </summary>
+                    <p class="mt-2.5 pt-2 border-t border-amber-200/60 text-stone-700 leading-relaxed">${item.a}</p>
+                </details>
+            `).join('');
+        }
+
+        // -------------------------------------------------------------
+        // 17C. JSON BACKUP EXPORT / IMPORT & MOBILE SCROLL HELPER
+        // -------------------------------------------------------------
+        function exportPlanJson() {
+            saveStateToStorage();
+            const raw = localStorage.getItem(STORAGE_KEY) || '{}';
+            const exportPayload = {
+                version: '4.0',
+                exportedAt: new Date().toISOString(),
+                state: JSON.parse(raw),
+                customSpotsByDay: generatedDays.map(d => ({ day: d.day, customSpots: d.customSpots || [], isRainyMode: !!d.isRainyMode }))
+            };
+            const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `mybalitour_backup_${generatedDays.length}days.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('💾 已匯出行程備份檔 (.json)，可傳給旅伴或換電腦匯入！');
+        }
+
+        function importPlanJson(event) {
+            const file = event.target?.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    const st = parsed.state || parsed;
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(st));
+                    isAppInitialized = false;
+                    initBaliApp();
+                    if (Array.isArray(parsed.customSpotsByDay)) {
+                        parsed.customSpotsByDay.forEach(item => {
+                            const target = generatedDays.find(d => d.day === item.day);
+                            if (target) {
+                                target.customSpots = item.customSpots || [];
+                                target.isRainyMode = !!item.isRainyMode;
+                            }
+                        });
+                        renderItineraryCards();
+                        updateBudget();
+                    }
+                    showToast('📂 已成功匯入您的巴里島行程設定檔！');
+                } catch (err) {
+                    showToast('⚠️ 檔案格式不正確，請選擇本系統匯出的 .json 備份檔');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        function scrollToBudgetSettings() {
+            switchMainTab('planner');
+            setTimeout(() => {
+                const el = document.getElementById('step2-budget-sidebar');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 60);
+        }
+
         // -------------------------------------------------------------
         // 18. LOCAL STORAGE PERSISTENCE (SAFE SANDBOXED WRAPPER)
         // -------------------------------------------------------------
@@ -3279,7 +4792,9 @@
                     budgetMode,
                     targetBudget: document.getElementById('target-budget-input')?.value || '35000',
                     primaryCurrency,
-                    checklistState
+                    checklistState,
+                    selectedHotelTiers: generatedDays.map(d => d.selectedHotelTier || null),
+                    rainyModes: generatedDays.map(d => !!d.isRainyMode)
                 };
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(stateObj));
             } catch (e) {
@@ -3287,6 +4802,8 @@
             }
         }
 
+        let restoredHotelTiers = null;
+        let restoredRainyModes = null;
         function loadStateFromStorage() {
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
@@ -3319,6 +4836,8 @@
                     document.getElementById('currency-label').textContent = primaryCurrency === 'TWD' ? '主顯：NT$ 台幣' : '主顯：IDR 印尼盾';
                 }
                 if (saved.checklistState) checklistState = saved.checklistState;
+                if (Array.isArray(saved.selectedHotelTiers)) restoredHotelTiers = saved.selectedHotelTiers;
+                if (Array.isArray(saved.rainyModes)) restoredRainyModes = saved.rainyModes;
 
                 return true;
             } catch (e) {
@@ -3359,7 +4878,7 @@
             renderAirlineControls();
             updateSeasonAdvice();
             setBudgetMode('custom');
-            generateItineraryData();
+            generateItineraryData(true);
             renderDestinations();
             renderBeginnerChecklist();
             showToast('↺ 已恢復為預設 5 天 4 夜經典設定！');
@@ -3381,6 +4900,31 @@
             renderDestinations();
             renderBeginnerChecklist();
             generateItineraryData();
+            let needReRender = false;
+            if (Array.isArray(restoredHotelTiers) && restoredHotelTiers.length > 0) {
+                restoredHotelTiers.forEach((tierKey, idx) => {
+                    if (tierKey && idx < generatedDays.length - 1 && generatedDays[idx]) {
+                        generatedDays[idx].selectedHotelTier = tierKey;
+                    }
+                });
+                recalculateHotelNightsFromDays();
+                syncHotelNightsUi();
+                restoredHotelTiers = null;
+                needReRender = true;
+            }
+            if (Array.isArray(restoredRainyModes) && restoredRainyModes.length > 0) {
+                restoredRainyModes.forEach((flag, idx) => {
+                    if (flag && generatedDays[idx] && !generatedDays[idx].isFlightOnly) {
+                        generatedDays[idx].isRainyMode = true;
+                    }
+                });
+                restoredRainyModes = null;
+                needReRender = true;
+            }
+            if (needReRender) {
+                renderItineraryCards();
+                updateBudget();
+            }
         }
 
         window.onload = initBaliApp;
