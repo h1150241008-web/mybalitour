@@ -166,11 +166,11 @@
         <div class="flex flex-wrap items-center gap-2 bg-black/25 px-3 py-1.5 rounded-xl border border-white/15">
           <label class="text-xs text-amber-200 font-bold">精選主題路線：</label>
           <select id="preset-select" onchange="applyPreset(this.value)" class="bg-stone-900/90 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg border border-amber-400/40 focus:outline-none">
+            <option value="blank" selected>🧳 自由行・自訂專屬行程</option>
             <option value="valley_tribal">🌿 縱谷慢活・部落森林 3日遊</option>
             <option value="coast_art">🌊 東海岸太平洋・藝術浪花 3日遊</option>
             <option value="south_paiwan">🏺 南迴山海・排灣工藝慢旅 2日遊</option>
             <option value="family_farm">🐮 台東親子放電・牧場知性 3日遊</option>
-            <option value="blank">🧳 自由行・自訂專屬行程</option>
           </select>
 
           <button onclick="setFreeTravelMode()" title="保留目前天數，一鍵清空行程開始自由規劃" class="flex items-center gap-1 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs px-2.5 py-1.5 rounded-lg shadow-xs transition">
@@ -182,7 +182,7 @@
           <span class="text-xs text-amber-200 font-bold">天數：</span>
           <div class="flex items-center bg-stone-900/80 rounded-lg border border-white/20 overflow-hidden">
             <button onclick="changeDays(-1)" title="減少天數" class="px-2.5 py-1 text-xs font-bold hover:bg-red-700 transition">－</button>
-            <span id="day-count-label" class="px-2.5 py-1 text-xs font-black text-amber-300">3 天</span>
+            <span id="day-count-label" class="px-2.5 py-1 text-xs font-black text-amber-300">0 天</span>
             <button onclick="changeDays(1)" title="增加天數" class="px-2.5 py-1 text-xs font-bold hover:bg-emerald-700 transition">＋</button>
           </div>
         </div>
@@ -270,7 +270,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
               <h2 class="font-serif-tc text-base font-black text-stone-800">🗓️ 我的台東慢旅行程表</h2>
-              <span id="plan-mode-badge" class="text-[11px] font-black px-2 py-0.5 rounded-full bg-red-100 text-[#9E2A2B] border border-red-200">🌿 精選主題路線</span>
+              <span id="plan-mode-badge" class="text-[11px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">🧳 自由行自訂模式</span>
             </div>
             <div class="flex items-center gap-2 text-xs">
               <span class="bg-stone-100 px-2.5 py-1 rounded-lg font-bold text-stone-700">
@@ -292,7 +292,7 @@
                 <span class="font-black text-[#9E2A2B]">👥 人數：</span>
                 <span class="text-stone-700 font-bold" title="12歲(含)以上全票計算">大人</span>
                 <button onclick="changeGroupSize('adults', -1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-red-200 font-black leading-none">-</button>
-                <strong id="adult-count-label" class="text-stone-900 px-0.5">2</strong>
+                <strong id="adult-count-label" class="text-stone-900 px-0.5">0</strong>
                 <button onclick="changeGroupSize('adults', 1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-emerald-200 font-black leading-none">+</button>
                 <span class="text-stone-300 mx-0.5">|</span>
                 <span class="text-stone-700 font-bold" title="6~11歲兒童票，車票/門票/餐飲依半價估算">兒童<span class="text-[10px] text-amber-800">(6-11歲半價)</span></span>
@@ -647,11 +647,7 @@
         ['c3', 'c6', 'c8'],
         ['v8', 'v9', 'v10']
       ],
-      blank: [
-        [],
-        [],
-        []
-      ]
+      blank: []
     };
 
     const DAY_THEMES = [
@@ -677,7 +673,7 @@
     // ==========================================
     // 4. 多身份別人數與智慧優待計費引擎
     // ==========================================
-    let groupAdults = 2;
+    let groupAdults = 0;
     let groupChildren = 0;
     let groupToddlers = 0;
     let groupSeniors = 0;
@@ -694,9 +690,6 @@
       if (role === 'students') groupStudents = Math.max(0, groupStudents + delta);
       if (role === 'locals') groupLocals = Math.max(0, groupLocals + delta);
 
-      const total = groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents + groupLocals;
-      if (total === 0) groupAdults = 1;
-
       document.getElementById('adult-count-label').textContent = String(groupAdults);
       document.getElementById('child-count-label').textContent = String(groupChildren);
       document.getElementById('toddler-count-label').textContent = String(groupToddlers);
@@ -704,6 +697,17 @@
       document.getElementById('student-count-label').textContent = String(groupStudents);
       document.getElementById('local-count-label').textContent = String(groupLocals);
       syncAll();
+    }
+
+    function formatGroupComposition() {
+      const parts = [];
+      if (groupAdults > 0) parts.push(`大人${groupAdults}位`);
+      if (groupChildren > 0) parts.push(`兒童${groupChildren}位`);
+      if (groupToddlers > 0) parts.push(`幼童${groupToddlers}位`);
+      if (groupSeniors > 0) parts.push(`愛心/敬老${groupSeniors}位`);
+      if (groupStudents > 0) parts.push(`學生/軍警${groupStudents}位`);
+      if (groupLocals > 0) parts.push(`台東縣民${groupLocals}位`);
+      return parts.join('、') || '尚未設定人數 (0人)';
     }
 
     function formatGroupComposition() {
@@ -778,13 +782,17 @@
       };
 
       const unitPrice = (baseRoundTrip[origin] && baseRoundTrip[origin][mainType]) || 0;
-      const totalPeople = Math.max(1, groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents + groupLocals);
-      const nonLocalPeople = Math.max(1, groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents);
+      const rawTotalPeople = groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents + groupLocals;
+      const totalPeople = rawTotalPeople;
+      const nonLocalPeople = groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents;
 
       let mainTotal = 0;
       let mainFormulaNote = '';
 
-      if (mainType === 'self_drive') {
+      if (rawTotalPeople === 0) {
+        mainTotal = 0;
+        mainFormulaNote = '尚未設定人數';
+      } else if (mainType === 'self_drive') {
         const carsNeeded = Math.max(1, Math.ceil(totalPeople / 4));
         mainTotal = unitPrice * carsNeeded;
         mainFormulaNote = `${carsNeeded}車均攤`;
@@ -819,7 +827,10 @@
 
       let localTotal = 0;
       let localFormulaNote = '';
-      if (localType === 'scooter') {
+      if (rawTotalPeople === 0) {
+        localTotal = 0;
+        localFormulaNote = '';
+      } else if (localType === 'scooter') {
         const riders = Math.max(1, groupAdults + groupSeniors + groupStudents + groupLocals + Math.ceil((groupChildren + groupToddlers) * 0.5));
         const scooters = Math.max(1, Math.ceil(riders / 2));
         localTotal = 400 * scooters * days;
@@ -835,7 +846,7 @@
       }
 
       const totalTransportCost = mainTotal + localTotal;
-      const perPersonTransport = Math.round(totalTransportCost / totalPeople);
+      const perPersonTransport = totalPeople > 0 ? Math.round(totalTransportCost / totalPeople) : 0;
 
       return {
         originLabel: originNames[origin] || '台北 / 新北',
@@ -868,8 +879,8 @@
     // ==========================================
     // 6. 應用程式狀態與核心互動功能
     // ==========================================
-    let currentPresetKey = 'valley_tribal';
-    let itinerary = PRESETS.valley_tribal.map(d => [...d]);
+    let currentPresetKey = 'blank';
+    let itinerary = PRESETS.blank.map(d => [...d]);
     let selectedCategory = '全部';
     let selectedFaqCat = '全部';
     let collapsedDays = {};
@@ -917,7 +928,7 @@
       document.getElementById('transport-cost-preview').textContent = `NT$ ${tInfo.totalTransportCost.toLocaleString()}`;
 
       const grandTotal = spotGroupTotal + (tInfo.included ? tInfo.totalTransportCost : 0);
-      const perPerson = Math.round(grandTotal / tInfo.totalPeople);
+      const perPerson = tInfo.totalPeople > 0 ? Math.round(grandTotal / tInfo.totalPeople) : 0;
 
       document.getElementById('group-total-cost-label').textContent = `NT$ ${grandTotal.toLocaleString()}`;
       document.getElementById('per-person-cost-label').textContent = `NT$ ${perPerson.toLocaleString()}`;
@@ -926,6 +937,11 @@
     function updateDayDropdown() {
       const sel = document.getElementById('quick-add-day');
       if (!sel) return;
+      if (itinerary.length === 0) {
+        sel.innerHTML = `<option value="0">自動建 DAY 1</option>`;
+        sel.value = '0';
+        return;
+      }
       const prev = Number(sel.value) || 0;
       sel.innerHTML = itinerary.map((_, idx) => `<option value="${idx}">DAY ${idx + 1}</option>`).join('');
       sel.value = prev < itinerary.length ? String(prev) : '0';
@@ -933,7 +949,7 @@
 
     function applyPreset(key) {
       currentPresetKey = key;
-      const template = PRESETS[key] || PRESETS.valley_tribal;
+      const template = PRESETS[key] || PRESETS.blank;
       itinerary = template.map(d => [...d]);
       collapsedDays = {};
 
@@ -946,14 +962,13 @@
         badge.className = 'text-[11px] font-black px-2 py-0.5 rounded-full bg-red-100 text-[#9E2A2B] border border-red-200';
       }
       syncAll();
-      showToast(key === 'blank' ? '🧳 已切換至自由行空白行程表！' : '✨ 已套用精選主題路線！');
+      showToast(key === 'blank' ? '🧳 已切換至自由行（0天）空白狀態！' : '✨ 已套用精選主題路線！');
     }
 
     function setFreeTravelMode() {
-      const days = Math.max(1, itinerary.length);
       currentPresetKey = 'blank';
       document.getElementById('preset-select').value = 'blank';
-      itinerary = Array.from({ length: days }, () => []);
+      itinerary = [];
       collapsedDays = {};
 
       const badge = document.getElementById('plan-mode-badge');
@@ -961,13 +976,13 @@
       badge.className = 'text-[11px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300';
 
       syncAll();
-      showToast(`🧳 已清空並保留 ${days} 天自由行，從左側拖曳或點擊加入景點吧！`);
+      showToast('🧳 已重設為 0 天自由行空白狀態，點擊天數「＋」或直接加入景點即可開始！');
     }
 
     function changeDays(delta) {
       const next = itinerary.length + delta;
-      if (next < 1 || next > 7) {
-        showToast('行程天數建議設定在 1 至 7 天之間');
+      if (next < 0 || next > 7) {
+        showToast('行程天數建議設定在 0 至 7 天之間');
         return;
       }
       if (delta > 0) {
@@ -1051,6 +1066,9 @@
     }
 
     function addSpotToTargetDay(spotId, targetDayIdx) {
+      if (itinerary.length === 0) {
+        itinerary.push([]);
+      }
       const dIdx = typeof targetDayIdx === 'number'
         ? targetDayIdx
         : Number(document.getElementById('quick-add-day')?.value || 0);
@@ -1258,11 +1276,26 @@
       `).join('');
 
       const container = document.getElementById('itinerary-container');
+      if (itinerary.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl border-2 border-dashed border-stone-300 p-8 text-center space-y-3">
+            <div class="text-4xl">🧳</div>
+            <h3 class="font-serif-tc text-base font-black text-stone-800">目前為 0 天自由行空白狀態</h3>
+            <p class="text-xs text-stone-500 max-w-md mx-auto leading-relaxed">
+              您可以點擊上方天數列的「<strong>＋</strong>」號新增旅遊天數，或直接從左側景點庫點擊「<strong>＋ 加入行程</strong>」，系統會自動為您建立 DAY 1！
+            </p>
+            <button onclick="changeDays(1)" class="bg-[#9E2A2B] hover:bg-[#781D1E] text-white font-black text-xs px-5 py-2.5 rounded-xl shadow transition">
+              ＋ 新增第 1 天行程
+            </button>
+          </div>
+        `;
+        return;
+      }
       container.innerHTML = itinerary.map((daySpots, dIdx) => {
         const isCollapsed = !!collapsedDays[dIdx];
         const totalHours = daySpots.reduce((sum, id) => sum + (spotMap[id]?.hours || 0), 0);
         const dayGroupCost = calcSpotIdsGroupCost(daySpots);
-        const dayAvgCost = Math.round(dayGroupCost / tInfo.totalPeople);
+        const dayAvgCost = tInfo.totalPeople > 0 ? Math.round(dayGroupCost / tInfo.totalPeople) : 0;
         const theme = DAY_THEMES[dIdx] || {
           badge: '山海慢活・自由探索秘境',
           intro: `「第 ${dIdx + 1} 天的台東慢旅，跟著海風與山嵐的節奏前進，細細品味原民部落的文化故事與道地風味。」`,
@@ -1611,12 +1644,12 @@
       const spotGroupTotal = calcSpotIdsGroupCost(allIds);
       const tInfo = getTransportSummary();
       const grandGroupTotal = spotGroupTotal + (tInfo.included ? tInfo.totalTransportCost : 0);
-      const grandPerPerson = Math.round(grandGroupTotal / tInfo.totalPeople);
+      const grandPerPerson = tInfo.totalPeople > 0 ? Math.round(grandGroupTotal / tInfo.totalPeople) : 0;
 
       const dayPagesHtml = itinerary.map((daySpots, dIdx) => {
         const dHours = daySpots.reduce((s, id) => s + (spotMap[id]?.hours || 0), 0);
         const dGroupCost = calcSpotIdsGroupCost(daySpots);
-        const dAvgCost = Math.round(dGroupCost / tInfo.totalPeople);
+        const dAvgCost = tInfo.totalPeople > 0 ? Math.round(dGroupCost / tInfo.totalPeople) : 0;
         const theme = DAY_THEMES[dIdx] || {
           badge: '山海慢活・自由探索秘境',
           intro: `「第 ${dIdx + 1} 天的台東慢旅，跟著海風與山嵐的節奏前進，細細品味原民部落的文化故事與道地風味。」`,
@@ -1821,7 +1854,7 @@
                 <tbody>
                   ${itinerary.map((daySpots, idx) => {
                     const dGroup = calcSpotIdsGroupCost(daySpots);
-                    const dAvg = Math.round(dGroup / tInfo.totalPeople);
+                    const dAvg = tInfo.totalPeople > 0 ? Math.round(dGroup / tInfo.totalPeople) : 0;
                     return `
                       <tr>
                         <td class="border border-stone-300 px-3 py-2 font-bold text-[#9E2A2B]">DAY ${idx + 1} 行程小計</td>
@@ -1879,7 +1912,7 @@
       const allIds = itinerary.flat();
       const spotGroupTotal = calcSpotIdsGroupCost(allIds);
       const grandGroupTotal = spotGroupTotal + (tInfo.included ? tInfo.totalTransportCost : 0);
-      const grandPerPerson = Math.round(grandGroupTotal / tInfo.totalPeople);
+      const grandPerPerson = tInfo.totalPeople > 0 ? Math.round(grandGroupTotal / tInfo.totalPeople) : 0;
 
       const lines = [
         '【台東山海慢旅・原民文化深度行程表】',
@@ -1889,7 +1922,7 @@
       ];
       itinerary.forEach((daySpots, dIdx) => {
         const dGroup = calcSpotIdsGroupCost(daySpots);
-        const dAvg = Math.round(dGroup / tInfo.totalPeople);
+        const dAvg = tInfo.totalPeople > 0 ? Math.round(dGroup / tInfo.totalPeople) : 0;
         lines.push(`◆ 第 ${dIdx + 1} 天（全團 NT$ ${dGroup.toLocaleString()}｜每人均攤 NT$ ${dAvg.toLocaleString()}）：`);
         if (daySpots.length === 0) {
           lines.push('  (自由慢活時光)');
