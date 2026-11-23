@@ -204,14 +204,14 @@
       <div class="tribal-weave-bar"></div>
     </header>
 
-    <!-- 手機版專屬快速切換浮動列（電腦版自動隱藏） -->
-    <div class="lg:hidden sticky top-0 z-30 bg-stone-900/95 backdrop-blur-xs text-white px-3 py-2 flex items-center justify-between gap-2 border-b border-amber-400/30 shadow-md">
-      <a href="#mobile-spots-section" class="flex-1 text-center bg-white/15 hover:bg-white/25 text-amber-200 font-black text-xs py-2 rounded-xl transition">
+    <!-- 手機/平板/分欄視窗專屬快速切換浮動列（1280px 以下皆常駐顯示） -->
+    <div class="xl:hidden sticky top-0 z-30 bg-stone-900/95 backdrop-blur-xs text-white px-3 py-2.5 flex items-center justify-between gap-2 border-b-2 border-amber-400 shadow-lg">
+      <button type="button" onclick="scrollToSection('mobile-spots-section')" class="flex-1 text-center bg-white/15 hover:bg-white/25 active:scale-95 text-amber-200 font-black text-xs sm:text-sm py-2 px-2 rounded-xl border border-white/15 transition">
         📍 1. 挑景點與美食
-      </a>
-      <a href="#mobile-itinerary-section" class="flex-1 text-center bg-[#9E2A2B] hover:bg-[#781D1E] text-white font-black text-xs py-2 rounded-xl shadow border border-amber-300/40 transition">
+      </button>
+      <button type="button" onclick="scrollToSection('mobile-itinerary-section')" class="flex-1 text-center bg-[#9E2A2B] hover:bg-[#781D1E] active:scale-95 text-white font-black text-xs sm:text-sm py-2 px-2 rounded-xl shadow border border-amber-300/60 transition">
         🗓️ 2. 看每天行程表 (<span id="mobile-spot-badge">0</span>)
-      </a>
+      </button>
     </div>
 
     <!-- 導遊順路提醒橫幅 -->
@@ -875,6 +875,13 @@
     let collapsedDays = {};
     let dragPayload = null;
     let latestRouteAnalysis = null;
+
+    function scrollToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
 
     function init() {
       renderCategoryTabs();
