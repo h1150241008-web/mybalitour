@@ -710,17 +710,6 @@
       return parts.join('、') || '尚未設定人數 (0人)';
     }
 
-    function formatGroupComposition() {
-      const parts = [];
-      if (groupAdults > 0) parts.push(`大人${groupAdults}位`);
-      if (groupChildren > 0) parts.push(`兒童${groupChildren}位`);
-      if (groupToddlers > 0) parts.push(`幼童${groupToddlers}位`);
-      if (groupSeniors > 0) parts.push(`愛心/敬老${groupSeniors}位`);
-      if (groupStudents > 0) parts.push(`學生/軍警${groupStudents}位`);
-      if (groupLocals > 0) parts.push(`台東縣民${groupLocals}位`);
-      return parts.join('、') || '大人1位';
-    }
-
     function calcSingleSpotGroupCost(spot) {
       if (!spot || spot.cost === 0) return 0;
       const base = spot.cost;
