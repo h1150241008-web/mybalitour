@@ -97,7 +97,7 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
       }
-      #app-shell, #route-modal, #faq-modal, #detail-modal, #toast, .no-print {
+      #app-shell, #route-modal, #faq-modal, #detail-modal, #nav-qr-modal, #toast, .no-print {
         display: none !important;
       }
       #handbook-modal {
@@ -173,7 +173,7 @@
             <option value="family_farm">🐮 台東親子放電・牧場知性 3日遊</option>
           </select>
 
-          <button onclick="setFreeTravelMode()" title="保留目前天數，一鍵清空行程開始自由規劃" class="flex items-center gap-1 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs px-2.5 py-1.5 rounded-lg shadow-xs transition">
+          <button onclick="setFreeTravelMode()" title="一鍵重設為自由行空白狀態" class="flex items-center gap-1 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs px-2.5 py-1.5 rounded-lg shadow-xs transition">
             <span>🧳 一鍵設置自由行</span>
           </button>
 
@@ -287,7 +287,7 @@
           <!-- 同行人數與出發地、來回交通工具預算配置 -->
           <div class="bg-amber-50/70 border border-amber-200/90 rounded-xl px-2.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
             <div class="flex flex-wrap items-center gap-1.5">
-              <!-- 同行人數控制（含大人、兒童半價、幼童免費、愛心敬老、學生軍警、台東縣民） -->
+              <!-- 同行人數控制（預設全為 0 人） -->
               <div class="flex flex-wrap items-center gap-1 bg-white border border-amber-300 rounded-lg px-2 py-1 shadow-2xs">
                 <span class="font-black text-[#9E2A2B]">👥 人數：</span>
                 <span class="text-stone-700 font-bold" title="12歲(含)以上全票計算">大人</span>
@@ -671,7 +671,7 @@
     const customDayPhotos = {};
 
     // ==========================================
-    // 4. 多身份別人數與智慧優待計費引擎
+    // 4. 多身份別人數與智慧優待計費引擎（預設皆為 0 人）
     // ==========================================
     let groupAdults = 0;
     let groupChildren = 0;
@@ -866,7 +866,7 @@
     ];
 
     // ==========================================
-    // 6. 應用程式狀態與核心互動功能
+    // 6. 應用程式狀態與核心互動功能（預設自由行、0 天、0 人）
     // ==========================================
     let currentPresetKey = 'blank';
     let itinerary = PRESETS.blank.map(d => [...d]);
@@ -1192,7 +1192,6 @@
         const rawWaypoints = placeQueries.slice(1, -1).map(q => encodeURIComponent(q)).join('|');
         navUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${rawWaypoints ? `&waypoints=${rawWaypoints}` : ''}&travelmode=driving`;
 
-        // 讓 Google Maps 自動最佳化中途停靠站順序 (optimize:true)
         const optWaypoints = placeQueries.slice(1, -1).map(q => encodeURIComponent(q)).join('|');
         optimizedNavUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${optWaypoints ? `&waypoints=optimize:true|${optWaypoints}` : ''}&travelmode=driving`;
       }
@@ -1827,7 +1826,6 @@
           </div>
 
           <div class="p-6 space-y-5 text-xs">
-            <!-- 預算與記帳總結表 -->
             <div>
               <h3 class="font-serif-tc font-black text-base text-[#9E2A2B] mb-2">📊 全團總計與每人平均分攤明細表（含兒童半價、幼童免費、愛心/敬老優待與車輛均攤）</h3>
               <table class="w-full border-collapse border border-stone-300 text-left">
@@ -1855,7 +1853,7 @@
                     `;
                   }).join('')}
                   <tr>
-                    <td class="border border-stone-300 px-3 py-2 font-bold text-stone-800">往返與在地交通</td>
+                    <td class="border border-stone-300 px-3 py-2 font-bold text-stone-800">往返與當地交通</td>
                     <td class="border border-stone-300 px-3 py-2 text-stone-600">${tInfo.originLabel}出發｜${tInfo.mainLabel} (${tInfo.mainFormulaNote}) ＋ ${tInfo.localLabel}${tInfo.localFormulaNote ? ' (' + tInfo.localFormulaNote + ')' : ''}</td>
                     <td class="border border-stone-300 px-3 py-2 font-bold text-right">${tInfo.included ? 'NT$ ' + tInfo.totalTransportCost.toLocaleString() : '未計入 ($0)'}</td>
                     <td class="border border-stone-300 px-3 py-2 font-bold text-right text-emerald-800">${tInfo.included ? 'NT$ ' + tInfo.perPersonTransport.toLocaleString() : '$0'}</td>
