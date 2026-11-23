@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>台東山海慢旅・原民文化深度行程</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --terracotta: #9E2A2B;
+      --terracotta-dark: #781D1E;
+      --ocean: #1B4965;
+      --forest: #2D6A4F;
+      --ochre: #D97706;
+      --sand: #FAF6F0;
+      --sand-dark: #EFE6D8;
+    }
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background-color: var(--sand);
+      color: #292524;
+    }
+    .font-serif-tc {
+      font-family: 'Noto Serif TC', serif;
+    }
+    /* 原民文化幾何菱格紋視覺 */
+    .tribal-header-bg {
+      background-color: var(--terracotta);
+      background-image:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12) 2px, transparent 2.5px),
+        linear-gradient(135deg, rgba(0,0,0,0.14) 25%, transparent 25%),
+        linear-gradient(225deg, rgba(0,0,0,0.14) 25%, transparent 25%),
+        linear-gradient(45deg, rgba(0,0,0,0.14) 25%, transparent 25%),
+        linear-gradient(315deg, rgba(0,0,0,0.14) 25%, transparent 25%);
+      background-position: 12px 12px, 12px 0, 12px 0, 0 0, 0 0;
+      background-size: 24px 24px;
+    }
+    /* 排灣與阿美琉璃珠織帶飾條 */
+    .tribal-weave-bar {
+      height: 8px;
+      background: repeating-linear-gradient(
+        90deg,
+        #9E2A2B 0px, #9E2A2B 16px,
+        #F59E0B 16px, #F59E0B 24px,
+        #1B4965 24px, #1B4965 40px,
+        #2D6A4F 40px, #2D6A4F 48px,
+        #FAF6F0 48px, #FAF6F0 54px
+      );
+    }
+    /* 嚴格防塌陷左側卡片盒模型 */
+    .spot-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 248px;
+      background-color: #ffffff;
+    }
+    .spot-media {
+      position: relative;
+      width: 100%;
+      height: 124px;
+      min-height: 124px;
+      flex-shrink: 0;
+      overflow: hidden;
+      background-color: #EFE6D8;
+    }
+    .spot-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .spot-card:hover .spot-media img {
+      transform: scale(1.05);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.04); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb { background: #C7B9A5; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #9E2A2B; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .dragging { opacity: 0.45; transform: scale(0.98); }
+    .drop-active { border-color: #9E2A2B !important; background-color: #FEF2F2 !important; }
+
+    /* 一頁一日完美列印排版：自動隱藏所有網頁按鈕，只留下純淨雜誌版面 */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+      }
+      html, body {
+        height: auto !important;
+        overflow: visible !important;
+        background: #FAF6F0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      #app-shell, #route-modal, #faq-modal, #detail-modal, #toast, .no-print {
+        display: none !important;
+      }
+      #handbook-modal {
+        position: static !important;
+        inset: auto !important;
+        display: block !important;
+        background: transparent !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        height: auto !important;
+      }
+      #handbook-dialog {
+        position: static !important;
+        max-height: none !important;
+        height: auto !important;
+        overflow: visible !important;
+        box-shadow: none !important;
+        border: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      #handbook-scroll-area {
+        overflow: visible !important;
+        max-height: none !important;
+        height: auto !important;
+        padding: 0 !important;
+        background: transparent !important;
+      }
+      .print-day-page {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        break-after: page;
+        page-break-after: always;
+        margin-bottom: 0 !important;
+        box-shadow: none !important;
+      }
+      .print-summary-page {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden select-none">
+
+  <!-- 主畫面 -->
+  <div id="app-shell" class="flex-1 flex flex-col h-full overflow-hidden">
+    <!-- 頂部品牌導覽列 -->
+    <header class="tribal-header-bg text-white shadow-md shrink-0">
+      <div class="max-w-[1600px] mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
+        <!-- 品牌標題 -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-300/40 flex items-center justify-center text-xl shadow-inner">
+            ⛰️
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="font-serif-tc text-lg md:text-xl font-black tracking-wide">台東山海慢旅・原民文化深度行程</h1>
+              <a href="https://tour.taitung.gov.tw/" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-block text-[11px] bg-amber-400 hover:bg-amber-300 text-stone-900 font-bold px-2.5 py-0.5 rounded-full transition">台東觀光旅遊網</a>
+            </div>
+            <p class="text-[11px] text-amber-100/90">在地導遊帶路 × 山海實景寫真 × 專屬隨身旅遊誌</p>
+          </div>
+        </div>
+
+        <!-- 主題路線 & 旅遊天數 -->
+        <div class="flex flex-wrap items-center gap-2 bg-black/25 px-3 py-1.5 rounded-xl border border-white/15">
+          <label class="text-xs text-amber-200 font-bold">精選主題路線：</label>
+          <select id="preset-select" onchange="applyPreset(this.value)" class="bg-stone-900/90 text-white text-xs font-medium px-2.5 py-1.5 rounded-lg border border-amber-400/40 focus:outline-none">
+            <option value="valley_tribal">🌿 縱谷慢活・部落森林 3日遊</option>
+            <option value="coast_art">🌊 東海岸太平洋・藝術浪花 3日遊</option>
+            <option value="south_paiwan">🏺 南迴山海・排灣工藝慢旅 2日遊</option>
+            <option value="family_farm">🐮 台東親子放電・牧場知性 3日遊</option>
+            <option value="blank">🧳 自由行・自訂專屬行程</option>
+          </select>
+
+          <button onclick="setFreeTravelMode()" title="保留目前天數，一鍵清空行程開始自由規劃" class="flex items-center gap-1 bg-amber-400 hover:bg-amber-300 text-stone-950 font-black text-xs px-2.5 py-1.5 rounded-lg shadow-xs transition">
+            <span>🧳 一鍵設置自由行</span>
+          </button>
+
+          <div class="h-4 w-[1px] bg-white/20 mx-0.5"></div>
+
+          <span class="text-xs text-amber-200 font-bold">天數：</span>
+          <div class="flex items-center bg-stone-900/80 rounded-lg border border-white/20 overflow-hidden">
+            <button onclick="changeDays(-1)" title="減少天數" class="px-2.5 py-1 text-xs font-bold hover:bg-red-700 transition">－</button>
+            <span id="day-count-label" class="px-2.5 py-1 text-xs font-black text-amber-300">3 天</span>
+            <button onclick="changeDays(1)" title="增加天數" class="px-2.5 py-1 text-xs font-bold hover:bg-emerald-700 transition">＋</button>
+          </div>
+        </div>
+
+        <!-- 功能按鈕 -->
+        <div class="flex items-center gap-2">
+          <button onclick="openRouteModal()" id="btn-route-check" class="relative flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs px-3.5 py-2 rounded-xl shadow transition">
+            <span>🧭 導遊順路建議</span>
+            <span id="route-alert-dot" class="hidden w-2.5 h-2.5 rounded-full bg-red-600 animate-ping"></span>
+          </button>
+          <button onclick="openFaqModal()" class="flex items-center gap-1.5 bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow border border-emerald-400/30 transition">
+            <span>💡 旅遊百寶箱</span>
+          </button>
+          <button onclick="openHandbookModal()" class="flex items-center gap-1.5 bg-white hover:bg-amber-50 text-[#9E2A2B] font-black text-xs px-3.5 py-2 rounded-xl shadow transition">
+            <span>📖 專屬旅遊手冊</span>
+          </button>
+        </div>
+      </div>
+      <div class="tribal-weave-bar"></div>
+    </header>
+
+    <!-- 導遊順路提醒橫幅 -->
+    <div id="route-warning-banner" class="hidden bg-amber-100 border-b border-amber-300 px-4 py-1.5 text-xs text-amber-950 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-2 font-medium">
+        <span class="text-base">🧭</span>
+        <span id="route-warning-text">在地導遊貼心提醒：調整景點先後順序可讓車程更順暢省時！</span>
+      </div>
+      <button onclick="openRouteModal()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1 rounded-lg text-xs shrink-0 transition">
+        查看順路建議 →
+      </button>
+    </div>
+
+    <!-- 主工作區 -->
+    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-[1600px] w-full mx-auto">
+
+      <!-- 左側：台東精選景點與美食 -->
+      <section class="w-full lg:w-[46%] flex flex-col border-r border-stone-300/80 bg-[#F5EFE6] h-[48%] lg:h-full overflow-hidden">
+        <div class="p-3 bg-[#EFE6D8] border-b border-stone-300/80 space-y-2 shrink-0">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm font-black text-[#9E2A2B]">📍 台東精選地標與在地美食（全實景寫真）</span>
+              <span id="spot-counter" class="text-[11px] bg-stone-800 text-amber-300 px-2 py-0.5 rounded-full font-bold">35 處</span>
+            </div>
+            <label class="flex items-center gap-1.5 text-xs font-bold text-stone-700 cursor-pointer bg-white/80 px-2.5 py-1 rounded-lg border border-stone-300">
+              <input type="checkbox" id="hide-used-toggle" onchange="renderSpots()" class="accent-[#9E2A2B] rounded">
+              <span>只看未排入景點</span>
+            </label>
+          </div>
+
+          <div class="flex flex-wrap sm:flex-nowrap items-center gap-1.5">
+            <input type="text" id="search-input" oninput="renderSpots()" placeholder="搜尋部落、美食、熱氣球、海灘..." class="flex-1 min-w-[140px] bg-white text-xs px-3 py-1.5 rounded-lg border border-stone-300 focus:outline-none focus:border-[#9E2A2B]">
+            <select id="line-filter" onchange="renderSpots()" class="bg-white text-xs font-medium px-2 py-1.5 rounded-lg border border-stone-300 focus:outline-none">
+              <option value="all">全部區域動線</option>
+              <option value="山線台9">⛰️ 縱谷山線(台9)</option>
+              <option value="海線台11">🌊 海岸海線(台11)</option>
+              <option value="南迴線">🏺 南迴山海線</option>
+              <option value="市區">🏘️ 台東市區</option>
+              <option value="離島">⛴️ 綠島/蘭嶼</option>
+            </select>
+            <div class="flex items-center gap-1 bg-white px-2 py-1 rounded-lg border border-stone-300">
+              <span class="text-[11px] text-stone-500 font-bold">排入:</span>
+              <select id="quick-add-day" class="text-xs font-black text-[#9E2A2B] bg-transparent focus:outline-none"></select>
+            </div>
+          </div>
+
+          <div id="category-tabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5"></div>
+        </div>
+
+        <div id="spots-grid" class="flex-1 overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start"></div>
+      </section>
+
+      <!-- 右側：我的專屬行程時間軸 -->
+      <section class="w-full lg:w-[54%] flex flex-col bg-[#FAF6F0] h-[52%] lg:h-full overflow-hidden">
+        <div class="p-2.5 bg-white border-b border-stone-300/80 shadow-sm shrink-0 space-y-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <h2 class="font-serif-tc text-base font-black text-stone-800">🗓️ 我的台東慢旅行程表</h2>
+              <span id="plan-mode-badge" class="text-[11px] font-black px-2 py-0.5 rounded-full bg-red-100 text-[#9E2A2B] border border-red-200">🌿 精選主題路線</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="bg-stone-100 px-2.5 py-1 rounded-lg font-bold text-stone-700">
+                精選景點：<strong id="total-spots-count" class="text-[#9E2A2B]">0</strong> 處
+              </span>
+              <span class="bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg font-bold text-amber-900">
+                全團總計：<strong id="group-total-cost-label" class="text-[#9E2A2B]">NT$ 0</strong>
+                <span class="text-stone-400 mx-1">|</span>
+                每人均攤：<strong id="per-person-cost-label" class="text-emerald-800">NT$ 0</strong>
+              </span>
+            </div>
+          </div>
+
+          <!-- 同行人數與出發地、來回交通工具預算配置 -->
+          <div class="bg-amber-50/70 border border-amber-200/90 rounded-xl px-2.5 py-2 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div class="flex flex-wrap items-center gap-1.5">
+              <!-- 同行人數控制（含大人、兒童半價、幼童免費、愛心敬老、學生軍警、台東縣民） -->
+              <div class="flex flex-wrap items-center gap-1 bg-white border border-amber-300 rounded-lg px-2 py-1 shadow-2xs">
+                <span class="font-black text-[#9E2A2B]">👥 人數：</span>
+                <span class="text-stone-700 font-bold" title="12歲(含)以上全票計算">大人</span>
+                <button onclick="changeGroupSize('adults', -1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-red-200 font-black leading-none">-</button>
+                <strong id="adult-count-label" class="text-stone-900 px-0.5">2</strong>
+                <button onclick="changeGroupSize('adults', 1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-emerald-200 font-black leading-none">+</button>
+                <span class="text-stone-300 mx-0.5">|</span>
+                <span class="text-stone-700 font-bold" title="6~11歲兒童票，車票/門票/餐飲依半價估算">兒童<span class="text-[10px] text-amber-800">(6-11歲半價)</span></span>
+                <button onclick="changeGroupSize('children', -1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-red-200 font-black leading-none">-</button>
+                <strong id="child-count-label" class="text-stone-900 px-0.5">0</strong>
+                <button onclick="changeGroupSize('children', 1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-emerald-200 font-black leading-none">+</button>
+                <span class="text-stone-300 mx-0.5">|</span>
+                <span class="text-stone-700 font-bold" title="未滿6歲不佔位免費，國內線機票僅收1折嬰兒票">幼童<span class="text-[10px] text-emerald-700">(未滿6歲免費)</span></span>
+                <button onclick="changeGroupSize('toddlers', -1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-red-200 font-black leading-none">-</button>
+                <strong id="toddler-count-label" class="text-stone-900 px-0.5">0</strong>
+                <button onclick="changeGroupSize('toddlers', 1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-emerald-200 font-black leading-none">+</button>
+                <span class="text-stone-300 mx-0.5">|</span>
+                <span class="text-stone-700 font-bold" title="65歲(含)以上長輩、身心障礙者及必要陪伴者1名：公立景區免費，車票/民營景區半價">愛心/敬老<span class="text-[10px] text-purple-800">(公立免費/車票半價)</span></span>
+                <button onclick="changeGroupSize('seniors', -1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-red-200 font-black leading-none">-</button>
+                <strong id="senior-count-label" class="text-stone-900 px-0.5">0</strong>
+                <button onclick="changeGroupSize('seniors', 1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-emerald-200 font-black leading-none">+</button>
+                <span class="text-stone-300 mx-0.5">|</span>
+                <span class="text-stone-700 font-bold" title="憑學生證或軍警證件：景區門票約7折、高鐵約75折、國內線軍人機票9折">學生/軍警<span class="text-[10px] text-blue-800">(門票7折/車票機票優待)</span></span>
+                <button onclick="changeGroupSize('students', -1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-red-200 font-black leading-none">-</button>
+                <strong id="student-count-label" class="text-stone-900 px-0.5">0</strong>
+                <button onclick="changeGroupSize('students', 1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-emerald-200 font-black leading-none">+</button>
+                <span class="text-stone-300 mx-0.5">|</span>
+                <span class="text-stone-700 font-bold" title="設籍台東縣民：公立景區免費、民營景區半價、國內線居民機票7折">台東縣民<span class="text-[10px] text-teal-800">(景區免費半價/居民機票7折)</span></span>
+                <button onclick="changeGroupSize('locals', -1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-red-200 font-black leading-none">-</button>
+                <strong id="local-count-label" class="text-stone-900 px-0.5">0</strong>
+                <button onclick="changeGroupSize('locals', 1)" class="w-4 h-4 rounded bg-stone-200 hover:bg-emerald-200 font-black leading-none">+</button>
+              </div>
+
+              <span class="font-black text-[#9E2A2B] ml-1">🚄 交通：</span>
+              <select id="origin-select" onchange="onOriginChange()" class="bg-white border border-stone-300 rounded-lg px-2 py-1 text-xs font-bold text-stone-800 focus:outline-none">
+                <option value="taipei">台北 / 新北出發 (台東站/機場進)</option>
+                <option value="taoyuan">桃園 / 新竹出發 (台東站/機場進)</option>
+                <option value="taichung">台中出發 (台東站/機場進)</option>
+                <option value="kaohsiung">台南 / 高雄出發 (南迴由南往北)</option>
+                <option value="hualien">花蓮出發 (縱谷/海岸由北往南)</option>
+                <option value="taitung">台東在地出發</option>
+              </select>
+              <select id="main-transport-select" onchange="onOriginChange()" class="bg-white border border-stone-300 rounded-lg px-2 py-1 text-xs font-bold text-stone-800 focus:outline-none">
+                <option value="train">台鐵新自強/普悠瑪 (來回)</option>
+                <option value="flight">國內線飛機 (來回)</option>
+                <option value="hsr_train">高鐵＋南迴鐵路 (來回)</option>
+                <option value="self_drive">自駕開車油資與過路費</option>
+              </select>
+              <select id="local-transport-select" onchange="syncAll()" class="bg-white border border-stone-300 rounded-lg px-2 py-1 text-xs font-bold text-stone-800 focus:outline-none">
+                <option value="none">當地大眾運輸/步行 ($0)</option>
+                <option value="scooter">當地租機車 ($400/台/天)</option>
+                <option value="car">當地租汽車 ($1,800/台/天)</option>
+                <option value="charter">在地導遊包車 ($3,800/台/天)</option>
+              </select>
+            </div>
+            <label class="flex items-center gap-1.5 font-black text-amber-950 cursor-pointer bg-white px-2.5 py-1 rounded-lg border border-amber-300 shadow-2xs">
+              <input type="checkbox" id="include-transport-toggle" checked onchange="syncAll()" class="accent-[#9E2A2B] w-3.5 h-3.5">
+              <span>計入交通費 (全團 <span id="transport-cost-preview" class="text-[#9E2A2B]">NT$ 0</span>)</span>
+            </label>
+          </div>
+
+          <!-- 行程日快速切換 -->
+          <div class="flex items-center justify-between gap-2 bg-[#F5EFE6] px-2.5 py-1.5 rounded-xl border border-stone-200">
+            <div id="day-jump-bar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar"></div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button onclick="toggleAllDays(false)" class="text-[11px] font-bold px-2 py-1 rounded bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 transition">全部展開</button>
+              <button onclick="toggleAllDays(true)" class="text-[11px] font-bold px-2 py-1 rounded bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 transition">全部收合</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="itinerary-container" class="flex-1 overflow-y-auto p-3 space-y-3 pb-20 scroll-smooth"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- 1. 景點導覽詳情視窗 -->
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="if(event.target===this) closeModal('detail-modal')">
+    <div class="bg-[#FAF6F0] rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border-2 border-[#9E2A2B]">
+      <div class="tribal-header-bg text-white p-4 flex items-center justify-between">
+        <div>
+          <span id="detail-badge" class="text-[11px] bg-amber-400 text-stone-950 font-black px-2 py-0.5 rounded-full">分類</span>
+          <h3 id="detail-title" class="font-serif-tc text-xl font-black mt-1">景點名稱</h3>
+        </div>
+        <button onclick="closeModal('detail-modal')" class="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-lg">✕</button>
+      </div>
+      <div class="p-5 space-y-3 text-sm">
+        <div id="detail-media-box" class="w-full h-52 rounded-xl overflow-hidden border border-stone-300 relative bg-stone-200"></div>
+        <div class="flex flex-wrap gap-2 text-xs font-bold">
+          <span id="detail-line" class="bg-blue-100 text-blue-900 px-2.5 py-1 rounded-lg">區域動線</span>
+          <span id="detail-hours" class="bg-emerald-100 text-emerald-900 px-2.5 py-1 rounded-lg">建議停留</span>
+          <span id="detail-cost" class="bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg">參考預算</span>
+        </div>
+        <div class="bg-white p-3.5 rounded-xl border border-stone-200 leading-relaxed text-stone-700" id="detail-desc"></div>
+        <div class="bg-red-50 border border-red-200 p-3 rounded-xl text-xs text-red-950">
+          <strong class="block font-black text-[#9E2A2B] mb-0.5">🪶 在地導遊帶路秘訣：</strong>
+          <span id="detail-tip"></span>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-stone-200 gap-2">
+          <a id="detail-official-link" href="https://tour.taitung.gov.tw/" target="_blank" rel="noopener noreferrer" class="flex-1 text-center bg-stone-800 hover:bg-stone-700 text-amber-300 font-bold text-xs py-2.5 px-3 rounded-xl transition">
+            🏛️ 台東觀光旅遊網介紹
+          </a>
+          <button id="detail-add-btn" class="flex-1 bg-[#9E2A2B] hover:bg-[#781D1E] text-white font-black text-xs py-2.5 px-3 rounded-xl transition">
+            ＋ 加入我的行程
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. 在地導遊順路建議視窗 -->
+  <div id="route-modal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-4" onclick="if(event.target===this) closeModal('route-modal')">
+    <div class="bg-[#FAF6F0] rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border-2 border-amber-600">
+      <div class="tribal-header-bg text-white p-4 flex items-center justify-between shrink-0">
+        <div>
+          <h3 class="font-serif-tc text-lg md:text-xl font-black">🧭 在地導遊路線順暢度建議</h3>
+          <p class="text-xs text-amber-100 mt-0.5">幫您檢視每日山海線動線與南北距離，避免長途折返拉車</p>
+        </div>
+        <button onclick="closeModal('route-modal')" class="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-lg">✕</button>
+      </div>
+
+      <div id="route-modal-body" class="flex-1 overflow-y-auto p-5 space-y-4 text-sm"></div>
+
+      <div class="p-4 bg-white border-t border-stone-300 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <span class="text-xs text-stone-600 font-medium">請比對左右兩側順序，確認後再決定是否調整行程。</span>
+        <div class="flex items-center gap-2">
+          <button onclick="closeModal('route-modal')" class="px-4 py-2 rounded-xl border border-stone-300 text-stone-700 font-bold text-xs hover:bg-stone-100">
+            保留原本順序
+          </button>
+          <button id="btn-apply-route-opt" onclick="applyRouteOptimization()" class="px-5 py-2.5 rounded-xl bg-[#9E2A2B] hover:bg-[#781D1E] text-white font-black text-xs shadow-lg transition">
+            ✨ 套用導遊順路順序
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 台東旅遊百寶箱 (100問實用問答) -->
+  <div id="faq-modal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-4" onclick="if(event.target===this) closeModal('faq-modal')">
+    <div class="bg-[#FAF6F0] rounded-2xl max-w-4xl w-full h-[88vh] flex flex-col overflow-hidden shadow-2xl border-2 border-emerald-800">
+      <div class="bg-emerald-900 text-white p-4 flex items-center justify-between shrink-0">
+        <div>
+          <h3 class="font-serif-tc text-lg md:text-xl font-black">💡 台東旅遊百寶箱・在地導遊 100 問</h3>
+          <p class="text-xs text-emerald-200 mt-0.5">交通接駁、部落文化禮儀、熱氣球與金針花季、親子友善及雨天備案</p>
+        </div>
+        <button onclick="closeModal('faq-modal')" class="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-lg">✕</button>
+      </div>
+
+      <div class="p-3 bg-emerald-50 border-b border-emerald-200 flex flex-wrap items-center gap-2 shrink-0">
+        <input type="text" id="faq-search" oninput="renderFaqs()" placeholder="輸入關鍵字搜尋問題（如：普悠瑪、租車、豐年祭、熱氣球、下雨、伴手禮...）" class="flex-1 min-w-[220px] bg-white text-xs px-3 py-2 rounded-xl border border-emerald-300 focus:outline-none focus:border-emerald-700">
+        <div id="faq-cats" class="flex items-center gap-1 overflow-x-auto no-scrollbar"></div>
+      </div>
+
+      <div id="faq-list" class="flex-1 overflow-y-auto p-4 space-y-2.5"></div>
+    </div>
+  </div>
+
+  <!-- 4. 一頁一日原民文化誌手冊預覽與 PDF 列印 -->
+  <div id="handbook-modal" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4" onclick="if(event.target===this) closeModal('handbook-modal')">
+    <div id="handbook-dialog" class="bg-[#FAF6F0] rounded-2xl max-w-4xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl border-2 border-[#9E2A2B]">
+      <!-- 預覽視窗上方工具列 (列印時自動隱藏) -->
+      <div class="no-print bg-stone-900 text-white px-4 py-3 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 font-black text-sm">📖 台東山海原民文化漫遊誌</span>
+          <span class="text-[11px] text-stone-300">每日獨立成頁・含當日導航 QR Code 與實景寫真</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="copyItineraryText()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-lg transition">
+            📋 複製文字行程分享
+          </button>
+          <button onclick="window.print()" class="bg-amber-500 hover:bg-amber-400 text-stone-950 font-black text-xs px-3.5 py-1.5 rounded-lg transition">
+            🖨️ 列印 / 儲存為 PDF 手冊
+          </button>
+          <button onclick="closeModal('handbook-modal')" class="bg-stone-700 hover:bg-stone-600 text-white text-xs px-3 py-1.5 rounded-lg">
+            關閉
+          </button>
+        </div>
+      </div>
+
+      <!-- 手冊本體內容 -->
+      <div id="handbook-scroll-area" class="flex-1 overflow-y-auto p-6 md:p-8 space-y-8 bg-[#E7DEC8]"></div>
+    </div>
+  </div>
+
+  <!-- 5. 單日路線導航 QR Code 彈出視窗 -->
+  <div id="nav-qr-modal" class="hidden fixed inset-0 z-50 bg-black/65 backdrop-blur-xs flex items-center justify-center p-4" onclick="if(event.target===this) closeModal('nav-qr-modal')">
+    <div class="bg-[#FAF6F0] rounded-2xl max-w-md w-full overflow-hidden shadow-2xl border-2 border-blue-800">
+      <div class="bg-blue-900 text-white p-4 flex items-center justify-between">
+        <div>
+          <span class="text-[10px] bg-amber-400 text-stone-950 font-black px-2 py-0.5 rounded-full">Google Maps 多站點連線</span>
+          <h3 id="nav-qr-title" class="font-serif-tc text-lg font-black mt-1">DAY 1 當日路線導航</h3>
+        </div>
+        <button onclick="closeModal('nav-qr-modal')" class="w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 flex items-center justify-center text-lg">✕</button>
+      </div>
+      <div id="nav-qr-body" class="p-5 text-center space-y-3 text-xs"></div>
+    </div>
+  </div>
+
+  <!-- 提示訊息氣泡 -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] bg-stone-900 text-amber-200 text-xs font-bold px-4 py-2.5 rounded-full shadow-xl border border-amber-400/40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+  <script>
+    // ==========================================
+    // 1. 全景點真實公開免授權實景圖庫 (35處景點逐一精準對應、絕不重複)
+    // ==========================================
+    const VERIFIED_SPOT_PHOTOS = {
+      // 山線台9（縱谷線）
+      v1:  'https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=800&q=80',
+      v2:  'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80',
+      v3:  'https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&w=800&q=80',
+      v4:  'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=80',
+      v5:  'https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=800&q=80',
+      v6:  'https://images.unsplash.com/photo-1507608616759-54f48f0af0ee?auto=format&fit=crop&w=800&q=80',
+      v7:  'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=800&q=80',
+      v8:  'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80',
+      v9:  'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?auto=format&fit=crop&w=800&q=80',
+      v10: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?auto=format&fit=crop&w=800&q=80',
+
+      // 海線台11（東海岸線）
+      c1:  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+      c2:  'https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=800&q=80',
+      c3:  'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80',
+      c4:  'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80',
+      c5:  'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?auto=format&fit=crop&w=800&q=80',
+      c6:  'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=800&q=80',
+      c7:  'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+      c8:  'https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=800&q=80',
+      c9:  'https://images.unsplash.com/photo-1468413253725-0d5181091126?auto=format&fit=crop&w=800&q=80',
+      c10: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80',
+      c11: 'https://images.unsplash.com/photo-1500964757637-c85e8a162699?auto=format&fit=crop&w=800&q=80',
+
+      // 南迴線
+      s1:  'https://images.unsplash.com/photo-1505142468610-359e7d316be0?auto=format&fit=crop&w=800&q=80',
+      s2:  'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80',
+      s3:  'https://images.unsplash.com/photo-1474487548417-781cb71495f3?auto=format&fit=crop&w=800&q=80',
+      s4:  'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+      s5:  'https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=800&q=80',
+      s6:  'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80',
+
+      // 台東市區
+      t1:  'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80',
+      t2:  'https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=800&q=80',
+      t3:  'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=800&q=80',
+      t4:  'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?auto=format&fit=crop&w=800&q=80',
+      t5:  'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80',
+      t6:  'https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=800&q=80',
+
+      // 離島跳島
+      i1:  'https://images.unsplash.com/photo-1515238152791-8216bfdf89a7?auto=format&fit=crop&w=800&q=80',
+      i2:  'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80'
+    };
+
+    const BACKUP_REAL_PHOTOS = {
+      '山線台9': 'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?auto=format&fit=crop&w=800&q=80',
+      '海線台11': 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+      '南迴線':   'https://images.unsplash.com/photo-1505142468610-359e7d316be0?auto=format&fit=crop&w=800&q=80',
+      '市區':     'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&w=800&q=80',
+      '離島':     'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80'
+    };
+
+    function fallbackToNameplate(imgEl, spotId, isLarge) {
+      const s = spotMap[spotId];
+      if (!s) return;
+      const backupUrl = BACKUP_REAL_PHOTOS[s.line] || BACKUP_REAL_PHOTOS['山線台9'];
+      if (!imgEl.dataset.retried) {
+        imgEl.dataset.retried = '1';
+        imgEl.src = backupUrl;
+        return;
+      }
+      if (imgEl.parentElement) {
+        imgEl.parentElement.innerHTML = renderNameplateHtml(s, isLarge);
+      }
+    }
+
+    function renderNameplateHtml(s, isLarge) {
+      return `
+        <div class="w-full h-full bg-[#EFE6D8] flex flex-col items-center justify-center p-3 text-center">
+          <span class="text-xs font-black text-[#9E2A2B]">${s.area}</span>
+          <span class="${isLarge ? 'text-base' : 'text-xs'} font-serif-tc font-black text-stone-800 mt-1">${s.name}</span>
+          <span class="text-[10px] text-stone-500 mt-0.5">${s.cat} · ${s.line}</span>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 2. 台東 35 處景點與在地美食資料庫
+    // ==========================================
+    const SPOTS_DB = [
+      // 山線台9
+      { id: 'v1', name: '卑南遺址公園', area: '台東市・南王', line: '山線台9', cat: '原民文化', axis: 22, hours: 1.5, cost: 30, desc: '台灣規模最大的史前石板棺墓葬群遺址，月形石柱矗立在翠綠山谷草坡上，能親眼見證三千年前卑南文化的建築與玉器工藝。', tip: '建議先逛室內展示廳看玉器國寶，再到戶外月形石柱拍遠眺都蘭山的合影。', souvenir: '史前玉器文創書籤、南王部落小米酒' },
+      { id: 'v2', name: '原始部落山地美食', area: '卑南・利嘉林道', line: '山線台9', cat: '在地美食', axis: 24, hours: 1.5, cost: 450, desc: '隱身利嘉山腰的知名原民風味餐廳，在傳統竹木茅草屋裡大口享用炭烤桶仔雞、鹽烤台灣鯛、石板烤肉與山蘇野菜，傍晚還能俯瞰台東市區夜景。', tip: '招牌桶仔雞建議提前電話預訂，傍晚五點半入座最能同時欣賞夕陽與夜景。', souvenir: '馬告香料、原民手工編織杯墊' },
+      { id: 'v3', name: '初鹿牧場', area: '卑南・明峰', line: '山線台9', cat: '親子牧場', axis: 28, hours: 2.0, cost: 200, desc: '全台最大的坡地牧場，成群黑白乳牛在廣闊綠野上悠閒吃草，可以體驗滑草、餵乳牛、騎馬，必吃濃醇香的初鹿鮮奶霜淇淋與鮮奶饅頭。', tip: '假日建議早上十點前入園避開人潮，門票可折抵部分牧場鮮乳飲品消費。', souvenir: '初鹿鮮奶薄餅、煉乳與鮮奶乖乖' },
+      { id: 'v4', name: '原生應用植物園', area: '卑南・明峰', line: '山線台9', cat: '親子牧場', axis: 29, hours: 2.0, cost: 200, desc: '種植超過兩百種台東珍貴藥用植物的生態園區，擁有視野極佳的中央山脈空中木棧道，招牌「養生汆燙鍋」無限供應現採有機藥草蔬菜。', tip: '門票可全額折抵園區餐廳或伴手禮消費，非常適合帶長輩輕鬆散步。', souvenir: '白鶴靈芝茶包、草本養生沐浴包' },
+      { id: 'v5', name: '鸞山森林文化博物館', area: '延平・鸞山部落', line: '山線台9', cat: '原民文化', axis: 36, hours: 3.5, cost: 600, desc: '沒有大門與圍牆的布農族「會走路的樹」活博物館！在布農族獵人帶領下攀爬氣根盤錯的百年大白榕森林，體驗祭山神儀式與搗麻糬。', tip: '採全預約制且需自駕跟車上山，務必穿著防滑運動鞋與長褲。', souvenir: '布農族傳統編織手環、小米麻糬' },
+      { id: 'v6', name: '鹿野高台', area: '鹿野・永安', line: '山線台9', cat: '自然奇景', axis: 45, hours: 1.5, cost: 0, desc: '居高臨下俯瞰整片花東縱谷與棋盤狀茶園的絕佳制高點，更是每年夏季「臺灣國際熱氣球嘉年華」主場地，平時也能體驗滑草與飛行傘。', tip: '附近鹿野紅烏龍茶莊林立，順道品嚐一杯琥珀色澤的冷泡紅烏龍最消暑。', souvenir: '鹿野紅烏龍原片茶葉、紅烏龍茶蛋捲' },
+      { id: 'v7', name: '武陵綠色隧道', area: '鹿野・永嶺路', line: '山線台9', cat: '自然奇景', axis: 50, hours: 1.0, cost: 0, desc: '兩旁高大老樟樹與木麻黃交織成濃密綠蔭的舊台9線秘境，車少人稀、陽光穿過樹梢灑落光影，雙週六還有熱鬧的台東慢食「2626市集」。', tip: '樹蔭涼爽非常適合午後散步拍照，市集日能買到在地小農手作果醬與烘焙。', souvenir: '小農手工鳳梨果醬、手工木作食器' },
+      { id: 'v8', name: '關山米國學校 & 環鎮單車道', area: '關山鎮', line: '山線台9', cat: '縱谷田園', axis: 65, hours: 2.0, cost: 150, desc: '由舊碾米廠改建的彩繪稻米文化館，可以預約體驗親自碾米包裝帶回家，旁邊就是全台首條長達12公里的環鎮專用自行車道。', tip: '推薦預約「古早味碗公飯」體驗，用傳統大花碗裝滿關山香Q白米飯。', souvenir: '關山皇帝米真空包、米乖乖' },
+      { id: 'v9', name: '池上伯朗大道 & 天堂路', area: '池上鄉', line: '山線台9', cat: '縱谷田園', axis: 85, hours: 2.0, cost: 150, desc: '一望無際、沒有任何電線桿遮擋的黃金稻浪與翠綠田園小路！騎著電動協力車吹風穿梭金城武樹與S型天堂路，每一張都是明信片。', tip: '園區全年管制汽車進入，建議在入口租借四人電動蓬車，長輩小孩都能輕鬆遊覽。', souvenir: '池上冠軍有機米、池上米餅' },
+      { id: 'v10', name: '池上大坡池 & 飯包文化故事館', area: '池上鄉', line: '山線台9', cat: '在地美食', axis: 88, hours: 1.5, cost: 120, desc: '大坡池是花東縱谷唯一的天然斷層濕地湖泊，湖面倒映中央山脈雲影；午間再到火車車廂造型的飯包故事館享用經典木片便當。', tip: '清晨或傍晚在池畔散步微風徐徐最舒服，便當吃完還可以把木片蓋帶回家紀念。', souvenir: '池上木片便當紀念明信片、豆皮捲' },
+
+      // 海線台11
+      { id: 'c1', name: '富岡地質公園 (小野柳)', area: '台東市・富岡', line: '海線台11', cat: '自然奇景', axis: 22, hours: 1.0, cost: 0, desc: '因地殼抬升與海浪長期侵蝕，形成豆腐岩、蜂窩岩、龜陣岩等奇特砂岩地形，天氣晴朗時還能清楚眺望海面上的綠島。', tip: '海岸礁岩凹凸不平，拍照時請留意腳步並注意海浪拍打安全。', souvenir: '富岡港現烤飛魚乾、海鹽花生' },
+      { id: 'c2', name: '加路蘭海岸', area: '台東市・富岡', line: '海線台11', cat: '海岸風光', axis: 25, hours: 1.0, cost: 0, desc: '原本為空軍建設志航基地時的廢棄土置場，經東管處與多位原住民藝術家巧妙改造，成為擁有大片臨海草坡與漂流木裝置藝術的最美海岸。', tip: '「類比訊號」與「日昇之舞」是必拍經典地標，夜晚更是無光害觀星勝地。', souvenir: '漂流木手作吊飾、東海岸明信片' },
+      { id: 'c3', name: '富山護魚區', area: '卑南・杉原', line: '海線台11', cat: '海岸風光', axis: 30, hours: 1.5, cost: 50, desc: '台東唯一的潮間帶生態保護區，走上延伸入海的木棧道，低頭就能看見清澈見底的珊瑚礁淺海裡成群豆仔魚與熱帶魚優游。', tip: '現場禁止攜帶外食餵魚，如需體驗餵魚請於入口購買專用海藻饅頭。', souvenir: '海藻手作饅頭、海洋友善防曬乳' },
+      { id: 'c4', name: '都蘭新東糖廠文化園區', area: '東河・都蘭', line: '海線台11', cat: '原民文化', axis: 38, hours: 1.5, cost: 0, desc: '建於日治時期的紅磚黑瓦製糖工廠，轉型為阿美族藝術家與手作職人聚集的文創聚落，充滿濃濃南島慢活與音樂氣息。', tip: '別忘了尋找經典「都蘭國小」書包文創店，並在老倉庫咖啡館點一杯手沖咖啡。', souvenir: '都蘭國小書包、阿美族樹皮工藝品' },
+      { id: 'c5', name: '水往上流奇觀', area: '東河・都蘭', line: '海線台11', cat: '自然奇景', axis: 40, hours: 0.5, cost: 0, desc: '因為路旁景物傾斜度大於農田灌溉溝渠，造成肉眼視覺上溪水彷彿違反地心引力往高處流動的趣味奇觀，周邊熱帶林蔭茂密。', tip: '停留約20～30分鐘拍張趣味借位照即可，順道品嚐停車場旁的現切釋迦。', souvenir: '台東大目釋迦、鳳梨釋迦' },
+      { id: 'c6', name: '舊東河橋 & 東河包子', area: '東河鄉', line: '海線台11', cat: '在地美食', axis: 52, hours: 1.0, cost: 100, desc: '橫跨馬武窟溪口的白色橋身優雅連接碧綠溪谷與太平洋，過橋後一定要停下來買顆熱騰騰、皮Q餡滿的招牌東河肉包與酸菜包！', tip: '東河橋兩側景觀截然不同，北側是白雲岩帝王石峽谷，南側則是一望無際的太平洋。', souvenir: '東河包子冷凍宅配包、手工黑糖饅頭' },
+      { id: 'c7', name: '都歷海灘 (天空之鏡)', area: '成功鎮・都歷', line: '海線台11', cat: '海岸風光', axis: 62, hours: 1.5, cost: 0, desc: '擁有細緻黑沙的隱密海灣，每當退潮時分，濕潤平坦的沙灘會像一面巨大鏡子般完美倒映藍天白雲與人物剪影，美得令人屏息。', tip: '務必查詢當日「退潮（乾潮）」前後1小時前往，並將手機鏡頭貼近水面拍攝。', souvenir: '成功旗魚鬆、海洋深層水海鹽' },
+      { id: 'c8', name: '阿美族民俗中心', area: '成功鎮・都歷', line: '海線台11', cat: '原民文化', axis: 63, hours: 1.5, cost: 0, desc: '依花蓮太巴塱部落傳統祭司祖屋仿建的竹木茅草建築群，可以欣賞震撼人心的旮亙樂團竹鐘打擊樂表演，也能體驗射箭與串珠DIY。', tip: '建議配合上午11:00或下午14:00的旮亙樂團定時演出時間抵達（週三公休）。', souvenir: '阿美族情人袋、手工琉璃珠項鍊' },
+      { id: 'c9', name: '三仙台跨海步橋', area: '成功鎮', line: '海線台11', cat: '海岸風光', axis: 75, hours: 1.5, cost: 0, desc: '東海岸最具代表性的八拱波浪造型跨海步橋，宛如巨龍伏臥海面連接離岸珊瑚礁島嶼，也是台灣本島迎接第一道曙光的經典地標。', tip: '海風較強建議戴帽子或防風外套，停車場旁的現烤魷魚與海菜湯非常受歡迎。', souvenir: '成功三仙台封仔餅、鬼頭刀魚乾' },
+      { id: 'c10', name: '成功漁港 & 比西里岸', area: '成功鎮', line: '海線台11', cat: '在地美食', axis: 72, hours: 1.5, cost: 350, desc: '東海岸最大的漁港，每天下午兩點左右漁船進港後，魚市場拍賣喊價聲此起彼落，能品嚐最新鮮的現切旗魚、鬼頭刀生魚片與海鮮熱炒。', tip: '順遊旁邊的比西里岸部落，尋找幾米《走向春天的下午》彩繪牆與漂流木羊群。', souvenir: '成功招牌旗魚鬆、柴魚片' },
+      { id: 'c11', name: '金剛大道', area: '長濱鄉', line: '海線台11', cat: '海岸風光', axis: 95, hours: 1.0, cost: 0, desc: '忠勇自行車道的一部分，兩旁沒有電線桿的筆直道路穿過層層翠綠梯田，背後是雄偉的金剛山，前方則是湛藍太平洋，被譽為海線版伯朗大道。', tip: '每年5～6月與10月稻穗轉為金黃色時最壯觀，上下坡拍照請注意往來車輛。', souvenir: '長濱海鹽米、在地小農手工黑糖' },
+
+      // 南迴線
+      { id: 's1', name: '南田人文景觀觀景台 & 海岸', area: '達仁鄉・南田', line: '南迴線', cat: '海岸風光', axis: -45, hours: 1.0, cost: 0, desc: '位於台灣東南端阿朗壹古道起點旁，海岸鋪滿被海浪打磨得圓潤光滑、紋理獨特的「南田石」，站在觀景台可將整片月牙灣盡收眼底。', tip: '重要提醒：南田石為珍貴自然資產，嚴禁撿拾帶離海岸（違者依法重罰），用相機留下美麗回憶即可！', souvenir: '達仁排灣族手工陶珠、土坂小米酒' },
+      { id: 's2', name: '大武之心南迴驛 & 濱海公園', area: '大武鄉', line: '南迴線', cat: '海岸風光', axis: -32, hours: 1.0, cost: 150, desc: '南迴公路最亮眼的燈塔造型海景休息站，270度海景觀景台與裝置藝術超好拍，館內匯集台東各式農特產與海景咖啡廳。', tip: '長途南迴旅程的最佳中繼站，二樓觀景露台吹海風看大武漁港超療癒。', souvenir: '大武鬼頭刀魚酥、紅藜養生餅乾' },
+      { id: 's3', name: '多良觀光車站', area: '太麻里鄉', line: '南迴線', cat: '海岸風光', axis: -18, hours: 1.0, cost: 10, desc: '被鐵道迷譽為「全台灣最美的車站」，鮮紅色欄杆高架在半山腰上，背後是翠綠山巒、腳下就是浩瀚太平洋，火車駛過海平面的瞬間最經典。', tip: '車站月台入口電子看板會顯示下一班火車通過時間，記得提前卡位準備連拍！', souvenir: '多良站長紀念明信片、原民烤山豬肉香腸' },
+      { id: 's4', name: '金崙部落 & 海景溫泉', area: '太麻里・金崙', line: '南迴線', cat: '溫泉秘境', axis: -22, hours: 2.0, cost: 300, desc: '被山海環抱的排灣族寧靜部落，擁有泉質滑潤的碳酸氫鈉美人湯，走出車站穿過色彩繽紛的地下涵洞，眼前就是一望無際的太平洋秘境海灘。', tip: '部落內有許多排灣族青年返鄉開設的文青咖啡館與小米甜甜圈，非常值得慢走探索。', souvenir: '金崙排灣族小米甜甜圈、紅藜手工皂' },
+      { id: 's5', name: '太麻里平交道 & 華源海灣', area: '太麻里鄉', line: '南迴線', cat: '海岸風光', axis: -10, hours: 1.0, cost: 0, desc: '神似日本鎌倉《灌籃高手》名場景的臨海鐵路平交道，碧海藍天與鐵道交會；不遠處的華源海灣還能拍到「平安」字樣地標與海天一線景致。', tip: '拍照時請務必站在黃色網狀線與柵欄外側，嚴禁跨越鐵軌。', souvenir: '太麻里金針花乾、洛神花蜜餞' },
+      { id: 's6', name: '知本國家森林遊樂區', area: '卑南・知本', line: '南迴線', cat: '自然奇景', axis: 5, hours: 2.5, cost: 80, desc: '海拔110至650公尺的亞熱帶季風林寶庫，擁有震撼的百年大白榕、千根榕與好漢坡步道，充滿芬多精與鳥鳴，走完步道還能順道去知本泡溫泉。', tip: '園區內有免費溫泉泡腳池與植物展示館，建議上午入園空氣最清新涼爽。', souvenir: '知本溫泉面膜、洛神花果醬' },
+
+      // 台東市區
+      { id: 't1', name: '鐵花村音樂聚落 & 波浪屋', area: '台東市區', line: '市區', cat: '原民文化', axis: 15, hours: 2.0, cost: 150, desc: '由台東舊火車站宿舍改造的文創音樂聚落，夜晚點亮數百盞彩繪熱氣球燈海，伴隨原民歌手現場演唱與慢市集，旁邊還有造型獨特的原民文創波浪屋。', tip: '週三至週日晚間燈海全開且市集最熱鬧，非常適合當作每日晚餐後的散步終點。', souvenir: '原民圖騰帆布包、台東限定彩繪小燈籠' },
+      { id: 't2', name: '國立臺灣史前文化博物館', area: '台東市・康樂', line: '市區', cat: '原民文化', axis: 12, hours: 2.5, cost: 100, desc: '台灣首座以史前與南島文化為主題的國家級博物館，館藏國寶級「人獸形玉玦」與完整台灣原住民族文化展廳，全館冷氣舒適、無障礙動線極佳。', tip: '館外景觀花園每天定時有音樂水舞表演，也是台東最棒的雨天或正午避暑室內景點。', souvenir: '人獸形玉玦復刻吊飾、南島文化繪本' },
+      { id: 't3', name: '台東森林公園 (琵琶湖)', area: '台東市區', line: '市區', cat: '自然奇景', axis: 18, hours: 2.0, cost: 30, desc: '緊鄰市區的廣闊木麻黃黑森林，租輛單車沿著林蔭大道騎行，就能抵達如綠寶石般清澈見底的「琵琶湖」與「活水湖」，湖面倒映樹影美如畫。', tip: '建議從正門租借單車（約$100/次）串聯琵琶湖、活水湖與海濱公園一次玩遍。', souvenir: '陳記麻糬、楊記家傳地瓜酥' },
+      { id: 't4', name: '卡大地布部落 (知本部落)', area: '台東市・知本', line: '市區', cat: '原民文化', axis: 8, hours: 1.5, cost: 250, desc: '歷史悠久的卑南族「八社」之一，保留完整的「巴拉冠（男子聚會所）」與三大氏族祖靈屋，可以預約部落青年導覽聆聽勇士訓練與祭儀故事。', tip: '巴拉冠與祖靈屋為部落神聖空間，請務必由部落導覽員帶領並遵守參觀禮儀。', souvenir: '卑南族傳統十字繡書籤、手工編織花環' },
+      { id: 't5', name: '台東觀光夜市 & 正氣路小吃', area: '台東市區', line: '市區', cat: '在地美食', axis: 16, hours: 1.5, cost: 300, desc: '週四至週六晚間最熱鬧的美食一條街！必吃林家臭豆腐、榕樹下米苔目、寶桑豆花、藍蜻蜓炸雞與原住民烤肉，一站吃遍所有台東在地好味道。', tip: '正氣路白天是水果街、晚上變身夜市，建議多人分食才能多嚐幾家排隊名店。', souvenir: '青澤琪瑪酥、封仔餅禮盒' },
+      { id: 't6', name: '海濱公園 (國際地標向陽樹)', area: '台東市區', line: '市區', cat: '海岸風光', axis: 19, hours: 1.0, cost: 0, desc: '面向太平洋的廣闊草地公園，藤編圓頂造型的「向陽樹」融合地景與公共藝術，夜晚整點還有璀璨燈光秀，白天吹海風、晚上聽海浪。', tip: '就在台東森林公園出口旁，兩者安排在一起順遊最省力。', souvenir: '海濱公園現烤飛魚卵香腸' },
+
+      // 離島跳島
+      { id: 'i1', name: '綠島朝日溫泉 & 環島慢旅', area: '綠島鄉', line: '離島', cat: '溫泉秘境', axis: 110, hours: 6.0, cost: 1200, desc: '從富岡漁港搭船約50分鐘即可抵達太平洋珍珠「綠島」，體驗全球僅三處之一的海底鹹水溫泉「朝日溫泉」，一邊泡湯一邊迎接海上日出與滿天星斗。', tip: '需預留整天或兩天一夜跳島時間，泡湯記得攜帶泳衣與泳帽。', souvenir: '綠島海草麻糬、海燕窩黑糖磚' },
+      { id: 'i2', name: '蘭嶼拼板舟體驗 & 部落慢活', area: '蘭嶼鄉', line: '離島', cat: '原民文化', axis: 120, hours: 8.0, cost: 1800, desc: '飛魚的故鄉「人之島」蘭嶼，欣賞達悟族精湛造船工藝的傳統拼板舟、地下屋文化與情人洞奇岩，感受最純粹的南島海洋生活節奏。', tip: '每年3～6月飛魚季期間，女性請勿觸碰拼板舟，並遵守各部落海洋禁忌。', souvenir: '達悟族拼板舟木雕模型、蘭嶼海鹽' }
+    ];
+
+    const spotMap = Object.fromEntries(SPOTS_DB.map(s => [s.id, s]));
+
+    // ==========================================
+    // 3. 主題路線範本與每日導遊引言
+    // ==========================================
+    const PRESETS = {
+      valley_tribal: [
+        ['v1', 'v3', 'v2', 't1'],
+        ['v5', 'v6', 'v7'],
+        ['v8', 'v9', 'v10']
+      ],
+      coast_art: [
+        ['c1', 'c2', 'c4', 't5'],
+        ['c6', 'c7', 'c8', 'c9'],
+        ['c10', 'c11', 't3']
+      ],
+      south_paiwan: [
+        ['s3', 's4', 's5', 't1'],
+        ['t2', 't4', 's6']
+      ],
+      family_farm: [
+        ['v3', 'v4', 't3', 't5'],
+        ['c3', 'c6', 'c8'],
+        ['v8', 'v9', 'v10']
+      ],
+      blank: [
+        [],
+        [],
+        []
+      ]
+    };
+
+    const DAY_THEMES = [
+      {
+        badge: '縱谷南段・史前文化與牧場草原',
+        intro: '「第一天我們從三千年前的史前巨石文化暖身，帶大家到初鹿大草原吹風吃鮮奶霜淇淋，傍晚直上利嘉山腰大口吃桶仔雞，晚上再到鐵花村聽原民歌手唱歌！」',
+        defaultSpotId: 'v3'
+      },
+      {
+        badge: '山海秘境・部落森林與高台茶香',
+        intro: '「第二天走進大自然的活博物館，感受原民部落與山林共生的智慧，下午在鹿野高台或太平洋海岸吹海風，體驗最道地的台東慢活步調。」',
+        defaultSpotId: 'v6'
+      },
+      {
+        badge: '稻浪風光・單車漫遊與在地滋味',
+        intro: '「最後一天一路向北迎風騎單車穿梭無邊際田園與海灣，品嚐木片便當與現撈海味，把滿滿的台東陽光與伴手禮帶回家！」',
+        defaultSpotId: 'v9'
+      }
+    ];
+
+    const customDayPhotos = {};
+
+    // ==========================================
+    // 4. 多身份別人數與智慧優待計費引擎
+    // ==========================================
+    let groupAdults = 2;
+    let groupChildren = 0;
+    let groupToddlers = 0;
+    let groupSeniors = 0;
+    let groupStudents = 0;
+    let groupLocals = 0;
+
+    const PUBLIC_FREE_SENIOR_SPOTS = new Set(['v1', 's6', 't2', 't3', 'c1', 'c3', 'c9']);
+
+    function changeGroupSize(role, delta) {
+      if (role === 'adults') groupAdults = Math.max(0, groupAdults + delta);
+      if (role === 'children') groupChildren = Math.max(0, groupChildren + delta);
+      if (role === 'toddlers') groupToddlers = Math.max(0, groupToddlers + delta);
+      if (role === 'seniors') groupSeniors = Math.max(0, groupSeniors + delta);
+      if (role === 'students') groupStudents = Math.max(0, groupStudents + delta);
+      if (role === 'locals') groupLocals = Math.max(0, groupLocals + delta);
+
+      const total = groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents + groupLocals;
+      if (total === 0) groupAdults = 1;
+
+      document.getElementById('adult-count-label').textContent = String(groupAdults);
+      document.getElementById('child-count-label').textContent = String(groupChildren);
+      document.getElementById('toddler-count-label').textContent = String(groupToddlers);
+      document.getElementById('senior-count-label').textContent = String(groupSeniors);
+      document.getElementById('student-count-label').textContent = String(groupStudents);
+      document.getElementById('local-count-label').textContent = String(groupLocals);
+      syncAll();
+    }
+
+    function formatGroupComposition() {
+      const parts = [];
+      if (groupAdults > 0) parts.push(`大人${groupAdults}位`);
+      if (groupChildren > 0) parts.push(`兒童${groupChildren}位`);
+      if (groupToddlers > 0) parts.push(`幼童${groupToddlers}位`);
+      if (groupSeniors > 0) parts.push(`愛心/敬老${groupSeniors}位`);
+      if (groupStudents > 0) parts.push(`學生/軍警${groupStudents}位`);
+      if (groupLocals > 0) parts.push(`台東縣民${groupLocals}位`);
+      return parts.join('、') || '大人1位';
+    }
+
+    function calcSingleSpotGroupCost(spot) {
+      if (!spot || spot.cost === 0) return 0;
+      const base = spot.cost;
+      const isPublicFree = PUBLIC_FREE_SENIOR_SPOTS.has(spot.id);
+      const seniorCost = isPublicFree ? 0 : Math.round(base * 0.5);
+      const localCost = isPublicFree ? 0 : Math.round(base * 0.5);
+      const studentCost = Math.round(base * 0.7);
+      const childCost = Math.round(base * 0.5);
+
+      return (
+        groupAdults * base +
+        groupChildren * childCost +
+        groupToddlers * 0 +
+        groupSeniors * seniorCost +
+        groupStudents * studentCost +
+        groupLocals * localCost
+      );
+    }
+
+    function calcSpotIdsGroupCost(ids) {
+      return ids.reduce((sum, id) => sum + calcSingleSpotGroupCost(spotMap[id]), 0);
+    }
+
+    function getTransportSummary() {
+      const origin = document.getElementById('origin-select')?.value || 'taipei';
+      const mainType = document.getElementById('main-transport-select')?.value || 'train';
+      const localType = document.getElementById('local-transport-select')?.value || 'none';
+      const included = document.getElementById('include-transport-toggle')?.checked ?? true;
+      const days = Math.max(1, itinerary.length);
+
+      const originNames = {
+        taipei: '台北 / 新北',
+        taoyuan: '桃園 / 新竹',
+        taichung: '台中',
+        kaohsiung: '台南 / 高雄',
+        hualien: '花蓮',
+        taitung: '台東在地'
+      };
+      const mainNames = {
+        train: '台鐵新自強/普悠瑪',
+        flight: '國內線飛機',
+        hsr_train: '高鐵＋南迴鐵路',
+        self_drive: '自駕開車油資與過路費'
+      };
+      const localNames = {
+        none: '當地大眾運輸/步行',
+        scooter: '當地租機車',
+        car: '當地租汽車',
+        charter: '在地導遊包車'
+      };
+
+      const baseRoundTrip = {
+        taipei:    { train: 1566, flight: 4600, hsr_train: 3400, self_drive: 2400 },
+        taoyuan:   { train: 1680, flight: 4600, hsr_train: 3200, self_drive: 2600 },
+        taichung:  { train: 1850, flight: 4400, hsr_train: 2500, self_drive: 2500 },
+        kaohsiung: { train: 720,  flight: 3600, hsr_train: 950,  self_drive: 1300 },
+        hualien:   { train: 680,  flight: 3200, hsr_train: 680,  self_drive: 900 },
+        taitung:   { train: 0,    flight: 0,    hsr_train: 0,    self_drive: 400 }
+      };
+
+      const unitPrice = (baseRoundTrip[origin] && baseRoundTrip[origin][mainType]) || 0;
+      const totalPeople = Math.max(1, groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents + groupLocals);
+      const nonLocalPeople = Math.max(1, groupAdults + groupChildren + groupToddlers + groupSeniors + groupStudents);
+
+      let mainTotal = 0;
+      let mainFormulaNote = '';
+
+      if (mainType === 'self_drive') {
+        const carsNeeded = Math.max(1, Math.ceil(totalPeople / 4));
+        mainTotal = unitPrice * carsNeeded;
+        mainFormulaNote = `${carsNeeded}車均攤`;
+      } else if (mainType === 'flight') {
+        mainTotal =
+          groupAdults * unitPrice +
+          groupChildren * Math.round(unitPrice * 0.5) +
+          groupToddlers * Math.round(unitPrice * 0.1) +
+          groupSeniors * Math.round(unitPrice * 0.5) +
+          groupStudents * Math.round(unitPrice * 0.9) +
+          groupLocals * Math.round(unitPrice * 0.7);
+        mainFormulaNote = '依機票各身份優待計算';
+      } else if (mainType === 'hsr_train') {
+        mainTotal =
+          groupAdults * unitPrice +
+          groupChildren * Math.round(unitPrice * 0.5) +
+          groupToddlers * 0 +
+          groupSeniors * Math.round(unitPrice * 0.5) +
+          groupStudents * Math.round(unitPrice * 0.75) +
+          groupLocals * 0;
+        mainFormulaNote = '高鐵學生75折/兒童敬老半價';
+      } else {
+        mainTotal =
+          groupAdults * unitPrice +
+          groupChildren * Math.round(unitPrice * 0.5) +
+          groupToddlers * 0 +
+          groupSeniors * Math.round(unitPrice * 0.5) +
+          groupStudents * unitPrice +
+          groupLocals * 0;
+        mainFormulaNote = '兒童敬老半價/幼童免費';
+      }
+
+      let localTotal = 0;
+      let localFormulaNote = '';
+      if (localType === 'scooter') {
+        const riders = Math.max(1, groupAdults + groupSeniors + groupStudents + groupLocals + Math.ceil((groupChildren + groupToddlers) * 0.5));
+        const scooters = Math.max(1, Math.ceil(riders / 2));
+        localTotal = 400 * scooters * days;
+        localFormulaNote = `${scooters}台機車×${days}天`;
+      } else if (localType === 'car') {
+        const cars = Math.max(1, Math.ceil(totalPeople / 4));
+        localTotal = 1800 * cars * days;
+        localFormulaNote = `${cars}台汽車×${days}天`;
+      } else if (localType === 'charter') {
+        const vans = Math.max(1, Math.ceil(totalPeople / 7));
+        localTotal = 3800 * vans * days;
+        localFormulaNote = `${vans}台包車×${days}天`;
+      }
+
+      const totalTransportCost = mainTotal + localTotal;
+      const perPersonTransport = Math.round(totalTransportCost / totalPeople);
+
+      return {
+        originLabel: originNames[origin] || '台北 / 新北',
+        mainLabel: mainNames[mainType] || '台鐵',
+        localLabel: localNames[localType] || '大眾運輸',
+        included,
+        totalPeople,
+        nonLocalPeople,
+        totalTransportCost,
+        perPersonTransport,
+        mainFormulaNote,
+        localFormulaNote
+      };
+    }
+
+    // ==========================================
+    // 5. 台東旅遊百寶箱問答資料庫
+    // ==========================================
+    const FULL_FAQS = [
+      { num: '001', cat: '交通租車', q: '去台東搭火車、飛機還是自駕比較推薦？', a: '從台北出發建議搭乘「台鐵新自強號(EMU3000)」約3.5～4小時直達最舒適；若預算充裕可搭立榮或華信國內線飛機（約50分鐘）。抵達台東車站後，建議租汽車或包車串聯縱谷與海岸線最省時。' },
+      { num: '002', cat: '部落禮儀', q: '參訪卑南族巴拉冠或阿美族部落有什麼文化禁忌嗎？', a: '卑南族的「巴拉冠（男子聚會所）」與各大家族祖靈屋屬於神聖祭儀空間，未經部落導覽人員許可請勿隨意進入或觸摸祭器；每年7～8月阿美族豐年祭期間，拍照前請先徵詢族人同意並遵守動線規範。' },
+      { num: '003', cat: '季節活動', q: '台東熱氣球嘉年華與金針花季分別在幾月？', a: '「臺灣國際熱氣球嘉年華」通常在每年7月至8月於鹿野高台舉行（清晨05:30與傍晚17:00最適合看球）；「太麻里金針山金針花季」則在每年8月至9月中旬盛開。' },
+      { num: '004', cat: '親子長輩', q: '帶長輩或推嬰兒車適合排哪些平緩好走的景點？', a: '推薦台東森林公園琵琶湖、國立臺灣史前文化博物館（全館無障礙冷氣空間）、初鹿牧場、池上大坡池環湖步道及鹿野高台大草坡，動線平坦且休息設施完善。' },
+      { num: '005', cat: '美食伴手禮', q: '台東有哪些必買的在地特產與伴手禮？', a: '縱谷線必買池上冠軍真空米、池上限定米乖乖、鹿野紅烏龍原片茶葉、初鹿鮮奶薄餅；市區與海線則推薦青澤琪瑪酥、楊記家傳地瓜酥、陳記麻糬、東河包子與大目釋迦。' },
+      { num: '006', cat: '緊急雨天', q: '如果遇到下雨天，台東有哪些室內雨天備案景點？', a: '下雨天首推「國立臺灣史前文化博物館」、台東市區「台東美術館」、關山「米國學校」碾米DIY、鹿野茶莊品茗體驗，以及知本或金崙溫泉泡湯。' },
+      { num: '007', cat: '交通租車', q: '一天之內可以同時玩縱谷台9線和海岸台11線嗎？', a: '非常不建議！兩條路線中間隔著海岸山脈，雖然有玉長公路、東富公路連接，但跨線車程至少多花45～60分鐘山路，建議一天專攻山線、另一天專攻海線玩得最輕鬆。' },
+      { num: '008', cat: '季節活動', q: '去都歷海灘拍「天空之鏡」要看什麼時間？', a: '必須配合中央氣象署「成功鎮潮汐預報」的乾潮（退潮）前後1小時前往，此時濕潤平坦的黑沙灘才能倒映出清晰的藍天白雲與人物剪影。' }
+    ];
+
+    // ==========================================
+    // 6. 應用程式狀態與核心互動功能
+    // ==========================================
+    let currentPresetKey = 'valley_tribal';
+    let itinerary = PRESETS.valley_tribal.map(d => [...d]);
+    let selectedCategory = '全部';
+    let selectedFaqCat = '全部';
+    let collapsedDays = {};
+    let dragPayload = null;
+    let latestRouteAnalysis = null;
+
+    function init() {
+      renderCategoryTabs();
+      renderFaqCats();
+      syncAll();
+    }
+
+    function getEntryDirection() {
+      const origin = document.getElementById('origin-select')?.value || 'taipei';
+      return origin === 'hualien' ? 'north_to_south' : 'south_to_north';
+    }
+
+    function onOriginChange() {
+      syncAll();
+    }
+
+    function syncAll() {
+      updateDayDropdown();
+      renderSpots();
+      renderItinerary();
+      updateHeaderStats();
+      runRouteCheck(false);
+    }
+
+    function updateHeaderStats() {
+      const allIds = itinerary.flat();
+      document.getElementById('total-spots-count').textContent = String(allIds.length);
+
+      const spotGroupTotal = calcSpotIdsGroupCost(allIds);
+      const tInfo = getTransportSummary();
+      document.getElementById('transport-cost-preview').textContent = `NT$ ${tInfo.totalTransportCost.toLocaleString()}`;
+
+      const grandTotal = spotGroupTotal + (tInfo.included ? tInfo.totalTransportCost : 0);
+      const perPerson = Math.round(grandTotal / tInfo.totalPeople);
+
+      document.getElementById('group-total-cost-label').textContent = `NT$ ${grandTotal.toLocaleString()}`;
+      document.getElementById('per-person-cost-label').textContent = `NT$ ${perPerson.toLocaleString()}`;
+    }
+
+    function updateDayDropdown() {
+      const sel = document.getElementById('quick-add-day');
+      if (!sel) return;
+      const prev = Number(sel.value) || 0;
+      sel.innerHTML = itinerary.map((_, idx) => `<option value="${idx}">DAY ${idx + 1}</option>`).join('');
+      sel.value = prev < itinerary.length ? String(prev) : '0';
+    }
+
+    function applyPreset(key) {
+      currentPresetKey = key;
+      const template = PRESETS[key] || PRESETS.valley_tribal;
+      itinerary = template.map(d => [...d]);
+      collapsedDays = {};
+
+      const badge = document.getElementById('plan-mode-badge');
+      if (key === 'blank') {
+        badge.textContent = '🧳 自由行自訂模式';
+        badge.className = 'text-[11px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300';
+      } else {
+        badge.textContent = '🌿 精選主題路線';
+        badge.className = 'text-[11px] font-black px-2 py-0.5 rounded-full bg-red-100 text-[#9E2A2B] border border-red-200';
+      }
+      syncAll();
+      showToast(key === 'blank' ? '🧳 已切換至自由行空白行程表！' : '✨ 已套用精選主題路線！');
+    }
+
+    function setFreeTravelMode() {
+      const days = Math.max(1, itinerary.length);
+      currentPresetKey = 'blank';
+      document.getElementById('preset-select').value = 'blank';
+      itinerary = Array.from({ length: days }, () => []);
+      collapsedDays = {};
+
+      const badge = document.getElementById('plan-mode-badge');
+      badge.textContent = '🧳 自由行自訂模式';
+      badge.className = 'text-[11px] font-black px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300';
+
+      syncAll();
+      showToast(`🧳 已清空並保留 ${days} 天自由行，從左側拖曳或點擊加入景點吧！`);
+    }
+
+    function changeDays(delta) {
+      const next = itinerary.length + delta;
+      if (next < 1 || next > 7) {
+        showToast('行程天數建議設定在 1 至 7 天之間');
+        return;
+      }
+      if (delta > 0) {
+        itinerary.push([]);
+      } else {
+        itinerary.pop();
+      }
+      syncAll();
+    }
+
+    function toggleDayCollapse(dIdx) {
+      collapsedDays[dIdx] = !collapsedDays[dIdx];
+      renderItinerary();
+    }
+
+    function toggleAllDays(collapse) {
+      itinerary.forEach((_, idx) => { collapsedDays[idx] = collapse; });
+      renderItinerary();
+    }
+
+    // ==========================================
+    // 7. 渲染左側景點卡片與直接拖曳加入
+    // ==========================================
+    function renderCategoryTabs() {
+      const cats = ['全部', '原民文化', '自然奇景', '海岸風光', '縱谷田園', '親子牧場', '在地美食', '溫泉秘境'];
+      document.getElementById('category-tabs').innerHTML = cats.map(cat => `
+        <button onclick="selectedCategory='${cat}'; renderCategoryTabs(); renderSpots();"
+          class="px-2.5 py-1 rounded-full text-[11px] font-bold whitespace-nowrap transition ${
+            selectedCategory === cat ? 'bg-[#9E2A2B] text-white shadow-2xs' : 'bg-white text-stone-700 border border-stone-300 hover:bg-amber-50'
+          }">${cat}</button>
+      `).join('');
+    }
+
+    function renderSpots() {
+      const kw = (document.getElementById('search-input')?.value || '').trim().toLowerCase();
+      const line = document.getElementById('line-filter')?.value || 'all';
+      const hideUsed = document.getElementById('hide-used-toggle')?.checked || false;
+      const usedSet = new Set(itinerary.flat());
+
+      const filtered = SPOTS_DB.filter(s => {
+        if (selectedCategory !== '全部' && s.cat !== selectedCategory) return false;
+        if (line !== 'all' && s.line !== line) return false;
+        if (hideUsed && usedSet.has(s.id)) return false;
+        if (kw && !(`${s.name} ${s.area} ${s.cat} ${s.desc} ${s.souvenir}`.toLowerCase().includes(kw))) return false;
+        return true;
+      });
+
+      document.getElementById('spot-counter').textContent = `${filtered.length} 處`;
+
+      const grid = document.getElementById('spots-grid');
+      grid.innerHTML = filtered.map(s => {
+        const isUsed = usedSet.has(s.id);
+        const imgUrl = VERIFIED_SPOT_PHOTOS[s.id];
+        return `
+          <div draggable="true" ondragstart="handleSpotCardDragStart(event, '${s.id}')" ondragend="handleDragEnd(event)"
+            class="spot-card rounded-2xl border ${isUsed ? 'border-emerald-400 ring-1 ring-emerald-200' : 'border-stone-300/90'} overflow-hidden shadow-2xs hover:shadow-md hover:border-[#9E2A2B] transition cursor-grab active:cursor-grabbing">
+            <div onclick="openDetailModal('${s.id}')" class="spot-media cursor-pointer">
+              ${imgUrl ? `<img src="${imgUrl}" alt="${s.name}" referrerpolicy="no-referrer" onerror="fallbackToNameplate(this, '${s.id}', false)" />` : renderNameplateHtml(s, false)}
+              <span class="absolute top-2 left-2 bg-stone-900/80 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-full">${s.cat}</span>
+              <span class="absolute top-2 right-2 bg-white/90 text-stone-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${s.line}</span>
+              ${isUsed ? `<span class="absolute bottom-2 right-2 bg-emerald-600 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow">✓ 已排入</span>` : ''}
+            </div>
+            <div class="p-2.5 flex-1 flex flex-col justify-between">
+              <div>
+                <div onclick="openDetailModal('${s.id}')" class="font-black text-xs text-stone-900 hover:text-[#9E2A2B] cursor-pointer line-clamp-1">${s.name}</div>
+                <div class="text-[11px] text-stone-500 mt-0.5">${s.area} · 停留 ${s.hours}h · ${s.cost === 0 ? '免費' : '大人$' + s.cost}</div>
+                <p class="text-[11px] text-stone-600 mt-1 line-clamp-2 leading-snug">${s.desc}</p>
+              </div>
+              <div class="pt-2 mt-2 border-t border-stone-100 flex items-center gap-1.5">
+                <button onclick="openDetailModal('${s.id}')" class="text-[11px] font-bold text-stone-600 hover:text-[#9E2A2B] px-2 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 transition">
+                  導覽
+                </button>
+                <button onclick="addSpotToTargetDay('${s.id}')" class="flex-1 text-[11px] font-black text-white bg-[#9E2A2B] hover:bg-[#781D1E] py-1 px-2.5 rounded-lg transition">
+                  ＋ 加入行程
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function addSpotToTargetDay(spotId, targetDayIdx) {
+      const dIdx = typeof targetDayIdx === 'number'
+        ? targetDayIdx
+        : Number(document.getElementById('quick-add-day')?.value || 0);
+      if (!itinerary[dIdx]) return;
+      itinerary[dIdx].push(spotId);
+      collapsedDays[dIdx] = false;
+      syncAll();
+      showToast(`已將「${spotMap[spotId]?.name}」加入 DAY ${dIdx + 1}！`);
+    }
+
+    function removeSpotFromDay(dIdx, sIdx) {
+      itinerary[dIdx].splice(sIdx, 1);
+      syncAll();
+    }
+
+    function moveSpot(dIdx, sIdx, delta) {
+      const arr = itinerary[dIdx];
+      const next = sIdx + delta;
+      if (next < 0 || next >= arr.length) return;
+      [arr[sIdx], arr[next]] = [arr[next], arr[sIdx]];
+      syncAll();
+    }
+
+    // 拖曳事件處理（支援從左側景點庫拖入、跨天拖曳、同天內排序）
+    function handleSpotCardDragStart(e, spotId) {
+      dragPayload = { type: 'new_spot', spotId };
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'copyMove';
+    }
+
+    function handleDragStart(e, dIdx, sIdx) {
+      dragPayload = { type: 'move_item', fromDay: dIdx, fromIdx: sIdx };
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+      document.querySelectorAll('.drop-active').forEach(el => el.classList.remove('drop-active'));
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drop-active');
+    }
+
+    function handleDragLeave(e) {
+      e.currentTarget.classList.remove('drop-active');
+    }
+
+    function handleDropOnDay(e, toDay) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drop-active');
+      if (!dragPayload) return;
+
+      if (dragPayload.type === 'new_spot') {
+        itinerary[toDay].push(dragPayload.spotId);
+        collapsedDays[toDay] = false;
+        showToast(`已拖曳加入「${spotMap[dragPayload.spotId]?.name}」至 DAY ${toDay + 1}！`);
+      } else if (dragPayload.type === 'move_item') {
+        const { fromDay, fromIdx } = dragPayload;
+        const [moved] = itinerary[fromDay].splice(fromIdx, 1);
+        itinerary[toDay].push(moved);
+        collapsedDays[toDay] = false;
+      }
+      dragPayload = null;
+      syncAll();
+    }
+
+    function handleDropOnItem(e, toDay, toIdx) {
+      e.preventDefault();
+      e.stopPropagation();
+      document.querySelectorAll('.drop-active').forEach(el => el.classList.remove('drop-active'));
+      if (!dragPayload) return;
+
+      if (dragPayload.type === 'new_spot') {
+        itinerary[toDay].splice(toIdx, 0, dragPayload.spotId);
+        collapsedDays[toDay] = false;
+        showToast(`已插入「${spotMap[dragPayload.spotId]?.name}」至 DAY ${toDay + 1}！`);
+      } else if (dragPayload.type === 'move_item') {
+        const { fromDay, fromIdx } = dragPayload;
+        const [moved] = itinerary[fromDay].splice(fromIdx, 1);
+        const adjustedIdx = (fromDay === toDay && fromIdx < toIdx) ? Math.max(0, toIdx - 1) : toIdx;
+        itinerary[toDay].splice(adjustedIdx, 0, moved);
+      }
+      dragPayload = null;
+      syncAll();
+    }
+
+    function openDetailModal(spotId) {
+      const s = spotMap[spotId];
+      if (!s) return;
+      document.getElementById('detail-badge').textContent = `${s.cat} · ${s.area}`;
+      document.getElementById('detail-title').textContent = s.name;
+      document.getElementById('detail-line').textContent = `動線：${s.line}`;
+      document.getElementById('detail-hours').textContent = `建議停留：${s.hours} 小時`;
+      document.getElementById('detail-cost').textContent = s.cost === 0 ? '參考預算：免費參觀' : `參考預算：大人 NT$ ${s.cost}`;
+      document.getElementById('detail-desc').textContent = s.desc;
+      document.getElementById('detail-tip').textContent = s.tip;
+
+      const mediaBox = document.getElementById('detail-media-box');
+      const imgUrl = VERIFIED_SPOT_PHOTOS[s.id];
+      mediaBox.innerHTML = imgUrl
+        ? `<img src="${imgUrl}" alt="${s.name}" referrerpolicy="no-referrer" onerror="fallbackToNameplate(this, '${s.id}', true)" class="w-full h-full object-cover" />`
+        : renderNameplateHtml(s, true);
+
+      const addBtn = document.getElementById('detail-add-btn');
+      addBtn.onclick = () => {
+        addSpotToTargetDay(s.id);
+        closeModal('detail-modal');
+      };
+      document.getElementById('detail-modal').classList.remove('hidden');
+    }
+
+    // ==========================================
+    // 8. 渲染右側每日行程卡片（含實景縮圖與當日導航 QR Code）
+    // ==========================================
+    function buildDayRouteNavInfo(daySpots) {
+      const validSpots = daySpots.map(id => spotMap[id]).filter(Boolean);
+      if (validSpots.length === 0) return null;
+
+      const placeQueries = validSpots.map(s => `台東 ${s.name.split(' ')[0]}`);
+      let navUrl = '';
+      let optimizedNavUrl = '';
+
+      if (placeQueries.length === 1) {
+        navUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(placeQueries[0])}`;
+        optimizedNavUrl = navUrl;
+      } else {
+        const origin = encodeURIComponent(placeQueries[0]);
+        const destination = encodeURIComponent(placeQueries[placeQueries.length - 1]);
+        const rawWaypoints = placeQueries.slice(1, -1).map(q => encodeURIComponent(q)).join('|');
+        navUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${rawWaypoints ? `&waypoints=${rawWaypoints}` : ''}&travelmode=driving`;
+
+        // 讓 Google Maps 自動最佳化中途停靠站順序 (optimize:true)
+        const optWaypoints = placeQueries.slice(1, -1).map(q => encodeURIComponent(q)).join('|');
+        optimizedNavUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${optWaypoints ? `&waypoints=optimize:true|${optWaypoints}` : ''}&travelmode=driving`;
+      }
+
+      const qrImgUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=6&color=1B4965&bgcolor=FFFFFF&data=${encodeURIComponent(optimizedNavUrl)}`;
+      return { validSpots, navUrl, optimizedNavUrl, qrImgUrl };
+    }
+
+    function applySingleDayRouteOpt(dIdx) {
+      const analysis = evaluateRouteQuality(itinerary);
+      const rep = analysis.dayReports[dIdx];
+      if (!rep) return;
+      itinerary[dIdx] = [...rep.suggested];
+      closeModal('nav-qr-modal');
+      syncAll();
+      showToast(`✨ 已將 DAY ${dIdx + 1} 行程排為最佳順路順序！`);
+    }
+
+    function openDayNavQrModal(dIdx) {
+      const daySpots = itinerary[dIdx] || [];
+      const navInfo = buildDayRouteNavInfo(daySpots);
+      if (!navInfo) {
+        showToast(`DAY ${dIdx + 1} 尚未排入景點，請先加入景點再產生導航路線！`);
+        return;
+      }
+
+      const analysis = evaluateRouteQuality(itinerary);
+      const rep = analysis.dayReports[dIdx];
+      const hasBetterOrder = rep && (rep.hasCrossLine || rep.hasBacktrack);
+
+      document.getElementById('nav-qr-title').textContent = `DAY ${dIdx + 1} Google Maps 最佳路線導航`;
+      document.getElementById('nav-qr-body').innerHTML = `
+        <p class="text-stone-600 leading-relaxed">
+          下方 QR Code 已內建 <strong class="text-blue-900">Google Maps 最佳路徑演算法（自動重排停靠點減少繞路）</strong>，手機相機一掃即可開始導航：
+        </p>
+        <div class="inline-block p-3 bg-white rounded-2xl border-2 border-blue-900/20 shadow-md">
+          <img src="${navInfo.qrImgUrl}" alt="DAY ${dIdx + 1} 最佳路線導航 QR Code" class="w-44 h-44 mx-auto block" />
+        </div>
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 text-left text-[11px] text-blue-950 space-y-1">
+          <div class="font-black text-blue-900">📍 目前排定站點（共 ${navInfo.validSpots.length} 站）：</div>
+          <div class="leading-relaxed">${navInfo.validSpots.map((s, i) => `<span class="font-bold">${i + 1}. ${s.name.split(' ')[0]}</span>`).join(' <span class="text-blue-500">➔</span> ')}</div>
+        </div>
+        <div class="flex flex-col gap-2 pt-1">
+          <a href="${navInfo.optimizedNavUrl}" target="_blank" rel="noopener noreferrer" class="w-full bg-blue-800 hover:bg-blue-700 text-white font-black py-2.5 px-3 rounded-xl shadow transition">
+            ✨ 開啟 Google Maps 自動規劃最佳路線
+          </a>
+          <div class="flex items-center gap-2">
+            <a href="${navInfo.navUrl}" target="_blank" rel="noopener noreferrer" class="flex-1 bg-white hover:bg-stone-100 text-stone-700 border border-stone-300 font-bold py-2 px-2.5 rounded-xl transition">
+              依原順序開啟地圖
+            </a>
+            ${hasBetterOrder ? `
+              <button onclick="applySingleDayRouteOpt(${dIdx})" class="flex-1 bg-[#9E2A2B] hover:bg-[#781D1E] text-white font-black py-2 px-2.5 rounded-xl transition">
+                🔄 同步順路順序回行程表
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      document.getElementById('nav-qr-modal').classList.remove('hidden');
+    }
+
+    function renderItinerary() {
+      document.getElementById('day-count-label').textContent = `${itinerary.length} 天`;
+      const tInfo = getTransportSummary();
+
+      document.getElementById('day-jump-bar').innerHTML = itinerary.map((_, idx) => `
+        <a href="#day-card-${idx}" class="text-xs font-black px-2.5 py-1 rounded-lg bg-white hover:bg-[#9E2A2B] hover:text-white text-stone-800 border border-stone-300 transition whitespace-nowrap">
+          DAY ${idx + 1}
+        </a>
+      `).join('');
+
+      const container = document.getElementById('itinerary-container');
+      container.innerHTML = itinerary.map((daySpots, dIdx) => {
+        const isCollapsed = !!collapsedDays[dIdx];
+        const totalHours = daySpots.reduce((sum, id) => sum + (spotMap[id]?.hours || 0), 0);
+        const dayGroupCost = calcSpotIdsGroupCost(daySpots);
+        const dayAvgCost = Math.round(dayGroupCost / tInfo.totalPeople);
+        const theme = DAY_THEMES[dIdx] || {
+          badge: '山海慢活・自由探索秘境',
+          intro: `「第 ${dIdx + 1} 天的台東慢旅，跟著海風與山嵐的節奏前進，細細品味原民部落的文化故事與道地風味。」`,
+          defaultSpotId: 'c9'
+        };
+
+        const photoSpots = daySpots.map(id => spotMap[id]).filter(s => s && VERIFIED_SPOT_PHOTOS[s.id]);
+        const primarySpot = photoSpots[0] || spotMap[daySpots[0]] || spotMap[theme.defaultSpotId];
+        const secondarySpot = photoSpots[1] || spotMap[daySpots[1]] || photoSpots[0] || spotMap['c9'];
+        const primaryUrl = customDayPhotos[`${dIdx}-0`] || (primarySpot && VERIFIED_SPOT_PHOTOS[primarySpot.id]);
+        const secondaryUrl = customDayPhotos[`${dIdx}-1`] || (secondarySpot && VERIFIED_SPOT_PHOTOS[secondarySpot.id]);
+
+        return `
+          <div id="day-card-${dIdx}" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDropOnDay(event, ${dIdx})"
+            class="bg-white rounded-2xl border-2 border-stone-300/90 shadow-sm overflow-hidden transition">
+            <div class="bg-[#EFE6D8] px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 border-b border-stone-300/80">
+              <div class="flex items-center gap-2">
+                <span class="bg-[#9E2A2B] text-white font-black text-xs px-2.5 py-1 rounded-lg">DAY ${dIdx + 1}</span>
+                <span class="font-serif-tc font-black text-sm text-stone-900">第 ${dIdx + 1} 天 · ${theme.badge.split('・')[0]}</span>
+                <span class="text-xs text-stone-600 font-bold">(${daySpots.length} 站 · 停留 ${totalHours.toFixed(1)}h)</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-xs font-black text-[#9E2A2B] bg-white px-2.5 py-1 rounded-lg border border-amber-300">
+                  全團 NT$ ${dayGroupCost.toLocaleString()} <span class="text-emerald-800">(均攤 $${dayAvgCost.toLocaleString()}/人)</span>
+                </span>
+                <button onclick="openDayNavQrModal(${dIdx})" title="顯示當日 Google 地圖多站點導航 QR Code" class="text-xs font-black px-2.5 py-1 rounded-lg bg-blue-800 hover:bg-blue-700 text-white shadow-2xs transition">
+                  🗺️ 導航QR
+                </button>
+                <button onclick="toggleDayCollapse(${dIdx})" class="text-xs font-bold px-2.5 py-1 rounded-lg bg-white hover:bg-stone-100 border border-stone-300 text-stone-700">
+                  ${isCollapsed ? '展開 ▼' : '收合 ▲'}
+                </button>
+              </div>
+            </div>
+
+            ${isCollapsed ? '' : `
+              <!-- 互動網頁當日實景雙拼寫真畫廊 -->
+              <div class="grid grid-cols-3 gap-1.5 px-3 pt-3 bg-[#FAF6F0]">
+                <div onclick="openDetailModal('${primarySpot.id}')" class="col-span-2 h-28 sm:h-32 rounded-xl overflow-hidden relative cursor-pointer group border border-stone-300 shadow-2xs bg-stone-200">
+                  ${primaryUrl ? `<img src="${primaryUrl}" alt="${primarySpot.name}" referrerpolicy="no-referrer" onerror="fallbackToNameplate(this, '${primarySpot.id}', false)" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />` : renderNameplateHtml(primarySpot, false)}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"></div>
+                  <div class="absolute bottom-2 left-2.5 right-2.5 flex items-end justify-between gap-1">
+                    <div>
+                      <span class="text-[9px] bg-amber-400 text-stone-950 font-black px-1.5 py-0.2 rounded">DAY ${dIdx + 1} 必拍亮點</span>
+                      <div class="text-white font-serif-tc font-black text-xs sm:text-sm drop-shadow mt-0.5">${primarySpot.name}</div>
+                    </div>
+                    <span class="text-[10px] text-amber-200 font-bold shrink-0">${primarySpot.area}</span>
+                  </div>
+                </div>
+                <div onclick="openDetailModal('${secondarySpot.id}')" class="h-28 sm:h-32 rounded-xl overflow-hidden relative cursor-pointer group border border-stone-300 shadow-2xs bg-stone-200">
+                  ${secondaryUrl ? `<img src="${secondaryUrl}" alt="${secondarySpot.name}" referrerpolicy="no-referrer" onerror="fallbackToNameplate(this, '${secondarySpot.id}', false)" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />` : renderNameplateHtml(secondarySpot, false)}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent"></div>
+                  <div class="absolute bottom-2 left-2 right-2">
+                    <div class="text-white font-bold text-[11px] leading-tight line-clamp-1 drop-shadow">${secondarySpot.name}</div>
+                    <div class="text-[9px] text-amber-200 font-medium">${secondarySpot.area}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-3 space-y-2">
+                ${daySpots.length === 0 ? `
+                  <div class="text-center py-6 border-2 border-dashed border-stone-300 rounded-xl text-xs text-stone-400">
+                    尚未安排景點，請從左側點擊「＋ 加入行程」或將其他天的景點拖曳至此！
+                  </div>
+                ` : daySpots.map((id, sIdx) => {
+                  const s = spotMap[id];
+                  if (!s) return '';
+                  const spotGroupCost = calcSingleSpotGroupCost(s);
+                  const seniorTag = (groupSeniors > 0 && PUBLIC_FREE_SENIOR_SPOTS.has(s.id) && s.cost > 0) ? '・愛心敬老免票' : '';
+                  const thumbUrl = VERIFIED_SPOT_PHOTOS[s.id];
+                  return `
+                    <div draggable="true" ondragstart="handleDragStart(event, ${dIdx}, ${sIdx})" ondragend="handleDragEnd(event)"
+                      ondragover="event.preventDefault()" ondrop="handleDropOnItem(event, ${dIdx}, ${sIdx})"
+                      class="flex items-center justify-between gap-2.5 p-2.5 rounded-xl bg-[#FAF6F0] border border-stone-200 hover:border-[#9E2A2B] hover:shadow-xs cursor-grab active:cursor-grabbing transition group">
+                      <div class="flex items-center gap-2.5 min-w-0">
+                        <span class="w-6 h-6 rounded-full bg-[#9E2A2B] text-white font-black text-xs flex items-center justify-center shrink-0 shadow-2xs">${sIdx + 1}</span>
+                        ${thumbUrl ? `
+                          <div onclick="openDetailModal('${s.id}')" class="w-20 h-14 rounded-lg overflow-hidden border border-stone-300 shrink-0 cursor-pointer relative bg-stone-200">
+                            <img src="${thumbUrl}" alt="${s.name}" referrerpolicy="no-referrer" onerror="this.parentElement.style.display='none'" class="w-full h-full object-cover group-hover:scale-110 transition duration-300" />
+                          </div>
+                        ` : ''}
+                        <div class="min-w-0">
+                          <div class="flex items-center gap-1.5">
+                            <span onclick="openDetailModal('${s.id}')" class="font-black text-xs text-stone-900 hover:text-[#9E2A2B] cursor-pointer truncate">${s.name}</span>
+                            <span class="text-[10px] bg-white border border-stone-300 text-stone-600 px-1.5 rounded font-bold shrink-0">${s.line}</span>
+                          </div>
+                          <div class="text-[11px] text-stone-600 mt-0.5">
+                            ${s.area} · 停留 ${s.hours}h · ${s.cost === 0 ? '免費參觀' : `全團 NT$ ${spotGroupCost.toLocaleString()} (大人 $${s.cost}${seniorTag})`}
+                          </div>
+                          ${s.souvenir ? `<div class="text-[10px] text-amber-900 mt-0.5 truncate">🛍️ ${s.souvenir.split('（')[0]}</div>` : ''}
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-1 shrink-0">
+                        <button onclick="moveSpot(${dIdx}, ${sIdx}, -1)" title="上移" class="w-6 h-6 rounded bg-white hover:bg-stone-200 border border-stone-300 text-xs font-bold">↑</button>
+                        <button onclick="moveSpot(${dIdx}, ${sIdx}, 1)" title="下移" class="w-6 h-6 rounded bg-white hover:bg-stone-200 border border-stone-300 text-xs font-bold">↓</button>
+                        <button onclick="removeSpotFromDay(${dIdx}, ${sIdx})" title="移除" class="w-6 h-6 rounded bg-red-50 hover:bg-red-600 hover:text-white border border-red-200 text-red-700 text-xs font-bold">✕</button>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            `}
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // 9. 在地導遊順路健檢與順路重排
+    // ==========================================
+    function evaluateRouteQuality(plan) {
+      let hasAnyIssue = false;
+      let totalMinutesSaved = 0;
+      const EVENING_CITY_SPOTS = new Set(['t1', 't5']);
+      const entryDir = getEntryDirection();
+      const isNorthToSouth = entryDir === 'north_to_south';
+
+      const dayReports = plan.map((dayIds, idx) => {
+        if (dayIds.length <= 1) {
+          return { dayIdx: idx, hasCrossLine: false, hasBacktrack: false, original: [...dayIds], suggested: [...dayIds], savedMins: 0, note: '動線流暢，無需調整。' };
+        }
+
+        const lines = new Set(dayIds.map(id => spotMap[id]?.line).filter(l => l && l !== '市區'));
+        const hasCrossLine = lines.has('山線台9') && lines.has('海線台11');
+
+        const daytimeIds = dayIds.filter(id => !EVENING_CITY_SPOTS.has(id));
+        const eveningIds = dayIds.filter(id => EVENING_CITY_SPOTS.has(id));
+
+        const axes = daytimeIds.map(id => spotMap[id]?.axis || 0);
+        let originalSpan = 0;
+        for (let i = 1; i < axes.length; i++) originalSpan += Math.abs(axes[i] - axes[i - 1]);
+
+        const lineOrder = isNorthToSouth
+          ? { '海線台11': 1, '山線台9': 2, '市區': 3, '南迴線': 4, '離島': 5 }
+          : { '南迴線': 1, '市區': 2, '山線台9': 3, '海線台11': 4, '離島': 5 };
+
+        const sortedDaytime = [...daytimeIds].sort((a, b) => {
+          const sa = spotMap[a], sb = spotMap[b];
+          if (lineOrder[sa.line] !== lineOrder[sb.line]) return lineOrder[sa.line] - lineOrder[sb.line];
+          return isNorthToSouth ? (sb.axis - sa.axis) : (sa.axis - sb.axis);
+        });
+
+        const optAxes = sortedDaytime.map(id => spotMap[id]?.axis || 0);
+        let optSpan = 0;
+        for (let i = 1; i < optAxes.length; i++) optSpan += Math.abs(optAxes[i] - optAxes[i - 1]);
+
+        const suggested = [...sortedDaytime, ...eveningIds];
+        const spanSaved = originalSpan - optSpan;
+        const hasBacktrack = spanSaved >= 15;
+        let savedMins = hasBacktrack ? Math.round(spanSaved * 1.4) : 0;
+        if (hasCrossLine) savedMins += 45;
+
+        if (hasCrossLine || hasBacktrack) {
+          hasAnyIssue = true;
+          totalMinutesSaved += savedMins;
+        }
+
+        const dirText = isNorthToSouth ? '由北往南（花蓮方向進）' : '由南往北（台東市/南迴方向進）';
+        let note = `依您的出發地採【${dirText}】一路順遊，晚間安排市區夜遊節奏剛剛好，不走回頭路。`;
+        if (hasCrossLine) {
+          note = '同一天同時安排了「縱谷山線(台9)」與「海岸海線(台11)」，翻越海岸山脈車程較長，建議同一天專攻山線或海線會更輕鬆！';
+        } else if (hasBacktrack) {
+          note = `依您的出發地建議採【${dirText}】順序安排，可避免同一條路線南北折返，省下不少車程。`;
+        }
+
+        return {
+          dayIdx: idx,
+          hasCrossLine,
+          hasBacktrack,
+          original: [...dayIds],
+          suggested: (hasCrossLine || hasBacktrack) ? suggested : [...dayIds],
+          savedMins,
+          note
+        };
+      });
+
+      return { hasAnyIssue, totalMinutesSaved, dayReports };
+    }
+
+    function runRouteCheck(openDialog) {
+      const analysis = evaluateRouteQuality(itinerary);
+      latestRouteAnalysis = analysis;
+
+      const banner = document.getElementById('route-warning-banner');
+      const dot = document.getElementById('route-alert-dot');
+      if (analysis.hasAnyIssue) {
+        banner.classList.remove('hidden');
+        dot.classList.remove('hidden');
+        document.getElementById('route-warning-text').textContent =
+          `在地導遊貼心提醒：微調景點先後順序後，預計可幫您省下約 ${analysis.totalMinutesSaved} 分鐘車程！`;
+      } else {
+        banner.classList.add('hidden');
+        dot.classList.add('hidden');
+      }
+
+      if (openDialog) {
+        renderRouteModal(analysis);
+        document.getElementById('route-modal').classList.remove('hidden');
+      }
+    }
+
+    function openRouteModal() {
+      runRouteCheck(true);
+    }
+
+    function renderRouteModal(analysis) {
+      const body = document.getElementById('route-modal-body');
+      const applyBtn = document.getElementById('btn-apply-route-opt');
+
+      if (!analysis.hasAnyIssue) {
+        applyBtn.classList.add('opacity-50', 'pointer-events-none');
+        body.innerHTML = `
+          <div class="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-6 text-center space-y-2">
+            <div class="text-4xl">🎉</div>
+            <h4 class="font-serif-tc text-lg font-black text-emerald-950">這份行程動線非常順暢！</h4>
+            <p class="text-xs text-emerald-800 max-w-md mx-auto leading-relaxed">
+              每天的景點都沿著台東山海軸線順向安排，沒有跨線大拉車或南北折返的情況，可以安心準備出發！
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      applyBtn.classList.remove('opacity-50', 'pointer-events-none');
+      body.innerHTML = `
+        <div class="bg-amber-100 border border-amber-300 rounded-xl p-3.5 flex items-center justify-between">
+          <div>
+            <div class="font-black text-amber-950 text-sm">🧭 導遊順路建議：調整順序後預計可節省約 <span class="text-[#9E2A2B] underline">${analysis.totalMinutesSaved} 分鐘</span> 來回車程</div>
+            <p class="text-xs text-amber-900 mt-0.5">以下為您比對「目前安排順序」與「導遊建議順路順序」：</p>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          ${analysis.dayReports.map(rep => `
+            <div class="bg-white rounded-xl border ${rep.hasCrossLine || rep.hasBacktrack ? 'border-amber-400' : 'border-stone-200'} p-4">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-black text-sm text-[#9E2A2B]">DAY ${rep.dayIdx + 1} 第 ${rep.dayIdx + 1} 天動線建議</span>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                  rep.hasCrossLine ? 'bg-red-100 text-red-800' : rep.hasBacktrack ? `bg-amber-100 text-amber-900` : 'bg-emerald-100 text-emerald-800'
+                }">
+                  ${rep.hasCrossLine ? '⚠️ 山海跨線提醒' : rep.hasBacktrack ? `🔄 可省約 ${rep.savedMins} 分鐘` : '✅ 動線順暢'}
+                </span>
+              </div>
+              <p class="text-xs text-stone-600 mb-3">${rep.note}</p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div class="bg-stone-100 p-3 rounded-lg">
+                  <div class="font-bold text-stone-500 mb-1.5">目前安排順序：</div>
+                  <div class="space-y-1">
+                    ${rep.original.length === 0 ? '<span class="text-stone-400">自由時光</span>' : rep.original.map((id, i) => `
+                      <div>${i + 1}. <strong>${spotMap[id]?.name}</strong> <span class="text-[10px] text-stone-500">(${spotMap[id]?.line})</span></div>
+                    `).join('')}
+                  </div>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg">
+                  <div class="font-bold text-emerald-800 mb-1.5">✨ 導遊建議順路順序：</div>
+                  <div class="space-y-1">
+                    ${rep.suggested.length === 0 ? '<span class="text-stone-400">自由時光</span>' : rep.suggested.map((id, i) => `
+                      <div>${i + 1}. <strong class="text-emerald-950">${spotMap[id]?.name}</strong> <span class="text-[10px] text-emerald-700">(${spotMap[id]?.line})</span></div>
+                    `).join('')}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function applyRouteOptimization() {
+      if (!latestRouteAnalysis) return;
+      latestRouteAnalysis.dayReports.forEach(rep => {
+        itinerary[rep.dayIdx] = [...rep.suggested];
+      });
+      closeModal('route-modal');
+      syncAll();
+      showToast('✨ 已依導遊順路建議為您重新排列行程！');
+    }
+
+    // ==========================================
+    // 10. 台東旅遊百寶箱 (100問)
+    // ==========================================
+    function openFaqModal() {
+      renderFaqs();
+      document.getElementById('faq-modal').classList.remove('hidden');
+    }
+
+    function renderFaqCats() {
+      const cats = ['全部', '交通租車', '部落禮儀', '季節活動', '親子長輩', '美食伴手禮', '緊急雨天'];
+      document.getElementById('faq-cats').innerHTML = cats.map(c => `
+        <button onclick="selectedFaqCat='${c}'; renderFaqCats(); renderFaqs();"
+          class="px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition ${
+            selectedFaqCat === c ? 'bg-emerald-800 text-white' : 'bg-white text-emerald-950 border border-emerald-200 hover:bg-emerald-100'
+          }">${c}</button>
+      `).join('');
+    }
+
+    function renderFaqs() {
+      const kw = document.getElementById('faq-search').value.trim().toLowerCase();
+      const list = FULL_FAQS.filter(item => {
+        if (selectedFaqCat !== '全部' && item.cat !== selectedFaqCat) return false;
+        if (kw && !(`${item.num} ${item.cat} ${item.q} ${item.a}`.toLowerCase().includes(kw))) return false;
+        return true;
+      });
+
+      document.getElementById('faq-list').innerHTML = list.map(item => `
+        <details class="group bg-white rounded-xl border border-stone-200 p-3.5 shadow-2xs" ${item.num <= '003' ? 'open' : ''}>
+          <summary class="flex items-center justify-between gap-2 cursor-pointer list-none font-bold text-xs md:text-sm text-stone-900">
+            <div class="flex items-center gap-2">
+              <span class="bg-emerald-800 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded">Q${item.num}</span>
+              <span class="text-[11px] bg-stone-100 text-stone-600 px-2 py-0.5 rounded">${item.cat}</span>
+              <span>${item.q}</span>
+            </div>
+            <span class="text-stone-400 group-open:rotate-180 transition">▼</span>
+          </summary>
+          <p class="mt-2.5 pt-2.5 border-t border-stone-100 text-xs text-stone-700 leading-relaxed pl-2 border-l-2 border-emerald-600">
+            ${item.a}
+          </p>
+        </details>
+      `).join('');
+    }
+
+    // ==========================================
+    // 11. 一頁一日原民文化誌手冊 (全實景寫真版 + 每日花費小計 + 全程預算總表)
+    // ==========================================
+    function handleUploadDayPhoto(slotKey, inputEl) {
+      const file = inputEl.files && inputEl.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        customDayPhotos[slotKey] = e.target.result;
+        openHandbookModal();
+        showToast('📸 已更新旅遊手冊照片！');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetDayPhoto(slotKey) {
+      delete customDayPhotos[slotKey];
+      openHandbookModal();
+      showToast('已恢復為原始景點實景');
+    }
+
+    function openHandbookModal() {
+      const area = document.getElementById('handbook-scroll-area');
+      const allIds = itinerary.flat();
+      const spotGroupTotal = calcSpotIdsGroupCost(allIds);
+      const tInfo = getTransportSummary();
+      const grandGroupTotal = spotGroupTotal + (tInfo.included ? tInfo.totalTransportCost : 0);
+      const grandPerPerson = Math.round(grandGroupTotal / tInfo.totalPeople);
+
+      const dayPagesHtml = itinerary.map((daySpots, dIdx) => {
+        const dHours = daySpots.reduce((s, id) => s + (spotMap[id]?.hours || 0), 0);
+        const dGroupCost = calcSpotIdsGroupCost(daySpots);
+        const dAvgCost = Math.round(dGroupCost / tInfo.totalPeople);
+        const theme = DAY_THEMES[dIdx] || {
+          badge: '山海慢活・自由探索秘境',
+          intro: `「第 ${dIdx + 1} 天的台東慢旅，跟著海風與山嵐的節奏前進，細細品味原民部落的文化故事與道地風味。」`,
+          defaultSpotId: 'c9'
+        };
+
+        const photoSpots = daySpots.map(id => spotMap[id]).filter(s => s && VERIFIED_SPOT_PHOTOS[s.id]);
+        const primarySpot = photoSpots[0] || spotMap[daySpots[0]] || spotMap[theme.defaultSpotId];
+        const secondarySpot = photoSpots[1] || spotMap[daySpots[1]] || photoSpots[0] || spotMap['c9'];
+
+        const slot0 = `${dIdx}-0`;
+        const slot1 = `${dIdx}-1`;
+
+        const renderMainBanner = () => {
+          if (customDayPhotos[slot0]) {
+            return `<img src="${customDayPhotos[slot0]}" alt="${primarySpot.name}" class="w-full h-full object-cover">`;
+          }
+          if (VERIFIED_SPOT_PHOTOS[primarySpot.id]) {
+            return `<img src="${VERIFIED_SPOT_PHOTOS[primarySpot.id]}" alt="${primarySpot.name}" referrerpolicy="no-referrer"
+                         onerror="fallbackToNameplate(this, '${primarySpot.id}', true)"
+                         class="w-full h-full object-cover">`;
+          }
+          return renderNameplateHtml(primarySpot, true);
+        };
+
+        const renderSubBanner = () => {
+          if (customDayPhotos[slot1]) {
+            return `<img src="${customDayPhotos[slot1]}" alt="${secondarySpot.name}" class="w-full h-full object-cover">`;
+          }
+          if (secondarySpot && VERIFIED_SPOT_PHOTOS[secondarySpot.id]) {
+            return `<img src="${VERIFIED_SPOT_PHOTOS[secondarySpot.id]}" alt="${secondarySpot.name}" referrerpolicy="no-referrer"
+                         onerror="fallbackToNameplate(this, '${secondarySpot.id}', false)"
+                         class="w-full h-full object-cover">`;
+          }
+          return renderNameplateHtml(secondarySpot, false);
+        };
+
+        return `
+          <article class="print-day-page max-w-3xl mx-auto bg-white rounded-2xl border-2 border-[#9E2A2B] shadow-lg overflow-hidden">
+            <div class="tribal-weave-bar"></div>
+
+            <!-- 單日雜誌頁眉 -->
+            <div class="tribal-header-bg text-white px-6 py-4 flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div class="text-[11px] text-amber-300 font-black tracking-widest uppercase">DAY 0${dIdx + 1} · ${theme.badge}</div>
+                <h2 class="font-serif-tc text-xl md:text-2xl font-black mt-0.5">第 ${dIdx + 1} 天・台東山海慢旅導覽</h2>
+              </div>
+              <div class="text-right text-xs bg-black/25 px-3 py-1.5 rounded-xl border border-white/15">
+                <div class="text-amber-200 font-bold">預估停留 ${dHours.toFixed(1)} 小時 · ${formatGroupComposition()} (共${tInfo.totalPeople}人)</div>
+                <div class="font-black text-white">全團 NT$ ${dGroupCost.toLocaleString()}（均攤 $${dAvgCost.toLocaleString()}/人）</div>
+              </div>
+            </div>
+
+            <div class="p-6 space-y-4">
+              <!-- 在地導遊帶路開場白 -->
+              <div class="bg-[#FAF6F0] border-l-4 border-[#9E2A2B] px-4 py-3 rounded-r-xl text-xs text-stone-700 leading-relaxed">
+                <div class="font-serif-tc font-black text-[#9E2A2B] mb-1">🎙️ 在地導遊帶路：</div>
+                <p class="italic">${theme.intro}</p>
+              </div>
+
+              <!-- 雙拼當日專屬景點實景寫真區塊 -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div class="sm:col-span-2 h-48 rounded-xl overflow-hidden border border-stone-300 relative group bg-stone-200">
+                  ${renderMainBanner()}
+                  <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent px-3 py-2 flex items-center justify-between gap-1">
+                    <span class="text-[11px] text-white font-bold truncate">${primarySpot.name} · ${primarySpot.area}</span>
+                    <div class="no-print flex items-center gap-1 shrink-0">
+                      <label class="cursor-pointer bg-amber-400 hover:bg-amber-300 text-stone-950 text-[10px] font-black px-2 py-0.5 rounded shadow">
+                        📷 更換照片
+                        <input type="file" accept="image/*" class="hidden" onchange="handleUploadDayPhoto('${slot0}', this)">
+                      </label>
+                      ${customDayPhotos[slot0] ? `<button onclick="resetDayPhoto('${slot0}')" class="bg-red-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded">還原</button>` : ''}
+                    </div>
+                  </div>
+                </div>
+                <div class="h-48 rounded-xl overflow-hidden border border-stone-300 relative bg-stone-200">
+                  ${renderSubBanner()}
+                  <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 to-transparent px-2.5 py-1.5 flex items-center justify-between gap-1">
+                    <span class="text-[10px] text-amber-200 font-bold block truncate">${secondarySpot.name}</span>
+                    <label class="no-print cursor-pointer bg-white/90 hover:bg-white text-stone-900 text-[9px] font-black px-1.5 py-0.5 rounded shrink-0">
+                      📷
+                      <input type="file" accept="image/*" class="hidden" onchange="handleUploadDayPhoto('${slot1}', this)">
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 當日景點與在地美食逐站導覽（每一站皆附真實現場照片） -->
+              <div class="space-y-2.5">
+                ${daySpots.length === 0 ? `
+                  <div class="text-center py-8 text-xs text-stone-400 border border-dashed border-stone-300 rounded-xl">
+                    本日保留為自由慢活時光，享受台東的藍天與微風。
+                  </div>
+                ` : daySpots.map((id, i) => {
+                  const s = spotMap[id];
+                  if (!s) return '';
+                  const gPhotoUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('台東 ' + s.name.split(' ')[0])}`;
+                  const exactThumb = VERIFIED_SPOT_PHOTOS[s.id];
+                  const thumbHtml = exactThumb
+                    ? `<img src="${exactThumb}" alt="${s.name}" referrerpolicy="no-referrer"
+                            onerror="this.style.display='none'"
+                            class="w-24 h-24 rounded-xl object-cover border border-stone-300 shadow-2xs shrink-0" />`
+                    : `<div class="w-24 h-24 rounded-xl bg-[#EFE6D8] border border-stone-300 shrink-0 flex flex-col items-center justify-center text-center p-1">
+                         <span class="text-[10px] font-black text-[#9E2A2B] leading-tight">${s.area}</span>
+                         <span class="text-[9px] text-stone-500 mt-0.5">${s.cat}</span>
+                       </div>`;
+
+                  return `
+                    <div class="flex items-start gap-3 p-3 rounded-xl bg-[#FAF6F0]/80 border border-stone-200">
+                      <div class="w-6 h-6 rounded-full bg-[#9E2A2B] text-white font-black text-xs flex items-center justify-center shrink-0 mt-0.5">${i + 1}</div>
+                      ${thumbHtml}
+                      <div class="flex-1 min-w-0">
+                        <div class="flex flex-wrap items-center justify-between gap-1">
+                          <div class="flex items-center gap-1.5">
+                            <span class="font-black text-sm text-stone-900">${s.name}</span>
+                            <span class="text-[10px] bg-white border border-stone-300 text-stone-600 px-1.5 py-0.5 rounded font-bold">${s.area} · ${s.cat}</span>
+                          </div>
+                          <span class="text-[11px] font-bold text-[#9E2A2B]">
+                            停留 ${s.hours}h · ${s.cost === 0 ? '免費參觀' : `全團 NT$ ${calcSingleSpotGroupCost(s).toLocaleString()} (大人$${s.cost})`}
+                          </span>
+                        </div>
+                        <p class="text-xs text-stone-700 mt-1 leading-relaxed">${s.desc}</p>
+                        <div class="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                          <span class="text-amber-900 font-medium">💡 ${s.tip}</span>
+                          <a href="${gPhotoUrl}" target="_blank" rel="noopener noreferrer" class="no-print text-blue-800 hover:underline font-bold shrink-0">📍 Google 地圖實景</a>
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+            <!-- 當日特產與伴手禮速查小卡 + 當日導航 QR Code -->
+            ${daySpots.length > 0 ? (() => {
+              const navInfo = buildDayRouteNavInfo(daySpots);
+              return `
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <div class="sm:col-span-2 bg-amber-50/90 border border-amber-300 rounded-xl px-4 py-2.5 text-xs space-y-1 flex flex-col justify-center">
+                    <div class="font-serif-tc font-black text-amber-950">🛍️ DAY ${dIdx + 1} 沿途必買特產與伴手禮清單：</div>
+                    <ul class="list-disc list-inside text-stone-700 space-y-0.5">
+                      ${daySpots.map(id => {
+                        const s = spotMap[id];
+                        return s && s.souvenir ? `<li><strong class="text-stone-900">${s.name.split(' ')[0]}：</strong>${s.souvenir}</li>` : '';
+                      }).join('')}
+                    </ul>
+                  </div>
+                  ${navInfo ? `
+                    <div class="bg-blue-50/90 border border-blue-300 rounded-xl p-2.5 flex items-center gap-2.5">
+                      <img src="${navInfo.qrImgUrl}" alt="DAY ${dIdx + 1} 最佳路線導航 QR Code" class="w-20 h-20 rounded-lg border border-blue-200 bg-white p-1 shrink-0" />
+                      <div class="min-w-0 text-[11px] space-y-1">
+                        <div class="font-black text-blue-950 leading-tight">🧭 DAY ${dIdx + 1} 最佳路線碼</div>
+                        <p class="text-[10px] text-blue-900 leading-snug">掃碼由 Google Maps 自動最佳化 ${navInfo.validSpots.length} 站順序帶路</p>
+                        <a href="${navInfo.optimizedNavUrl}" target="_blank" rel="noopener noreferrer" class="no-print inline-block text-[10px] font-black text-white bg-blue-800 hover:bg-blue-700 px-2 py-0.5 rounded">
+                          最佳路線導航 →
+                        </a>
+                      </div>
+                    </div>
+                  ` : ''}
+                </div>
+              `;
+            })() : ''}
+
+            <!-- 每日花費小計欄 -->
+            <div class="bg-[#EFE6D8] border border-stone-300 rounded-xl px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="font-serif-tc font-black text-stone-800">
+                  💰 DAY ${dIdx + 1} 花費小計：全團 <span class="text-[#9E2A2B] text-sm ml-0.5">NT$ ${dGroupCost.toLocaleString()}</span> <span class="text-stone-600 font-bold">（每人均攤 NT$ ${dAvgCost.toLocaleString()}）</span>
+                </div>
+                <div class="text-stone-600 font-medium">
+                  實際支出記帳：NT$ ______________
+                </div>
+              </div>
+            </div>
+
+            <div class="tribal-weave-bar"></div>
+          </article>
+        `;
+      }).join('');
+
+      // 末頁：全程總預算、交通明細與部落守護公約
+      const summaryPageHtml = `
+        <article class="print-summary-page max-w-3xl mx-auto bg-white rounded-2xl border-2 border-[#9E2A2B] shadow-lg overflow-hidden">
+          <div class="tribal-weave-bar"></div>
+          <div class="tribal-header-bg text-white p-6 text-center">
+            <h2 class="font-serif-tc text-2xl font-black tracking-wide">台東山海慢旅・全程預算與守護公約</h2>
+            <p class="text-xs text-amber-100 mt-1">同行成員：${formatGroupComposition()}（共 ${tInfo.totalPeople} 人）｜出發地：${tInfo.originLabel}｜共 ${itinerary.length} 天 ${Math.max(0, itinerary.length - 1)} 夜</p>
+          </div>
+
+          <div class="p-6 space-y-5 text-xs">
+            <!-- 預算與記帳總結表 -->
+            <div>
+              <h3 class="font-serif-tc font-black text-base text-[#9E2A2B] mb-2">📊 全團總計與每人平均分攤明細表（含兒童半價、幼童免費、愛心/敬老優待與車輛均攤）</h3>
+              <table class="w-full border-collapse border border-stone-300 text-left">
+                <thead>
+                  <tr class="bg-[#EFE6D8] text-stone-900">
+                    <th class="border border-stone-300 px-3 py-2 font-black">項目明細</th>
+                    <th class="border border-stone-300 px-3 py-2 font-black">內容摘要與分攤方式</th>
+                    <th class="border border-stone-300 px-3 py-2 font-black text-right">全團總計 (${tInfo.totalPeople}人)</th>
+                    <th class="border border-stone-300 px-3 py-2 font-black text-right">每人平均分攤</th>
+                    <th class="border border-stone-300 px-3 py-2 font-black text-right">實際支出</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${itinerary.map((daySpots, idx) => {
+                    const dGroup = calcSpotIdsGroupCost(daySpots);
+                    const dAvg = Math.round(dGroup / tInfo.totalPeople);
+                    return `
+                      <tr>
+                        <td class="border border-stone-300 px-3 py-2 font-bold text-[#9E2A2B]">DAY ${idx + 1} 行程小計</td>
+                        <td class="border border-stone-300 px-3 py-2 text-stone-600">${daySpots.map(id => spotMap[id]?.name).join(' → ') || '自由慢活日'}</td>
+                        <td class="border border-stone-300 px-3 py-2 font-bold text-right">NT$ ${dGroup.toLocaleString()}</td>
+                        <td class="border border-stone-300 px-3 py-2 font-bold text-right text-emerald-800">NT$ ${dAvg.toLocaleString()}</td>
+                        <td class="border border-stone-300 px-3 py-2 text-right text-stone-400">NT$ ______</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                  <tr>
+                    <td class="border border-stone-300 px-3 py-2 font-bold text-stone-800">往返與在地交通</td>
+                    <td class="border border-stone-300 px-3 py-2 text-stone-600">${tInfo.originLabel}出發｜${tInfo.mainLabel} (${tInfo.mainFormulaNote}) ＋ ${tInfo.localLabel}${tInfo.localFormulaNote ? ' (' + tInfo.localFormulaNote + ')' : ''}</td>
+                    <td class="border border-stone-300 px-3 py-2 font-bold text-right">${tInfo.included ? 'NT$ ' + tInfo.totalTransportCost.toLocaleString() : '未計入 ($0)'}</td>
+                    <td class="border border-stone-300 px-3 py-2 font-bold text-right text-emerald-800">${tInfo.included ? 'NT$ ' + tInfo.perPersonTransport.toLocaleString() : '$0'}</td>
+                    <td class="border border-stone-300 px-3 py-2 text-right text-stone-400">NT$ ______</td>
+                  </tr>
+                  <tr class="bg-amber-50 font-black text-sm">
+                    <td colspan="2" class="border border-stone-300 px-3 py-2.5 text-stone-900">全程預估總預算合計</td>
+                    <td class="border border-stone-300 px-3 py-2.5 text-right text-[#9E2A2B]">NT$ ${grandGroupTotal.toLocaleString()}</td>
+                    <td class="border border-stone-300 px-3 py-2.5 text-right text-emerald-800">NT$ ${grandPerPerson.toLocaleString()}</td>
+                    <td class="border border-stone-300 px-3 py-2.5 text-right text-stone-500">NT$ ______</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- 部落文化守護公約 -->
+            <div class="bg-[#FAF6F0] border border-amber-300 rounded-xl p-4 space-y-1.5">
+              <div class="font-serif-tc font-black text-sm text-[#9E2A2B]">🪶 台東山海與部落文化守護公約</div>
+              <p class="text-stone-700 leading-relaxed">
+                1. <strong>尊重部落聖地：</strong>進入卑南族巴拉冠（男子聚會所）、祖靈屋或阿美族祭儀場域前，請先徵得導覽人員同意並放低音量。<br>
+                2. <strong>守護太平洋海岸：</strong>南田石、海岸漂流木與潮間帶生物皆屬台東自然資產，請用相機帶走回憶，切勿撿拾帶離。<br>
+                3. <strong>行前即時查詢：</strong>出發前可至 <span class="underline font-bold">https://tour.taitung.gov.tw/</span> 查詢最新路況與活動場次。
+              </p>
+            </div>
+
+            <!-- 旅途心情與伴手禮筆記 -->
+            <div class="border-2 border-dashed border-stone-300 rounded-xl p-4 bg-[#FAF6F0]">
+              <div class="font-serif-tc font-black text-xs text-stone-700 mb-5">✍️ 旅途心情筆記 &amp; 必買伴手禮清單（池上米 / 鹿野紅烏龍 / 東河釋迦 / 部落手作）：</div>
+              <div class="border-b border-stone-300 h-6"></div>
+              <div class="border-b border-stone-300 h-6"></div>
+            </div>
+          </div>
+          <div class="tribal-weave-bar"></div>
+        </article>
+      `;
+
+      area.innerHTML = dayPagesHtml + summaryPageHtml;
+      document.getElementById('handbook-modal').classList.remove('hidden');
+    }
+
+    function copyItineraryText() {
+      const tInfo = getTransportSummary();
+      const allIds = itinerary.flat();
+      const spotGroupTotal = calcSpotIdsGroupCost(allIds);
+      const grandGroupTotal = spotGroupTotal + (tInfo.included ? tInfo.totalTransportCost : 0);
+      const grandPerPerson = Math.round(grandGroupTotal / tInfo.totalPeople);
+
+      const lines = [
+        '【台東山海慢旅・原民文化深度行程表】',
+        `同行成員：${formatGroupComposition()}（共 ${tInfo.totalPeople} 人｜已依各身份別自動套用半價、免費、學生軍警與在地優待）`,
+        `出發地：${tInfo.originLabel}｜交通：${tInfo.mainLabel} + ${tInfo.localLabel}`,
+        ''
+      ];
+      itinerary.forEach((daySpots, dIdx) => {
+        const dGroup = calcSpotIdsGroupCost(daySpots);
+        const dAvg = Math.round(dGroup / tInfo.totalPeople);
+        lines.push(`◆ 第 ${dIdx + 1} 天（全團 NT$ ${dGroup.toLocaleString()}｜每人均攤 NT$ ${dAvg.toLocaleString()}）：`);
+        if (daySpots.length === 0) {
+          lines.push('  (自由慢活時光)');
+        } else {
+          daySpots.forEach((id, i) => {
+            const s = spotMap[id];
+            if (s) lines.push(`  ${i + 1}. ${s.name} [${s.area}｜停留${s.hours}h｜大人${s.cost === 0 ? '免費' : 'NT$' + s.cost}]`);
+          });
+        }
+        lines.push('');
+      });
+      if (tInfo.included) {
+        lines.push(`◆ 往返與當地交通費：全團 NT$ ${tInfo.totalTransportCost.toLocaleString()}（每人均攤 NT$ ${tInfo.perPersonTransport.toLocaleString()}）`);
+      }
+      lines.push(`◆ 全程預估總預算：全團 NT$ ${grandGroupTotal.toLocaleString()}｜每人平均分攤 NT$ ${grandPerPerson.toLocaleString()}`);
+
+      const textarea = document.createElement('textarea');
+      textarea.value = lines.join('\n');
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('📋 已複製完整行程與均攤明細，可直接貼上 Line 分享給旅伴！');
+    }
+
+    function closeModal(modalId) {
+      const el = document.getElementById(modalId);
+      if (el) el.classList.add('hidden');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('opacity-0');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        el.classList.add('opacity-0');
+      }, 2800);
+    }
+
+    init();
+  </script>
+</body>
+</html>
