@@ -141,10 +141,10 @@
     }
   </style>
 </head>
-<body class="h-screen flex flex-col overflow-hidden select-none">
+<body class="min-h-screen lg:h-screen flex flex-col lg:overflow-hidden">
 
   <!-- 主畫面 -->
-  <div id="app-shell" class="flex-1 flex flex-col h-full overflow-hidden">
+  <div id="app-shell" class="flex-1 flex flex-col lg:h-full lg:overflow-hidden">
     <!-- 頂部品牌導覽列 -->
     <header class="tribal-header-bg text-white shadow-md shrink-0">
       <div class="max-w-[1600px] mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
@@ -204,6 +204,16 @@
       <div class="tribal-weave-bar"></div>
     </header>
 
+    <!-- 手機版專屬快速切換浮動列（電腦版自動隱藏） -->
+    <div class="lg:hidden sticky top-0 z-30 bg-stone-900/95 backdrop-blur-xs text-white px-3 py-2 flex items-center justify-between gap-2 border-b border-amber-400/30 shadow-md">
+      <a href="#mobile-spots-section" class="flex-1 text-center bg-white/15 hover:bg-white/25 text-amber-200 font-black text-xs py-2 rounded-xl transition">
+        📍 1. 挑景點與美食
+      </a>
+      <a href="#mobile-itinerary-section" class="flex-1 text-center bg-[#9E2A2B] hover:bg-[#781D1E] text-white font-black text-xs py-2 rounded-xl shadow border border-amber-300/40 transition">
+        🗓️ 2. 看每天行程表 (<span id="mobile-spot-badge">0</span>)
+      </a>
+    </div>
+
     <!-- 導遊順路提醒橫幅 -->
     <div id="route-warning-banner" class="hidden bg-amber-100 border-b border-amber-300 px-4 py-1.5 text-xs text-amber-950 flex items-center justify-between shrink-0">
       <div class="flex items-center gap-2 font-medium">
@@ -215,11 +225,11 @@
       </button>
     </div>
 
-    <!-- 主工作區 -->
-    <main class="flex-1 flex flex-col lg:flex-row overflow-hidden max-w-[1600px] w-full mx-auto">
+    <!-- 主工作區：手機整頁順暢滑動，電腦維持左右雙欄 -->
+    <main class="flex-1 flex flex-col lg:flex-row lg:overflow-hidden max-w-[1600px] w-full mx-auto">
 
       <!-- 左側：台東精選景點與美食 -->
-      <section class="w-full lg:w-[46%] flex flex-col border-r border-stone-300/80 bg-[#F5EFE6] h-[48%] lg:h-full overflow-hidden">
+      <section id="mobile-spots-section" class="w-full lg:w-[46%] flex flex-col border-b-4 lg:border-b-0 lg:border-r border-stone-300/80 bg-[#F5EFE6] lg:h-full lg:overflow-hidden scroll-mt-12">
         <div class="p-3 bg-[#EFE6D8] border-b border-stone-300/80 space-y-2 shrink-0">
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-1.5">
@@ -251,11 +261,11 @@
           <div id="category-tabs" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5"></div>
         </div>
 
-        <div id="spots-grid" class="flex-1 overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start"></div>
+        <div id="spots-grid" class="lg:flex-1 lg:overflow-y-auto p-3 grid grid-cols-1 sm:grid-cols-2 gap-3 content-start"></div>
       </section>
 
       <!-- 右側：我的專屬行程時間軸 -->
-      <section class="w-full lg:w-[54%] flex flex-col bg-[#FAF6F0] h-[52%] lg:h-full overflow-hidden">
+      <section id="mobile-itinerary-section" class="w-full lg:w-[54%] flex flex-col bg-[#FAF6F0] lg:h-full lg:overflow-hidden scroll-mt-12">
         <div class="p-2.5 bg-white border-b border-stone-300/80 shadow-sm shrink-0 space-y-2">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
@@ -349,7 +359,7 @@
           </div>
         </div>
 
-        <div id="itinerary-container" class="flex-1 overflow-y-auto p-3 space-y-3 pb-20 scroll-smooth"></div>
+        <div id="itinerary-container" class="lg:flex-1 lg:overflow-y-auto p-3 space-y-3 pb-24"></div>
       </section>
     </main>
   </div>
@@ -892,6 +902,8 @@
     function updateHeaderStats() {
       const allIds = itinerary.flat();
       document.getElementById('total-spots-count').textContent = String(allIds.length);
+      const mobileBadge = document.getElementById('mobile-spot-badge');
+      if (mobileBadge) mobileBadge.textContent = String(allIds.length);
 
       const spotGroupTotal = calcSpotIdsGroupCost(allIds);
       const tInfo = getTransportSummary();
